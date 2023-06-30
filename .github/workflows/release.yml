@@ -25,10 +25,10 @@ jobs:
           dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader --no-restore
 
       - name: Archive
-        run: |
-          cd bin
-          7z a -tzip "MapSqlDownloader.zip" "MapSqlDownloader"
-
+        working-directory: bin
+        run: |          
+          tar czvf "MapSqlDownloader.tar.gz" "MapSqlDownloader"
+        
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "bin/MapSqlDownloader.zip"
+          artifacts: "bin/MapSqlDownloader.tar.gz"
