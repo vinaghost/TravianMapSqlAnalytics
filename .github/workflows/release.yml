@@ -26,7 +26,8 @@ jobs:
 
       - name: Archive
         run: |
-          7z a -tzip "MapSqlDownloader.zip" "bin/MapSqlDownloader"
+          cd bin
+          7z a -tzip "MapSqlDownloader.zip" "MapSqlDownloader"
 
       - uses: ncipollo/release-action@v1
         with:
