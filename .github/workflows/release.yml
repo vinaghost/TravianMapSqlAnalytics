@@ -22,7 +22,7 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Publish 
         run: |
-          dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader --no-restore
+          dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader --no-build
 
       - name: Archive
         run: |
