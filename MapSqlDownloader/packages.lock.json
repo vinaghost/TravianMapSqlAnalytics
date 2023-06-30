@@ -5,6 +5,8 @@
       "maincore": {
         "type": "Project"
       }
-    }
+    },
+    "net6.0/linux-x64": {},
+    "net6.0/win10-x64": {}
   }
 }
