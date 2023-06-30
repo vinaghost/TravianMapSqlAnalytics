@@ -28,11 +28,11 @@ jobs:
         run: dotnet build -c Release --no-restore
       - name: Publish 
         run: |
-          dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o MapSqlDownloader
+          dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader
 
       - name: Archive
         run: |
-          7z a -tzip "MapSqlDownloader.zip" "MapSqlDownloader"
+          7z a -tzip "MapSqlDownloader.zip" "bin/MapSqlDownloaderBin"
 
       - uses: ncipollo/release-action@v1
         with:
