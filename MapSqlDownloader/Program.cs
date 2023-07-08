@@ -37,7 +37,7 @@ namespace MapSqlDownloader
             if (!Directory.Exists(worldUrl)) Directory.CreateDirectory(worldUrl);
 
             var date = DateTime.Now.ToString("yyyy-MM-dd");
-            var fileName = $"{worldUrl}/{date}.json";
+            var fileName = Path.Combine(worldUrl, $"{date}.json");
 
             File.WriteAllText(fileName, JsonSerializer.Serialize(villages));
 

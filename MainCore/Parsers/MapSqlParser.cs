@@ -4,10 +4,10 @@ namespace MainCore.Parsers
 {
     public static class MapSqlParser
     {
-        public static List<Village> GetVillages(string lines)
+        public static List<VillageRaw> GetVillages(string lines)
         {
             var villageLines = lines.Split("\n");
-            var villages = new List<Village>();
+            var villages = new List<VillageRaw>();
             foreach (var line in villageLines)
             {
                 var village = GetVillage(line);
@@ -17,7 +17,7 @@ namespace MainCore.Parsers
             return villages;
         }
 
-        public static Village GetVillage(string line)
+        public static VillageRaw GetVillage(string line)
         {
             if (string.IsNullOrEmpty(line)) return null;
             var villageLine = line.Remove(0, 30);
@@ -39,7 +39,7 @@ namespace MainCore.Parsers
             var IsCapital = fields[12].Equals("TRUE");
             var IsCity = fields[13].Equals("TRUE");
             var VictoryPoints = fields[14].Equals("NULL") ? 0 : int.Parse(fields[14]);
-            return new Village(MapId, X, Y, Tribe, Id, Name, PlayerId, PlayerName, AllyId, AllyName, Pop, Region, IsCapital, IsCity, VictoryPoints);
+            return new VillageRaw(MapId, X, Y, Tribe, Id, Name, PlayerId, PlayerName, AllyId, AllyName, Pop, Region, IsCapital, IsCity, VictoryPoints);
         }
     }
 
