@@ -23,12 +23,14 @@ jobs:
       - name: Publish 
         run: |
           dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader --no-restore
+          dotnet publish MapSqlDatabase -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabase --no-restore
 
       - name: Archive
         working-directory: bin
         run: |          
           tar czvf "MapSqlDownloader.tar.gz" "MapSqlDownloader"
+          tar czvf "MapSqlDatabase.tar.gz" "MapSqlDatabase"
         
       - uses: ncipollo/release-action@v1
         with:
-          artifacts: "bin/MapSqlDownloader.tar.gz"
+          artifacts: "bin/MapSqlDownloader.tar.gz,bin/MapSqlDatabase.tar.gz"
