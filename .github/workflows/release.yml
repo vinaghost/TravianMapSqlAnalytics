@@ -1,5 +1,5 @@
 name: Release
-run-name: Release ${{  github.ref_name }}
+run-name: Release
 on:
   push:
     branches:
@@ -51,6 +51,7 @@ jobs:
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
           version: ${{ steps.latesttag.outputs.release }}  
+          strict: false
       - uses: ncipollo/release-action@v1
         with:
           tag: ${{ steps.semvers.outputs.minor }}
