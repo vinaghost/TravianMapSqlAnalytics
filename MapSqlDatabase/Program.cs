@@ -68,6 +68,8 @@ namespace MapSqlDatabase
             };
 
             await Task.WhenAll(tasks);
+
+            File.Delete(fileName);
         }
     }
 }

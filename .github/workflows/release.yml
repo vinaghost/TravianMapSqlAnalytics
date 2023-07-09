@@ -2,8 +2,8 @@ name: Release
 run-name: Release ${{  github.ref_name }}
 on:
   push:
-    tags:
-    - '*'
+    branches:
+      - master
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -16,6 +16,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.0.x       
+      - uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
       - name: Install dependencies
         run: dotnet restore --locked-mode
       - name: Build
@@ -24,13 +30,30 @@ jobs:
         run: |
           dotnet publish MapSqlDownloader -c Release -p:PublishSingleFile=true -o bin/MapSqlDownloader --no-restore
           dotnet publish MapSqlDatabase -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabase --no-restore
-
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Archive
         working-directory: bin
         run: |          
           tar czvf "MapSqlDownloader.tar.gz" "MapSqlDownloader"
           tar czvf "MapSqlDatabase.tar.gz" "MapSqlDatabase"
+      - name: 'Get latest tag'
+        id: latesttag
+        uses: pozetroninc/github-action-get-latest-release@master        
+        with:
+          repository: ${{ github.repository }}
         
+      - name: 'Get next version'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.latesttag.outputs.release }}  
       - uses: ncipollo/release-action@v1
         with:
+          tag: ${{ steps.semvers.outputs.minor }}
+          name: Release ${{ steps.semvers.outputs.minor }}
+          body: ${{ steps.semvers.outputs.minor }}
           artifacts: "bin/MapSqlDownloader.tar.gz,bin/MapSqlDatabase.tar.gz"
