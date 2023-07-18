@@ -2,6 +2,10 @@
 {
     public class Alliance
     {
+        public Alliance()
+        {
+        }
+
         public Alliance(VillageRaw village)
         {
             Id = village.AllyId;

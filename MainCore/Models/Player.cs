@@ -2,6 +2,10 @@
 {
     public class Player
     {
+        public Player()
+        {
+        }
+
         public Player(VillageRaw village)
         {
             Id = village.PlayerId;

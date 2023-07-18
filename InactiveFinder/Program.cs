@@ -1,3 +1,5 @@
+using InactiveFinder.Services;
+
 namespace InactiveFinder
 {
     public class Program
@@ -8,6 +10,13 @@ namespace InactiveFinder
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddSingleton<DataProvider>();
+            builder.Services.AddHttpClient<DataProvider>(client =>
+            {
+                client.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
+            })
+                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
             var app = builder.Build();
 

@@ -2,6 +2,10 @@
 {
     public class Village
     {
+        public Village()
+        {
+        }
+
         public Village(VillageRaw village)
         {
             Id = village.Id;
