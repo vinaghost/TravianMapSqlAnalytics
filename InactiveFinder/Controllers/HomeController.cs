@@ -25,12 +25,13 @@ namespace InactiveFinder.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Villages()
+        public async Task<IActionResult> Players()
         {
             ViewData["Server"] = _dataProvider.ServerUrl;
+            ViewData["Days"] = 3;
             _newestDateTime = await _dataProvider.GetNewestDateTime();
 
-            var players = await _dataProvider.GetPlayers(_newestDateTime);
+            var players = await _dataProvider.GetPlayerData(_newestDateTime);
             return View(players);
         }
 

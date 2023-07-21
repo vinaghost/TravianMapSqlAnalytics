@@ -1,0 +1,67 @@
+﻿@model IEnumerable<InactiveFinder.Models.PlayerPopulation>
+
+@{
+    ViewData["Title"] = "Players";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>@Model.Count() players of server @ViewData["Server"] </p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Link to profile
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Tribe)
+            </th>
+            <th>
+                Village count
+            </th>
+            @for (var i = 0; i < (int)ViewData["Days"]! ; i++)
+            {
+                <th>
+                    Day @i
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a href="https:/@ViewData["Server"]/profile/@item.PlayerId" target="_blank">Show</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllianceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tribe)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VillageCount)
+                </td>
+
+                @for (var i = 0; i < (int)ViewData["Days"]!; i++)
+                {
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Population[i])
+                        
+                        @if(i == 0) continue;
+                        [ @(item.Population[i - 1] - item.Population[i]) ]
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
