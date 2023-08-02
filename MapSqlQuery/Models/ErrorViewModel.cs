@@ -1,4 +1,4 @@
-namespace InactiveFinder.Models
+namespace MapSqlQuery.Models
 {
     public class ErrorViewModel
     {

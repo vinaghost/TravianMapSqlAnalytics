@@ -1,8 +1,8 @@
-﻿using InactiveFinder.Models;
+﻿using MapSqlQuery.Models;
 using MainCore.Models;
 using System.Text.Json;
 
-namespace InactiveFinder.Services
+namespace MapSqlQuery.Services
 {
     public class DataProvider
     {

@@ -1,9 +1,9 @@
-﻿using InactiveFinder.Models;
-using InactiveFinder.Services;
+﻿using MapSqlQuery.Models;
+using MapSqlQuery.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace InactiveFinder.Controllers
+namespace MapSqlQuery.Controllers
 {
     public class HomeController : Controller
     {

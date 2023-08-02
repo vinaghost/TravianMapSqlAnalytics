@@ -1,6 +1,6 @@
-using InactiveFinder.Services;
+using MapSqlQuery.Services;
 
-namespace InactiveFinder
+namespace MapSqlQuery
 {
     public class Program
     {
