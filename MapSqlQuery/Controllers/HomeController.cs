@@ -1,5 +1,5 @@
 ﻿using MapSqlQuery.Models;
-using MapSqlQuery.Services;
+using MapSqlQuery.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,30 +8,28 @@ namespace MapSqlQuery.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly DataProvider _dataProvider;
+        private readonly IDataProvide _dataProvider;
+        private readonly IConfiguration _configuration;
 
-        private DateTime _newestDateTime;
-
-        public HomeController(ILogger<HomeController> logger, DataProvider dataProvider)
+        public HomeController(ILogger<HomeController> logger, IDataProvide dataProvider, IConfiguration configuration)
         {
             _logger = logger;
             _dataProvider = dataProvider;
+            _configuration = configuration;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            _newestDateTime = await _dataProvider.GetNewestDateTime();
-            ViewBag.NewestDateTime = _newestDateTime.ToString("yyyy-MM-dd");
+            ViewBag.NewestDateTime = _dataProvider.NewestDateStr;
             return View();
         }
 
         public async Task<IActionResult> Players()
         {
-            ViewData["Server"] = _dataProvider.ServerUrl;
+            ViewData["Server"] = _configuration["WorldUrl"];
             ViewData["Days"] = 3;
-            _newestDateTime = await _dataProvider.GetNewestDateTime();
 
-            var players = await _dataProvider.GetPlayerData(_newestDateTime);
+            var players = await _dataProvider.GetPlayerData(_dataProvider.NewestDate);
             return View(players);
         }
 

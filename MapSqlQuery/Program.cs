@@ -1,4 +1,6 @@
-using MapSqlQuery.Services;
+using MapSqlQuery.Services.Implementations;
+using MapSqlQuery.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace MapSqlQuery
 {
@@ -11,13 +13,19 @@ namespace MapSqlQuery
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddSingleton<DataProvider>();
-            builder.Services.AddHttpClient<DataProvider>(client =>
+            var path = Path.Combine(AppContext.BaseDirectory, "app.db");
+            var connectionString = $"DataSource={path};Cache=Shared";
+            builder.Services.AddDbContextFactory<AppDbContext>(options =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["BaseUrl"]);
-            })
+                options.UseSqlite(connectionString);
+                options.EnableSensitiveDataLogging();
+            });
+
+            builder.Services.AddSingleton<IDataProvide, DataProvide>();
+            builder.Services.AddHttpClient<IDataUpdate, DataUpdate>()
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
+            builder.Services.AddHostedService<StartUpService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
