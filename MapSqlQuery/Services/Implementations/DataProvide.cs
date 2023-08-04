@@ -1,6 +1,7 @@
 ﻿using MapSqlQuery.Models;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Concurrent;
 
 namespace MapSqlQuery.Services.Implementations
 {
@@ -22,43 +23,16 @@ namespace MapSqlQuery.Services.Implementations
             set
             {
                 _newestDate = value;
-                _newestDateStr = value.ToString("yyyy-MM-dd");
+                _newestDateStr = $"{value:yyyy - MM-dd}";
             }
         }
 
         public string NewestDateStr => _newestDateStr;
 
-        public async Task<List<PlayerPopulation>> GetPlayerData(DateTime dateTime, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1)
+        public async Task<List<PlayerPopulation>> GetPlayerData(DateTime date, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1)
         {
-            using var context = _contextFactory.CreateDbContext();
-            var players = await context.Players
-                .Include(x => x.Villages)
-                .Include(x => x.Populations)
-                .AsSplitQuery()
-                .ToListAsync();
-
-            var playerPopulations = new List<PlayerPopulation>();
-            foreach (var player in players)
-            {
-                var alliance = await context.Alliances.FindAsync(player.AllianceId);
-                var playerPopulation = new PlayerPopulation
-                {
-                    PlayerId = player.PlayerId,
-                    PlayerName = player.Name,
-                    AllianceName = alliance?.Name,
-                    TribeId = player.Villages[0].Tribe,
-                    VillageCount = player.Villages.Count,
-                };
-                playerPopulation.Population.Add(player.Villages.Sum(x => x.Pop));
-
-                for (int i = 0; i < days; i++)
-                {
-                    var beforeDate = dateTime.AddDays(-(i + 1));
-                    var playerVillages = player.Populations.Where(x => x.Date == beforeDate).ToList();
-                    playerPopulation.Population.Add(playerVillages.Sum(x => x.Population));
-                }
-                playerPopulations.Add(playerPopulation);
-            }
+            var players = await GetPlayersAsync();
+            var playerPopulations = GetPlayersPopulation(players, date, days);
 
             foreach (var player in playerPopulations)
             {
@@ -73,6 +47,44 @@ namespace MapSqlQuery.Services.Implementations
 
             var orderedPopulations = filterPopulations.OrderByDescending(x => x.VillageCount).ThenBy(x => x.PopulationChange).ThenByDescending(x => x.Population[0]).ToList();
             return orderedPopulations;
+        }
+
+        private async Task<List<Player>> GetPlayersAsync(CancellationToken cancellationToken = default)
+        {
+            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            var players = await context.Players
+                .Include(x => x.Villages)
+                .Include(x => x.Populations)
+                .Include(x => x.Alliance)
+                .AsSplitQuery()
+                .ToListAsync(cancellationToken);
+            return players;
+        }
+
+        private static List<PlayerPopulation> GetPlayersPopulation(List<Player> players, DateTime date, int days)
+        {
+            var playerPopulations = new ConcurrentBag<PlayerPopulation>();
+            foreach (var player in players)
+            {
+                var playerPopulation = new PlayerPopulation
+                {
+                    PlayerId = player.PlayerId,
+                    PlayerName = player.Name,
+                    AllianceName = player.Alliance.Name,
+                    TribeId = player.Villages[0].Tribe,
+                    VillageCount = player.Villages.Count,
+                };
+                playerPopulation.Population.Add(player.Villages.Sum(x => x.Pop));
+
+                for (int i = 0; i < days; i++)
+                {
+                    var beforeDate = date.AddDays(-(i + 1));
+                    var playerVillages = player.Populations.Where(x => x.Date == beforeDate).ToList();
+                    playerPopulation.Population.Add(playerVillages.Sum(x => x.Population));
+                }
+                playerPopulations.Add(playerPopulation);
+            }
+            return playerPopulations.ToList();
         }
     }
 }

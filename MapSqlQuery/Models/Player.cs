@@ -14,5 +14,6 @@ namespace MapSqlQuery.Models
 
         public List<Village> Villages { get; set; } = new();
         public List<VillagePopulation> Populations { get; set; } = new();
+        public Alliance Alliance { get; set; } = new();
     }
 }

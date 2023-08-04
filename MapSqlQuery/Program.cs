@@ -18,7 +18,7 @@ namespace MapSqlQuery
             builder.Services.AddDbContextFactory<AppDbContext>(options =>
             {
                 options.UseSqlite(connectionString);
-                options.EnableSensitiveDataLogging();
+                //options.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddSingleton<IDataProvide, DataProvide>();
