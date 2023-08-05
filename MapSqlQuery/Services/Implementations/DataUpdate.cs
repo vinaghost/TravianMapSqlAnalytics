@@ -45,7 +45,6 @@ namespace MapSqlQuery.Services.Implementations
         public async Task UpdateAlliances()
         {
             var date = _dataProvide.NewestDate;
-
             var alliances = await GetAlliances(date);
 
             using var context = _contextFactory.CreateDbContext();
@@ -77,6 +76,8 @@ namespace MapSqlQuery.Services.Implementations
             var villages = await GetVillagesPopulation(dateTime);
 
             using var context = _contextFactory.CreateDbContext();
+
+            if (context.VillagesPopulation.Any(x => x.Date == dateTime.Date)) return;
 
             var villagesVaild = new List<VillagePopulation>();
 
