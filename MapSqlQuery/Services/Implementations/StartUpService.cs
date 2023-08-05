@@ -55,12 +55,12 @@ namespace MapSqlQuery.Services.Implementations
             _logger.LogInformation("Villages updated in {time} ms", stopWatch.ElapsedMilliseconds);
 
             stopWatch.Restart();
-            for (var i = 0; i < 7; i++)
+            Parallel.For(0, 7, async (i) =>
             {
                 var date = _dataProvider.NewestDate.AddDays(-i);
                 _logger.LogInformation("Updating villages population [{date:dd/MM/yyyy}]", date);
                 await _dataUpdater.UpdatePopulation(date);
-            }
+            });
             stopWatch.Stop();
             _logger.LogInformation("Villages population updated in {time} ms", stopWatch.ElapsedMilliseconds);
         }
@@ -73,6 +73,7 @@ namespace MapSqlQuery.Services.Implementations
         private void EnsureCreated()
         {
             using var context = _contextFactory.CreateDbContext();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
         }
     }

@@ -49,19 +49,7 @@ namespace MapSqlQuery.Services.Implementations
             var alliances = await GetAlliances(date);
 
             using var context = _contextFactory.CreateDbContext();
-            foreach (var alliance in alliances)
-            {
-                var allianceDb = await context.Alliances.FindAsync(alliance.AllianceId);
-                if (allianceDb is null)
-                {
-                    context.Add(alliance);
-                }
-                else
-                {
-                    allianceDb.Name = alliance.Name;
-                }
-            }
-            context.SaveChanges();
+            await context.BulkSynchronizeAsync(alliances, options => options.SynchronizeKeepidentity = true);
         }
 
         public async Task UpdatePlayer()
@@ -71,20 +59,7 @@ namespace MapSqlQuery.Services.Implementations
             var players = await GetPlayers(date);
 
             using var context = _contextFactory.CreateDbContext();
-            foreach (var player in players)
-            {
-                var playerDb = await context.Players.FindAsync(player.PlayerId);
-                if (playerDb is null)
-                {
-                    context.Add(player);
-                }
-                else
-                {
-                    playerDb.Name = player.Name;
-                    playerDb.AllianceId = player.AllianceId;
-                }
-            }
-            context.SaveChanges();
+            await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true);
         }
 
         public async Task UpdateVillage()
@@ -94,26 +69,7 @@ namespace MapSqlQuery.Services.Implementations
             var villages = await GetVillages(date);
 
             using var context = _contextFactory.CreateDbContext();
-            foreach (var village in villages)
-            {
-                var villageDb = await context.Villages.FindAsync(village.VillageId);
-                if (villageDb is null)
-                {
-                    context.Add(village);
-                }
-                else
-                {
-                    villageDb.PlayerId = village.PlayerId;
-                    villageDb.Name = village.Name;
-                    villageDb.Tribe = village.Tribe;
-                    villageDb.Pop = village.Pop;
-                    villageDb.IsCapital = village.IsCapital;
-                    villageDb.IsCity = village.IsCity;
-                    villageDb.Region = village.Region;
-                    villageDb.VictoryPoints = village.VictoryPoints;
-                }
-            }
-            context.SaveChanges();
+            await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true);
         }
 
         public async Task UpdatePopulation(DateTime dateTime)
@@ -121,21 +77,19 @@ namespace MapSqlQuery.Services.Implementations
             var villages = await GetVillagesPopulation(dateTime);
 
             using var context = _contextFactory.CreateDbContext();
+
+            var villagesVaild = new List<VillagePopulation>();
+
             foreach (var village in villages)
             {
                 var playerDb = await context.Players.FindAsync(village.PlayerId);
                 if (playerDb is null) continue;
-                var villagePopulationDb = await context.VillagesPopulation.FindAsync(village.VillageId, dateTime);
-                if (villagePopulationDb is null)
-                {
-                    context.Add(village);
-                }
-                else
-                {
-                    break;
-                }
+                var villageDb = await context.Villages.FindAsync(village.VillageId);
+                if (villageDb is null) continue;
+                villagesVaild.Add(village);
             }
-            context.SaveChanges();
+
+            await context.BulkInsertAsync(villagesVaild);
         }
 
         private async Task<List<Alliance>> GetAlliances(DateTime dateTime)
