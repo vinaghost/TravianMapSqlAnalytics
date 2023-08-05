@@ -1,7 +1,6 @@
 ﻿using MapSqlQuery.Models;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using System.Collections.Concurrent;
 
 namespace MapSqlQuery.Services.Implementations
 {
@@ -32,7 +31,7 @@ namespace MapSqlQuery.Services.Implementations
         public async Task<List<PlayerPopulation>> GetPlayerData(DateTime date, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1)
         {
             var players = await GetPlayersAsync();
-            var playerPopulations = GetPlayersPopulation(players, date, days);
+            var playerPopulations = await GetPlayersPopulation(players, date, days);
 
             foreach (var player in playerPopulations)
             {
@@ -55,22 +54,23 @@ namespace MapSqlQuery.Services.Implementations
             var players = await context.Players
                 .Include(x => x.Villages)
                 .Include(x => x.Populations)
-                .Include(x => x.Alliance)
                 .AsSplitQuery()
                 .ToListAsync(cancellationToken);
             return players;
         }
 
-        private static List<PlayerPopulation> GetPlayersPopulation(List<Player> players, DateTime date, int days)
+        private async Task<List<PlayerPopulation>> GetPlayersPopulation(List<Player> players, DateTime date, int days, CancellationToken cancellationToken = default)
         {
-            var playerPopulations = new ConcurrentBag<PlayerPopulation>();
+            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            var playerPopulations = new List<PlayerPopulation>();
             foreach (var player in players)
             {
+                var alliance = await context.Alliances.FindAsync(new object?[] { player.AllianceId }, cancellationToken: cancellationToken);
                 var playerPopulation = new PlayerPopulation
                 {
                     PlayerId = player.PlayerId,
                     PlayerName = player.Name,
-                    AllianceName = player.Alliance.Name,
+                    AllianceName = alliance?.Name ?? "",
                     TribeId = player.Villages[0].Tribe,
                     VillageCount = player.Villages.Count,
                 };

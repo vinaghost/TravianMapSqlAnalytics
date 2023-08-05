@@ -1,11 +1,23 @@
-﻿@model IEnumerable<MapSqlQuery.Models.PlayerPopulation>
+﻿@model MapSqlQuery.ViewModels.InactivePlayerViewModel
 
 @{
     ViewData["Title"] = "Players";
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>@Model.Count() players of server @ViewData["Server"] </p>
+<p>@Model.Players.Count() players of server @ViewData["Server"] </p>
+@using (Html.BeginForm("InactivePlayers", "Home", FormMethod.Post))
+{ 
+    <table>
+        <tr>
+            <td>Enter Days: </td>
+            <td>@Html.TextBoxFor(m => m.FormInput.Days, new {@type = "number"})</td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Submit Form" /></td>
+        </tr>
+    </table>
+}
 <table class="table">
     <thead>
         <tr>
@@ -13,13 +25,13 @@
                 Link to profile
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PlayerName)
+                @Html.DisplayNameForInnerType((PlayerPopulation model) => model.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.AllianceName)
+                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Tribe)
+                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.Tribe)
             </th>
             <th>
                 Village count
@@ -33,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Players)
         {
             <tr>
                 <td>

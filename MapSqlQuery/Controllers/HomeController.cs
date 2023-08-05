@@ -1,5 +1,7 @@
 ﻿using MapSqlQuery.Models;
+using MapSqlQuery.Models.Form;
 using MapSqlQuery.Services.Interfaces;
+using MapSqlQuery.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -24,13 +26,16 @@ namespace MapSqlQuery.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Players()
+        public async Task<IActionResult> InactivePlayers(InactivePlayerViewModel viewModel = null!)
         {
             ViewData["Server"] = _configuration["WorldUrl"];
-            ViewData["Days"] = 3;
+            var days = viewModel.FormInput?.Days ?? 3;
+            ViewData["Days"] = days;
 
-            var players = await _dataProvider.GetPlayerData(_dataProvider.NewestDate);
-            return View(players);
+            var players = await _dataProvider.GetPlayerData(_dataProvider.NewestDate, days);
+            viewModel.Players = players;
+            viewModel.FormInput ??= new InactiveFormInput();
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -7,13 +7,11 @@ namespace MapSqlQuery.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int PlayerId { get; set; }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int AllianceId { get; set; }
 
         public string Name { get; set; } = "";
 
         public List<Village> Villages { get; set; } = new();
         public List<VillagePopulation> Populations { get; set; } = new();
-        public Alliance Alliance { get; set; } = new();
     }
 }
