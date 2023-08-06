@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainCore", "MainCore\MainCo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDatabase", "MapSqlDatabase\MapSqlDatabase.csproj", "{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapSqlQuery", "MapSqlQuery\MapSqlQuery.csproj", "{064EB205-16A0-40A9-B1D3-CF595327A90C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlQuery", "MapSqlQuery\MapSqlQuery.csproj", "{064EB205-16A0-40A9-B1D3-CF595327A90C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

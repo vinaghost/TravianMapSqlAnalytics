@@ -1,6 +1,4 @@
-﻿using MapSqlQuery.Models;
-using MapSqlQuery.Models.Form;
-using MapSqlQuery.Services.Interfaces;
+﻿using MapSqlQuery.Services.Interfaces;
 using MapSqlQuery.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -23,6 +21,7 @@ namespace MapSqlQuery.Controllers
         public IActionResult Index()
         {
             ViewBag.NewestDateTime = _dataProvider.NewestDateStr;
+            ViewData["Server"] = _configuration["WorldUrl"];
             return View();
         }
 
@@ -32,9 +31,18 @@ namespace MapSqlQuery.Controllers
             var days = viewModel.FormInput?.Days ?? 3;
             ViewData["Days"] = days;
 
-            var players = await _dataProvider.GetPlayerData(_dataProvider.NewestDate, days);
+            var players = await _dataProvider.GetInactivePlayerData(_dataProvider.NewestDate, days);
             viewModel.Players = players;
-            viewModel.FormInput ??= new InactiveFormInput();
+            return View(viewModel);
+        }
+
+        public async Task<IActionResult> VillageFilter(VillageFilterViewModel viewModel)
+        {
+            ViewData["Server"] = _configuration["WorldUrl"];
+
+            viewModel.Villages = await _dataProvider.GetVillageData(viewModel.FormInput);
+            viewModel.Alliances = _dataProvider.GetAllianceSelectList();
+            viewModel.Tribes = _dataProvider.GetTribeSelectList();
             return View(viewModel);
         }
 

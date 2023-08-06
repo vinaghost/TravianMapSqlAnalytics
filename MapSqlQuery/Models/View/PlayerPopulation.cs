@@ -1,4 +1,4 @@
-﻿namespace MapSqlQuery.Models
+﻿namespace MapSqlQuery.Models.View
 {
     public class PlayerPopulation
     {

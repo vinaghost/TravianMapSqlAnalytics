@@ -1,4 +1,4 @@
-﻿using MapSqlQuery.Models;
+﻿using MapSqlQuery.Models.Database;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using AllianceCore = MainCore.Models.Alliance;
@@ -149,7 +149,7 @@ namespace MapSqlQuery.Services.Implementations
                     X = x.X,
                     Y = x.Y,
                     Tribe = x.Tribe,
-                    Pop = x.Pop,
+                    Population = x.Pop,
                     Region = x.Region,
                     IsCapital = x.IsCapital,
                     IsCity = x.IsCity,

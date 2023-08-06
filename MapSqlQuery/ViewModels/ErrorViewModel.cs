@@ -1,4 +1,4 @@
-namespace MapSqlQuery.Models
+namespace MapSqlQuery.ViewModels
 {
     public class ErrorViewModel
     {

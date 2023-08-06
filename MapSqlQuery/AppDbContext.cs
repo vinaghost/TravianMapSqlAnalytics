@@ -1,4 +1,4 @@
-﻿using MapSqlQuery.Models;
+﻿using MapSqlQuery.Models.Database;
 using Microsoft.EntityFrameworkCore;
 
 namespace MapSqlQuery

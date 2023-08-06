@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MapSqlQuery.Models
+namespace MapSqlQuery.Models.Database
 {
     [PrimaryKey(nameof(VillageId), nameof(Date))]
     public class VillagePopulation

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MapSqlQuery.Models
+namespace MapSqlQuery.Models.Database
 {
     public class Village
     {
@@ -13,7 +13,7 @@ namespace MapSqlQuery.Models
         public int X { get; set; }
         public int Y { get; set; }
         public int Tribe { get; set; }
-        public int Pop { get; set; }
+        public int Population { get; set; }
         public string Region { get; set; } = "";
         public bool IsCapital { get; set; }
         public bool IsCity { get; set; }

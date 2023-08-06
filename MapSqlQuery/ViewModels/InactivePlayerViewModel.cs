@@ -1,5 +1,5 @@
-﻿using MapSqlQuery.Models;
-using MapSqlQuery.Models.Form;
+﻿using MapSqlQuery.Models.Form;
+using MapSqlQuery.Models.View;
 
 namespace MapSqlQuery.ViewModels
 {

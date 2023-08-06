@@ -1,4 +1,6 @@
-﻿using MapSqlQuery.Models;
+﻿using MapSqlQuery.Models.Form;
+using MapSqlQuery.Models.View;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MapSqlQuery.Services.Interfaces
 {
@@ -7,6 +9,12 @@ namespace MapSqlQuery.Services.Interfaces
         DateTime NewestDate { get; set; }
         string NewestDateStr { get; }
 
-        Task<List<PlayerPopulation>> GetPlayerData(DateTime dateTime, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1);
+        List<SelectListItem> GetAllianceSelectList();
+
+        Task<List<PlayerPopulation>> GetInactivePlayerData(DateTime dateTime, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1);
+
+        List<SelectListItem> GetTribeSelectList();
+
+        Task<List<VillageInfo>> GetVillageData(VillageFormInput input);
     }
 }

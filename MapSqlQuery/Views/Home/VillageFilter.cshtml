@@ -1,0 +1,117 @@
+﻿@using MapSqlQuery.Models.View;
+@using MapSqlQuery.ViewModels;
+@model VillageFilterViewModel
+
+@{
+    ViewData["Title"] = "Village filter";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>@Model.Villages.Count() players of server @ViewData["Server"] </p>
+
+@using (Html.BeginForm("VillageFilter", "Home", FormMethod.Post))
+{ 
+	<table>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.FormInput.AllianceId)
+            </td>
+            <td>
+                @Html.DropDownListFor(m => m.FormInput.AllianceId, Model.Alliances)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.LabelFor(m => m.FormInput.TribeId)
+            </td>
+            <td>
+                @Html.DropDownListFor(m => m.FormInput.TribeId, Model.Tribes)
+            </td>
+        </tr>
+        <tr>
+            <td>Enter X: </td>
+            <td>@Html.TextBoxFor(m => m.FormInput.X, new {@type = "number"})</td>
+            <td>Enter Y: </td>
+            <td>@Html.TextBoxFor(m => m.FormInput.Y, new {@type = "number"})</td>
+        </tr>
+		<tr>
+			<td>Enter min population: </td>
+			<td>@Html.TextBoxFor(m => m.FormInput.MinPop, new {@type = "number"})</td>
+		</tr>
+		<tr>
+            <td>Enter max population: </td>
+			<td>@Html.TextBoxFor(m => m.FormInput.MaxPop, new {@type = "number"})</td>
+		</tr>
+		<tr>
+			<td colspan="2"><input type="submit" value="Submit Form" /></td>
+		</tr>
+	</table>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Link to village
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model) => model.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.VillageName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Tribe)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Coordinate)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Population)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.IsCapital)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Distance)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Villages)
+        {
+            <tr>
+                <td>
+                    <a href="https:/@ViewData["Server"]/position_details.php?x=@item.X&y=@item.Y" target="_blank">Show</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllianceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PlayerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.VillageName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Tribe)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Coordinate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Population)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsCapital)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Distance)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

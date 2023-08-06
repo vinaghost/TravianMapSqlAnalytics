@@ -1,7 +1,9 @@
-﻿@model MapSqlQuery.ViewModels.InactivePlayerViewModel
+﻿@using MapSqlQuery.Models.View;
+@using MapSqlQuery.ViewModels;
+@model InactivePlayerViewModel
 
 @{
-    ViewData["Title"] = "Players";
+    ViewData["Title"] = "Inactive Players";
 }
 <h1>@ViewData["Title"]</h1>
 
@@ -69,8 +71,8 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Population[i])
                         
-                        @if(i == 0) continue;
-                        [ @(item.Population[i - 1] - item.Population[i]) ]
+                        @if(i == (int)ViewData["Days"]! - 1) continue;
+                        [ @(item.Population[i] - item.Population[i + 1]) ]
                     </td>
                 }
             </tr>
