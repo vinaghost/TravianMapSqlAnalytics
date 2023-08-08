@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDatabase", "MapSqlDat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlQuery", "MapSqlQuery\MapSqlQuery.csproj", "{064EB205-16A0-40A9-B1D3-CF595327A90C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapSqlDatabaseUpdate", "MapSqlDatabaseUpdate\MapSqlDatabaseUpdate.csproj", "{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
