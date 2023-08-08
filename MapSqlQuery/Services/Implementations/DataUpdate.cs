@@ -73,18 +73,16 @@ namespace MapSqlQuery.Services.Implementations
 
         public async Task UpdatePopulation(DateTime dateTime)
         {
-            var villages = await GetVillagesPopulation(dateTime);
+            var villages = await GetVillagesPopulations(dateTime);
 
             using var context = _contextFactory.CreateDbContext();
 
-            if (context.VillagesPopulation.Any(x => x.Date == dateTime.Date)) return;
+            if (context.VillagesPopulations.Any(x => x.Date == dateTime.Date)) return;
 
             var villagesVaild = new List<VillagePopulation>();
 
             foreach (var village in villages)
             {
-                var playerDb = await context.Players.FindAsync(village.PlayerId);
-                if (playerDb is null) continue;
                 var villageDb = await context.Villages.FindAsync(village.VillageId);
                 if (villageDb is null) continue;
                 villagesVaild.Add(village);
@@ -161,7 +159,7 @@ namespace MapSqlQuery.Services.Implementations
             return new List<Village>();
         }
 
-        private async Task<List<VillagePopulation>> GetVillagesPopulation(DateTime dateTime)
+        private async Task<List<VillagePopulation>> GetVillagesPopulations(DateTime dateTime)
         {
             var dateTimeStr = dateTime.ToString("yyyy-MM-dd");
 
@@ -171,7 +169,6 @@ namespace MapSqlQuery.Services.Implementations
                 var result = await response.Content.ReadFromJsonAsync<List<VillageCore>>() ?? new List<VillageCore>();
                 var villages = result.Select(x => new VillagePopulation
                 {
-                    PlayerId = x.PlayerId,
                     VillageId = x.Id,
                     Population = x.Pop,
                     Date = dateTime,

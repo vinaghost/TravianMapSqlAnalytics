@@ -1,5 +1,4 @@
 ﻿using MapSqlQuery.Models;
-using MapSqlQuery.Models.Database;
 using MapSqlQuery.Models.Form;
 using MapSqlQuery.Models.View;
 using MapSqlQuery.Services.Interfaces;
@@ -52,30 +51,16 @@ namespace MapSqlQuery.Services.Implementations
             set
             {
                 _newestDate = value;
-                _newestDateStr = $"{value:yyyy - MM-dd}";
+                _newestDateStr = $"{value:yyyy-MM-dd}";
             }
         }
 
         public string NewestDateStr => _newestDateStr;
 
-        public async Task<List<PlayerPopulation>> GetInactivePlayerData(DateTime date, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1)
+        public async Task<List<PlayerPopulation>> GetInactivePlayerData(InactiveFormInput input)
         {
-            var players = await GetPlayersAsync();
-            var playerPopulations = await GetPlayersPopulation(players, date, days);
-
-            foreach (var player in playerPopulations)
-            {
-                player.PopulationChange = player.Population[^1] - player.Population[0];
-            }
-
-            var filterPopulations = playerPopulations.Where(x => x.PopulationChange >= minChange && x.PopulationChange <= maxChange);
-            if (tribe != 0)
-            {
-                filterPopulations = filterPopulations.Where(x => x.TribeId == tribe);
-            }
-
-            var orderedPopulations = filterPopulations.OrderByDescending(x => x.VillageCount).ThenBy(x => x.PopulationChange).ThenByDescending(x => x.Population[0]).ToList();
-            return orderedPopulations;
+            var players = await GetPlayersPopulationAsync(input);
+            return players.Where(x => x.PopulationChange == 0).ToList();
         }
 
         public async Task<List<VillageInfo>> GetVillageData(VillageFormInput input)
@@ -84,43 +69,61 @@ namespace MapSqlQuery.Services.Implementations
             return villages;
         }
 
-        private async Task<List<Player>> GetPlayersAsync(CancellationToken cancellationToken = default)
+        private async Task<List<PlayerPopulation>> GetPlayersPopulationAsync(InactiveFormInput input, CancellationToken cancellationToken = default)
         {
+            var dates = GetDateBefore(NewestDate, input.Days);
             using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-            var players = await context.Players
-                .Include(x => x.Villages)
-                .Include(x => x.Populations)
-                .AsSplitQuery()
-                .ToListAsync(cancellationToken);
-            return players;
-        }
+            var (minDate, maxDate) = (dates[^1], dates[0]);
+            var players = context.Players.ToList();
 
-        private async Task<List<PlayerPopulation>> GetPlayersPopulation(List<Player> players, DateTime date, int days, CancellationToken cancellationToken = default)
-        {
-            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
             var playerPopulations = new List<PlayerPopulation>();
+
             foreach (var player in players)
             {
                 var alliance = await context.Alliances.FindAsync(new object?[] { player.AllianceId }, cancellationToken: cancellationToken);
+                if (alliance is null) continue;
+
+                context.Entry(player)
+                        .Collection(b => b.Villages)
+                        .Load();
+
+                var tribe = player.Villages[0].Tribe;
+                if (input.Tribe != 0 && tribe != input.Tribe) continue;
+
                 var playerPopulation = new PlayerPopulation
                 {
                     PlayerId = player.PlayerId,
                     PlayerName = player.Name,
-                    AllianceName = alliance?.Name ?? "",
-                    TribeId = player.Villages[0].Tribe,
+                    AllianceName = alliance.Name,
+                    TribeId = tribe,
                     VillageCount = player.Villages.Count,
+                    Population = new List<int>(new int[dates.Count]),
                 };
-                playerPopulation.Population.Add(player.Villages.Sum(x => x.Population));
 
-                for (int i = 0; i < days; i++)
+                foreach (var village in player.Villages)
                 {
-                    var beforeDate = date.AddDays(-(i + 1));
-                    var playerVillages = player.Populations.Where(x => x.Date == beforeDate).ToList();
-                    playerPopulation.Population.Add(playerVillages.Sum(x => x.Population));
+                    context.Entry(village)
+                        .Collection(b => b.Populations)
+                        .Load();
+                    var villagePopulations = village.Populations.OrderByDescending(x => x.Date).ToList();
+
+                    for (int i = 0; i < dates.Count; i++)
+                    {
+                        if (i >= playerPopulation.Population.Count) break;
+                        if (i >= villagePopulations.Count) break;
+                        playerPopulation.Population[i] += villagePopulations[i].Population;
+                    }
                 }
                 playerPopulations.Add(playerPopulation);
             }
-            return playerPopulations.ToList();
+
+            foreach (var player in playerPopulations)
+            {
+                player.PopulationChange = player.Population[^1] - player.Population[0];
+            }
+
+            var orderedPopulations = playerPopulations.OrderByDescending(x => x.VillageCount).ThenBy(x => x.PopulationChange).ThenByDescending(x => x.Population[0]).ToList();
+            return orderedPopulations;
         }
 
         private async Task<List<VillageInfo>> GetVillageInfoAsync(VillageFormInput input, CancellationToken cancellationToken = default)
@@ -169,6 +172,17 @@ namespace MapSqlQuery.Services.Implementations
 
             var oredered = villagesInfo.OrderBy(x => x.Distance).ToList();
             return oredered;
+        }
+
+        private static List<DateTime> GetDateBefore(DateTime date, int days)
+        {
+            var dates = new List<DateTime>();
+            for (int i = 0; i <= days; i++)
+            {
+                var beforeDate = date.AddDays(-i);
+                dates.Add(beforeDate);
+            }
+            return dates;
         }
 
         public List<SelectListItem> GetAllianceSelectList()

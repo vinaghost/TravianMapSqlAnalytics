@@ -28,10 +28,10 @@ namespace MapSqlQuery.Controllers
         public async Task<IActionResult> InactivePlayers(InactivePlayerViewModel viewModel = null!)
         {
             ViewData["Server"] = _configuration["WorldUrl"];
-            var days = viewModel.FormInput?.Days ?? 3;
+            var days = viewModel.FormInput.Days;
             ViewData["Days"] = days;
 
-            var players = await _dataProvider.GetInactivePlayerData(_dataProvider.NewestDate, days);
+            var players = await _dataProvider.GetInactivePlayerData(viewModel.FormInput);
             viewModel.Players = players;
             return View(viewModel);
         }

@@ -1,6 +1,8 @@
+using MapSqlQuery.Jobs;
 using MapSqlQuery.Services.Implementations;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Quartz;
 
 namespace MapSqlQuery
 {
@@ -19,6 +21,20 @@ namespace MapSqlQuery
             {
                 options.UseSqlite(connectionString);
                 //options.EnableSensitiveDataLogging();
+            });
+
+            builder.Services.AddQuartz(q =>
+            {
+                q.AddJob<UpdateDatabaseJob>(opts => opts.WithIdentity(UpdateDatabaseJob.Key));
+                q.AddTrigger(opts => opts
+                    .ForJob(UpdateDatabaseJob.Key)
+                    .WithIdentity("UpdateDatabaseJob-trigger")
+                    .StartNow()
+                );
+            });
+            builder.Services.AddQuartzHostedService(opt =>
+            {
+                opt.WaitForJobsToComplete = true;
             });
 
             builder.Services.AddSingleton<IDataProvide, DataProvide>();

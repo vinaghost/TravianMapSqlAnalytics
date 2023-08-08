@@ -1,16 +1,15 @@
 ﻿namespace MapSqlQuery.Models.Database
 {
-    public class VillagePopulation
+    public class PlayerAlliance
     {
         // primary key
         public int Id { get; set; }
 
         // properties
-
-        public int VillageId { get; set; }
+        public int PlayerId { get; set; }
 
         public DateTime Date { get; set; }
 
-        public int Population { get; set; }
+        public int AllianceId { get; set; }
     }
 }

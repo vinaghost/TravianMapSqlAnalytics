@@ -75,7 +75,7 @@ namespace MapSqlQuery.Services.Implementations
         private void EnsureCreated()
         {
             using var context = _contextFactory.CreateDbContext();
-            //context.Database.EnsureDeleted();
+            context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
         }
     }

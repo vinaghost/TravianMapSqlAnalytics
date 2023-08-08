@@ -16,6 +16,8 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.9" />
+    <PackageReference Include="Quartz" Version="3.7.0" />
+    <PackageReference Include="Quartz.AspNetCore" Version="3.7.0" />
     <PackageReference Include="Z.EntityFramework.Extensions.EFCore" Version="7.22.4" />
   </ItemGroup>
 

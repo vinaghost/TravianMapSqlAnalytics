@@ -11,7 +11,7 @@ namespace MapSqlQuery.Services.Interfaces
 
         List<SelectListItem> GetAllianceSelectList();
 
-        Task<List<PlayerPopulation>> GetInactivePlayerData(DateTime dateTime, int days = 3, int tribe = 0, int minChange = 0, int maxChange = 1);
+        Task<List<PlayerPopulation>> GetInactivePlayerData(InactiveFormInput input);
 
         List<SelectListItem> GetTribeSelectList();
 
