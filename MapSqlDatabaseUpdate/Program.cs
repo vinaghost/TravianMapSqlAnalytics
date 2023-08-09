@@ -20,9 +20,13 @@ namespace MapSqlDatabaseUpdate
             {
                 services.AddDbContextFactory<AppDbContext>(options =>
                 {
-                    var connectionString = Environment.GetEnvironmentVariable("VinaWorldConnectionString");
+                    var host = hostContext.Configuration["Host"];
+                    var port = hostContext.Configuration["Port"];
+                    var username = hostContext.Configuration["Username"];
+                    var password = hostContext.Configuration["Password"];
                     var worldUrl = hostContext.Configuration["WorldUrl"];
-                    options.UseMySQL($"{connectionString}database={worldUrl};");
+                    var connectionString = $"server={host};port={port};user={username};password={password};database={worldUrl}";
+                    options.UseMySQL(connectionString);
                 });
                 services.AddHttpClient<IGetFileService, GetFileService>();
                 services.AddTransient<IParseService, ParseService>();
