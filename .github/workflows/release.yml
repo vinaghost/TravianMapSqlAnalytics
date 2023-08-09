@@ -38,5 +38,6 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           file: ./MapSqlDatabaseUpdate/Dockerfile
+          context: .
           push: true
           tags: vinaghost/travian_map_sql_to_mysql:latest 
