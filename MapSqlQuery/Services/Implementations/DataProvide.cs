@@ -1,4 +1,5 @@
-﻿using MapSqlQuery.Models;
+﻿using MainCore;
+using MapSqlQuery.Models;
 using MapSqlQuery.Models.Form;
 using MapSqlQuery.Models.View;
 using MapSqlQuery.Services.Interfaces;
@@ -9,7 +10,7 @@ namespace MapSqlQuery.Services.Implementations
 {
     public class DataProvide : IDataProvide
     {
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IServiceProvider _serviceProvider;
 
         private readonly Dictionary<int, string> _tribeNames = new()
         {
@@ -36,10 +37,9 @@ namespace MapSqlQuery.Services.Implementations
             new SelectListItem {Value = "8", Text = "Spartans"},
         };
 
-        public DataProvide(IDbContextFactory<AppDbContext> contextFactory)
-
+        public DataProvide(IServiceProvider serviceProvider)
         {
-            _contextFactory = contextFactory;
+            _serviceProvider = serviceProvider;
         }
 
         private DateTime _newestDate;
@@ -72,7 +72,7 @@ namespace MapSqlQuery.Services.Implementations
         private async Task<List<PlayerPopulation>> GetPlayersPopulationAsync(InactiveFormInput input, CancellationToken cancellationToken = default)
         {
             var dates = GetDateBefore(NewestDate, input.Days);
-            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
             var (minDate, maxDate) = (dates[^1], dates[0]);
             var players = context.Players.ToList();
 
@@ -128,7 +128,7 @@ namespace MapSqlQuery.Services.Implementations
 
         private async Task<List<VillageInfo>> GetVillageInfoAsync(VillageFormInput input, CancellationToken cancellationToken = default)
         {
-            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
+            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
 
             var villages = context.Villages.Where(x => x.Population >= input.MinPop);
             if (input.MaxPop != -1 && input.MaxPop > input.MinPop)
@@ -187,7 +187,7 @@ namespace MapSqlQuery.Services.Implementations
 
         public List<SelectListItem> GetAllianceSelectList()
         {
-            using var context = _contextFactory.CreateDbContext();
+            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
             var alliances = new List<SelectListItem>
             {
                 new SelectListItem { Value = "-1", Text = "All" }

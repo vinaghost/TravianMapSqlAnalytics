@@ -1,4 +1,4 @@
-﻿namespace MainCore.DatabaseModels
+﻿namespace MainCore.Models
 {
     public class VillagePopulation
     {

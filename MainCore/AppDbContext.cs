@@ -1,5 +1,6 @@
-﻿using MainCore.DatabaseModels;
+﻿using MainCore.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace MainCore
 {
@@ -13,6 +14,12 @@ namespace MainCore
 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
+        }
+
+        public static string GetConnectionString(IConfiguration configuration, string worldUrl)
+        {
+            var connectionString = "";
+            return connectionString;
         }
     }
 }

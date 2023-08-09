@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "MapSqlDatabase": {
-      "commandName": "Project",
-      "commandLineArgs": "ts8.x1.arabics.travian.com"
-    }
-  }
-}

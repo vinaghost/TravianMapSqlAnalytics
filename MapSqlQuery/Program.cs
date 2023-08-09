@@ -1,3 +1,4 @@
+using MainCore;
 using MapSqlQuery.Services.Implementations;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,20 +13,18 @@ namespace MapSqlQuery
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
-            var path = Path.Combine(AppContext.BaseDirectory, "app.db");
-            var connectionString = $"DataSource={path};Cache=Shared";
-            builder.Services.AddDbContextFactory<AppDbContext>(options =>
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
             {
-                options.UseSqlite(connectionString);
+                var worldUrl = "ts8.x1.arabics.travian.com";
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                var connectionString = AppDbContext.GetConnectionString(configuration, worldUrl);
+                options.UseMySQL(connectionString);
                 //options.EnableSensitiveDataLogging();
             });
 
             builder.Services.AddSingleton<IDataProvide, DataProvide>();
-            builder.Services.AddHttpClient<IDataUpdate, DataUpdate>()
-                .SetHandlerLifetime(TimeSpan.FromMinutes(5));
 
-            builder.Services.AddHostedService<StartUpService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

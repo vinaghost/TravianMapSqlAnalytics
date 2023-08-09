@@ -1,5 +1,5 @@
 ﻿using MainCore;
-using MainCore.DatabaseModels;
+using MainCore.Models;
 using MapSqlDatabaseUpdate.Extensions;
 using MapSqlDatabaseUpdate.Models;
 using MapSqlDatabaseUpdate.Service.Interfaces;

@@ -1,20 +1,21 @@
-﻿namespace MainCore.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MainCore.Models
 {
     public class Player
     {
-        public Player()
-        {
-        }
+        // primary key
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int PlayerId { get; set; }
 
-        public Player(VillageRaw village)
-        {
-            Id = village.PlayerId;
-            Name = village.PlayerName;
-            AllianceId = village.AllyId;
-        }
+        // foreign key
+        public List<Village> Villages { get; set; } = new();
 
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public List<PlayerAlliance> Alliances { get; set; } = new();
+
+        // properties
         public int AllianceId { get; set; }
+
+        public string Name { get; set; } = "";
     }
 }

@@ -1,4 +1,4 @@
-﻿using MainCore.DatabaseModels;
+﻿using MainCore.Models;
 using MapSqlDatabaseUpdate.Models;
 
 namespace MapSqlDatabaseUpdate.Extensions

@@ -1,39 +1,29 @@
-﻿namespace MainCore.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace MainCore.Models
 {
     public class Village
     {
-        public Village()
-        {
-        }
+        // primary key
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int VillageId { get; set; }
 
-        public Village(VillageRaw village)
-        {
-            Id = village.Id;
-            MapId = village.MapId;
+        // foreign key
+        public List<VillagePopulation> Populations { get; set; } = new();
 
-            Name = village.Name;
-            X = village.X;
-            Y = village.Y;
-            Tribe = village.Tribe;
-            PlayerId = village.PlayerId;
-            Pop = village.Pop;
-            Region = village.Region;
-            IsCapital = village.IsCapital;
-            IsCity = village.IsCity;
-            VictoryPoints = village.VictoryPoints;
-        }
-
-        public int Id { get; set; }
+        // properties
         public int MapId { get; set; }
-        public string Name { get; set; }
+
+        public int PlayerId { get; set; }
+        public string Name { get; set; } = "";
         public int X { get; set; }
         public int Y { get; set; }
         public int Tribe { get; set; }
-        public int PlayerId { get; set; }
-        public int Pop { get; set; }
-        public string Region { get; set; }
+        public int Population { get; set; }
+        public string Region { get; set; } = "";
         public bool IsCapital { get; set; }
         public bool IsCity { get; set; }
+        public bool IsHarbor { get; set; }
         public int VictoryPoints { get; set; }
     }
 }

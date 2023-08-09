@@ -3,15 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDownloader", "MapSqlDownloader\MapSqlDownloader.csproj", "{007AC5E6-B3F2-41AE-9B98-F4BC8228603E}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MainCore", "MainCore\MainCore.csproj", "{25B6C446-27E7-4B8C-9316-A24E75E2BE2F}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDatabase", "MapSqlDatabase\MapSqlDatabase.csproj", "{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlQuery", "MapSqlQuery\MapSqlQuery.csproj", "{064EB205-16A0-40A9-B1D3-CF595327A90C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapSqlDatabaseUpdate", "MapSqlDatabaseUpdate\MapSqlDatabaseUpdate.csproj", "{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDatabaseUpdate", "MapSqlDatabaseUpdate\MapSqlDatabaseUpdate.csproj", "{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,18 +15,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{007AC5E6-B3F2-41AE-9B98-F4BC8228603E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{007AC5E6-B3F2-41AE-9B98-F4BC8228603E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{007AC5E6-B3F2-41AE-9B98-F4BC8228603E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{007AC5E6-B3F2-41AE-9B98-F4BC8228603E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{25B6C446-27E7-4B8C-9316-A24E75E2BE2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{25B6C446-27E7-4B8C-9316-A24E75E2BE2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25B6C446-27E7-4B8C-9316-A24E75E2BE2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25B6C446-27E7-4B8C-9316-A24E75E2BE2F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{FD4EF644-5A2D-40EF-A4A6-B0263C6BD320}.Release|Any CPU.Build.0 = Release|Any CPU
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
