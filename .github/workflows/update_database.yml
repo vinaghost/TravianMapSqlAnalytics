@@ -1,7 +1,21 @@
+# create these secrets in your repository settings
+# DOCKERHUB_USERNAME
+# DOCKERHUB_TOKEN
+# DOCKERHUB_REPOSITORY
+# MYSQL_HOST
+# MYSQL_PORT
+# MYSQL_USERNAME
+# MYSQL_PASSWORD
+
 name: Update database
 run-name: Update database
 on:
   workflow_dispatch:
+  schedule:
+  # from RELEASE POLARBEAR 1171.1, map.sql is updated every midnight server time
+  # (which is 00:00 GMT+1 or 23:00 GMT)
+  # we execute after 1 hour to make sure map.sql updated
+    - cron:  00 00 * * *
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -18,5 +32,5 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run update database
-        run: docker run vinaghost/travian_map_sql_to_mysql:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
+        run: docker run ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
       
