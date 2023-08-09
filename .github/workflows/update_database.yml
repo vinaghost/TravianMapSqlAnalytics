@@ -18,5 +18,5 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run update database
-        run: docker run -it vinaghost/travian_map_sql_to_mysql:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
+        run: docker run vinaghost/travian_map_sql_to_mysql:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
       
