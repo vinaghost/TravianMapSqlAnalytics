@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        worldUrl:
+        world:
             - ts8.x1.arabics.travian.com
             - ts1.x1.asia.travian.com
             - ts1.x1.europe.travian.com
@@ -20,5 +20,5 @@ jobs:
       - name: Run update database
         uses: docker://vinaghost/travian_map_sql_to_mysql:latest
         with:
-          args: WorldUrl=${{ matrix.server }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
+          args: WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
       
