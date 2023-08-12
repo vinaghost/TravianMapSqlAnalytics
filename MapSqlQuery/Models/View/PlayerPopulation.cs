@@ -33,6 +33,5 @@
 
         public int VillageCount { get; set; }
         public List<int> Population { get; set; }
-        public int PopulationChange { get; set; }
     }
 }

@@ -20,7 +20,7 @@ namespace MapSqlQuery.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.NewestDateTime = _dataProvider.NewestDateStr;
+            ViewBag.NewestDateTime = DateTime.Today.ToString("yyyy-MM-dd");
             ViewData["Server"] = _configuration["WorldUrl"];
             return View();
         }
@@ -28,19 +28,22 @@ namespace MapSqlQuery.Controllers
         public async Task<IActionResult> InactivePlayers(InactivePlayerViewModel viewModel = null!)
         {
             ViewData["Server"] = _configuration["WorldUrl"];
-            var days = viewModel.FormInput.Days;
+
+            var players = await Task.Run(() => _dataProvider.GetInactivePlayerData(viewModel.FormInput));
+
+            var days = players.FirstOrDefault()?.Population.Count ?? 0;
+            viewModel.FormInput.Days = days;
             ViewData["Days"] = days;
 
-            var players = await _dataProvider.GetInactivePlayerData(viewModel.FormInput);
             viewModel.Players = players;
             return View(viewModel);
         }
 
-        public async Task<IActionResult> VillageFilter(VillageFilterViewModel viewModel)
+        public IActionResult VillageFilter(VillageFilterViewModel viewModel)
         {
             ViewData["Server"] = _configuration["WorldUrl"];
 
-            viewModel.Villages = await _dataProvider.GetVillageData(viewModel.FormInput);
+            viewModel.Villages = _dataProvider.GetVillageData(viewModel.FormInput);
             viewModel.Alliances = _dataProvider.GetAllianceSelectList();
             viewModel.Tribes = _dataProvider.GetTribeSelectList();
             return View(viewModel);

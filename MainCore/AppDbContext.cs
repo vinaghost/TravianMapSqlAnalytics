@@ -18,7 +18,8 @@ namespace MainCore
 
         public static string GetConnectionString(IConfiguration configuration, string worldUrl)
         {
-            var connectionString = "";
+            var (host, port, username, password) = (configuration["Database:Host"], configuration["Database:Port"], configuration["Database:Username"], configuration["Database:Password"]);
+            var connectionString = $"server={host};port={port};user={username};password={password};database={worldUrl}";
             return connectionString;
         }
     }

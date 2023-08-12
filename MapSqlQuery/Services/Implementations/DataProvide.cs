@@ -10,7 +10,7 @@ namespace MapSqlQuery.Services.Implementations
 {
     public class DataProvide : IDataProvide
     {
-        private readonly IServiceProvider _serviceProvider;
+        private readonly IServiceScopeFactory _serviceScopeFactory;
 
         private readonly Dictionary<int, string> _tribeNames = new()
         {
@@ -37,130 +37,155 @@ namespace MapSqlQuery.Services.Implementations
             new SelectListItem {Value = "8", Text = "Spartans"},
         };
 
-        public DataProvide(IServiceProvider serviceProvider)
+        public DataProvide(IServiceScopeFactory serviceScopeFactory)
         {
-            _serviceProvider = serviceProvider;
+            _serviceScopeFactory = serviceScopeFactory;
         }
 
-        private DateTime _newestDate;
-        private string _newestDateStr = "";
-
-        public DateTime NewestDate
+        public List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input)
         {
-            get => _newestDate;
-            set
-            {
-                _newestDate = value;
-                _newestDateStr = $"{value:yyyy-MM-dd}";
-            }
+            var players = GetPlayersPopulation(input, 0);
+            return players;
         }
 
-        public string NewestDateStr => _newestDateStr;
-
-        public async Task<List<PlayerPopulation>> GetInactivePlayerData(InactiveFormInput input)
+        public List<VillageInfo> GetVillageData(VillageFormInput input)
         {
-            var players = await GetPlayersPopulationAsync(input);
-            return players.Where(x => x.PopulationChange == 0).ToList();
-        }
-
-        public async Task<List<VillageInfo>> GetVillageData(VillageFormInput input)
-        {
-            var villages = await GetVillageInfoAsync(input);
+            var villages = GetVillageInfo(input);
             return villages;
         }
 
-        private async Task<List<PlayerPopulation>> GetPlayersPopulationAsync(InactiveFormInput input, CancellationToken cancellationToken = default)
+        private List<PlayerPopulation> GetPlayersPopulation(InactiveFormInput input, int populationChange)
         {
-            var dates = GetDateBefore(NewestDate, input.Days);
-            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
+            var dates = GetDateBefore(DateTime.Today, input.Days);
+            using var scoped = _serviceScopeFactory.CreateScope();
+            using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
             var (minDate, maxDate) = (dates[^1], dates[0]);
-            var players = context.Players.ToList();
 
-            var playerPopulations = new List<PlayerPopulation>();
-
-            foreach (var player in players)
-            {
-                var alliance = await context.Alliances.FindAsync(new object?[] { player.AllianceId }, cancellationToken: cancellationToken);
-                if (alliance is null) continue;
-
-                context.Entry(player)
-                        .Collection(b => b.Villages)
-                        .Load();
-
-                var tribe = player.Villages[0].Tribe;
-                if (input.Tribe != 0 && tribe != input.Tribe) continue;
-
-                var playerPopulation = new PlayerPopulation
+            var query = context.VillagesPopulations
+                .Where(x => x.Date >= minDate && x.Date <= maxDate)
+                .Join(context.Villages, x => x.VillageId, x => x.VillageId, (population, village) => new
                 {
-                    PlayerId = player.PlayerId,
+                    village.PlayerId,
+                    population.Date,
+                    population.Population,
+                    village.Tribe,
+                })
+                .GroupBy(x => new { x.PlayerId, x.Date })
+                .Select(x => new
+                {
+                    x.Key.Date,
+                    x.Key.PlayerId,
+                    x.First().Tribe,
+                    Population = x.Sum(x => x.Population),
+                    VillageCount = x.Count(),
+                })
+                .GroupBy(x => x.PlayerId)
+                .Where(x => x.Max(x => x.Population) - x.Min(x => x.Population) == populationChange)
+                .Select(x => new
+                {
+                    PlayerId = x.Key,
+                    Tribe = x.Select(x => x.Tribe).First(),
+                    Population = x.Select(x => x.Population).ToList(),
+                    VillageCount = x.Select(x => x.VillageCount).First(),
+                })
+                .Join(context.Players, x => x.PlayerId, x => x.PlayerId, (population, player) => new
+                {
+                    population.PlayerId,
                     PlayerName = player.Name,
-                    AllianceName = alliance.Name,
-                    TribeId = tribe,
-                    VillageCount = player.Villages.Count,
-                    Population = new List<int>(new int[dates.Count]),
-                };
-
-                foreach (var village in player.Villages)
+                    player.AllianceId,
+                    population.Tribe,
+                    population.Population,
+                    population.VillageCount,
+                })
+                .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (population, alliance) => new
                 {
-                    context.Entry(village)
-                        .Collection(b => b.Populations)
-                        .Load();
-                    var villagePopulations = village.Populations.OrderByDescending(x => x.Date).ToList();
+                    population.PlayerId,
+                    population.PlayerName,
+                    AllianceName = alliance.Name,
+                    population.Tribe,
+                    population.Population,
+                    population.VillageCount,
+                })
+                .OrderByDescending(x => x.VillageCount);
 
-                    for (int i = 0; i < dates.Count; i++)
-                    {
-                        if (i >= playerPopulation.Population.Count) break;
-                        if (i >= villagePopulations.Count) break;
-                        playerPopulation.Population[i] += villagePopulations[i].Population;
-                    }
-                }
-                playerPopulations.Add(playerPopulation);
-            }
+            var result = query.AsEnumerable()
+                .OrderByDescending(x => x.Population[0]);
 
-            foreach (var player in playerPopulations)
+            var population = result.Select(x => new PlayerPopulation()
             {
-                player.PopulationChange = player.Population[^1] - player.Population[0];
-            }
-
-            var orderedPopulations = playerPopulations.OrderByDescending(x => x.VillageCount).ThenBy(x => x.PopulationChange).ThenByDescending(x => x.Population[0]).ToList();
-            return orderedPopulations;
+                PlayerId = x.PlayerId,
+                AllianceName = x.AllianceName,
+                PlayerName = x.PlayerName,
+                TribeId = x.Tribe,
+                Population = x.Population,
+                VillageCount = x.VillageCount,
+            }).ToList();
+            return population;
         }
 
-        private async Task<List<VillageInfo>> GetVillageInfoAsync(VillageFormInput input, CancellationToken cancellationToken = default)
+        private List<VillageInfo> GetVillageInfo(VillageFormInput input, CancellationToken cancellationToken = default)
         {
-            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
-
-            var villages = context.Villages.Where(x => x.Population >= input.MinPop);
+            using var scoped = _serviceScopeFactory.CreateScope();
+            using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
+            var query = context.Villages
+                .Where(x => x.Population >= input.MinPop);
             if (input.MaxPop != -1 && input.MaxPop > input.MinPop)
             {
-                villages = villages.Where(x => x.Population <= input.MaxPop);
+                query = query.Where(x => x.Population <= input.MaxPop);
             }
             if (input.TribeId != 0)
             {
-                villages = villages.Where(x => x.Tribe == input.TribeId);
+                query = query.Where(x => x.Tribe == input.TribeId);
             }
+
+            var joinQuery = query.Join(context.Players, x => x.PlayerId, x => x.PlayerId, (village, player) => new
+            {
+                village.VillageId,
+                player.AllianceId,
+                VillageName = village.Name,
+                PlayerName = player.Name,
+                TribeId = village.Tribe,
+                village.X,
+                village.Y,
+                village.Population,
+                village.IsCapital,
+            })
+            .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (village, alliance) => new
+            {
+                village.VillageId,
+                village.AllianceId,
+                AllianceName = alliance.Name,
+                village.PlayerName,
+                village.VillageName,
+                village.TribeId,
+                village.X,
+                village.Y,
+                village.Population,
+                village.IsCapital,
+            });
+
+            if (input.AllianceId != -1)
+            {
+                joinQuery = joinQuery.Where(x => x.AllianceId == input.AllianceId);
+            }
+
+            var result = joinQuery.AsEnumerable();
+
             var villagesInfo = new List<VillageInfo>();
             var centerCoordinate = new Coordinates(input.X, input.Y);
-            foreach (var village in villages)
+
+            foreach (var village in result)
             {
-                var player = await context.Players.FindAsync(new object?[] { village.PlayerId }, cancellationToken: cancellationToken);
-                if (player is null) continue;
-
-                var alliance = await context.Alliances.FindAsync(new object?[] { player.AllianceId }, cancellationToken: cancellationToken);
-                if (alliance is null) continue;
-
-                if (input.AllianceId != -1 && input.AllianceId != alliance.AllianceId) continue;
-
                 var villageCoordinate = new Coordinates(village.X, village.Y);
                 var distance = centerCoordinate.Distance(villageCoordinate);
 
                 var villageInfo = new VillageInfo
                 {
                     VillageId = village.VillageId,
-                    VillageName = village.Name,
-                    PlayerName = player.Name,
-                    AllianceName = alliance.Name,
-                    Tribe = _tribeNames[village.Tribe],
+                    VillageName = village.VillageName,
+                    PlayerName = village.PlayerName,
+                    AllianceName = village.AllianceName,
+                    Tribe = _tribeNames[village.TribeId],
                     X = village.X,
                     Y = village.Y,
                     Population = village.Population,
@@ -187,8 +212,8 @@ namespace MapSqlQuery.Services.Implementations
 
         public List<SelectListItem> GetAllianceSelectList()
         {
-            using var context = _serviceProvider.GetRequiredService<AppDbContext>();
-            var alliances = new List<SelectListItem>
+            using var scoped = _serviceScopeFactory.CreateScope();
+            using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>(); var alliances = new List<SelectListItem>
             {
                 new SelectListItem { Value = "-1", Text = "All" }
             };

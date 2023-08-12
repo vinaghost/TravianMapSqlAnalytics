@@ -69,10 +69,20 @@
                 @for (var i = 0; i < (int)ViewData["Days"]!; i++)
                 {
                     <td>
-                        @Html.DisplayFor(modelItem => item.Population[i])
-                        
-                        @if(i == (int)ViewData["Days"]! - 1) continue;
-                        [ @(item.Population[i] - item.Population[i + 1]) ]
+                        @if (i >= item.Population.Count()) {
+                            <p>
+                                ~
+                            </p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(modelItem => item.Population[i])
+
+                                @if (i == item.Population.Count() - 1) continue;
+                                [ @(item.Population[i] - item.Population[i + 1]) ]
+                            </p>
+                        }
                     </td>
                 }
             </tr>

@@ -21,6 +21,7 @@ namespace MapSqlQuery
                 var connectionString = AppDbContext.GetConnectionString(configuration, worldUrl);
                 options.UseMySQL(connectionString);
                 //options.EnableSensitiveDataLogging();
+                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             builder.Services.AddSingleton<IDataProvide, DataProvide>();
