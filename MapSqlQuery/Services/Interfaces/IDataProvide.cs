@@ -1,4 +1,6 @@
 ﻿using MapSqlQuery.Models.Form;
+using MapSqlQuery.Models.Input;
+using MapSqlQuery.Models.Output;
 using MapSqlQuery.Models.View;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -7,6 +9,8 @@ namespace MapSqlQuery.Services.Interfaces
     public interface IDataProvide
     {
         List<SelectListItem> GetAllianceSelectList();
+
+        List<DateTime> GetDateBefore(int days);
 
         List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input);
 

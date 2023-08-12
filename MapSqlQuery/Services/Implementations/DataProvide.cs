@@ -1,6 +1,8 @@
 ﻿using MainCore;
 using MapSqlQuery.Models;
 using MapSqlQuery.Models.Form;
+using MapSqlQuery.Models.Input;
+using MapSqlQuery.Models.Output;
 using MapSqlQuery.Models.View;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -56,7 +58,7 @@ namespace MapSqlQuery.Services.Implementations
 
         private List<PlayerPopulation> GetPlayersPopulation(InactiveFormInput input, int populationChange)
         {
-            var dates = GetDateBefore(DateTime.Today, input.Days);
+            var dates = GetDateBefore(input.Days);
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
             var (minDate, maxDate) = (dates[^1], dates[0]);
@@ -116,7 +118,7 @@ namespace MapSqlQuery.Services.Implementations
                 PlayerId = x.PlayerId,
                 AllianceName = x.AllianceName,
                 PlayerName = x.PlayerName,
-                TribeId = x.Tribe,
+                Tribe = _tribeNames[x.Tribe],
                 Population = x.Population,
                 VillageCount = x.VillageCount,
             }).ToList();
@@ -199,15 +201,28 @@ namespace MapSqlQuery.Services.Implementations
             return oredered;
         }
 
-        private static List<DateTime> GetDateBefore(DateTime date, int days)
+        public List<DateTime> GetDateBefore(int days)
         {
             var dates = new List<DateTime>();
+            var today = GetNewestDay();
             for (int i = 0; i <= days; i++)
             {
-                var beforeDate = date.AddDays(-i);
+                var beforeDate = today.AddDays(-i);
                 dates.Add(beforeDate);
             }
             return dates;
+        }
+
+        private DateTime GetNewestDay()
+        {
+            using var scoped = _serviceScopeFactory.CreateScope();
+            using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            var query = context.VillagesPopulations
+                .OrderByDescending(x => x.Date)
+                .Select(x => x.Date)
+                .FirstOrDefault();
+            return query;
         }
 
         public List<SelectListItem> GetAllianceSelectList()

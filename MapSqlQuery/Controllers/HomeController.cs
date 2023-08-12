@@ -1,7 +1,11 @@
-﻿using MapSqlQuery.Services.Interfaces;
+﻿using MapSqlQuery.Models;
+using MapSqlQuery.Models.Input;
+using MapSqlQuery.Models.View;
+using MapSqlQuery.Services.Interfaces;
 using MapSqlQuery.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using X.PagedList;
 
 namespace MapSqlQuery.Controllers
 {
@@ -25,17 +29,22 @@ namespace MapSqlQuery.Controllers
             return View();
         }
 
-        public async Task<IActionResult> InactivePlayers(InactivePlayerViewModel viewModel = null!)
+        [HttpGet]
+        public IActionResult InactivePlayers(InactiveFormInput input)
         {
-            ViewData["Server"] = _configuration["WorldUrl"];
+            input ??= new InactiveFormInput();
+            var players = _dataProvider.GetInactivePlayerData(input);
+            var pagePlayers = players.ToPagedList(input.PageNumber, input.PageSize);
+            var dates = _dataProvider.GetDateBefore(input.Days);
 
-            var players = await Task.Run(() => _dataProvider.GetInactivePlayerData(viewModel.FormInput));
-
-            var days = players.FirstOrDefault()?.Population.Count ?? 0;
-            viewModel.FormInput.Days = days;
-            ViewData["Days"] = days;
-
-            viewModel.Players = players;
+            var viewModel = new InactivePlayerViewModel
+            {
+                Server = _configuration["WorldUrl"],
+                Input = input,
+                PlayerTotal = players.Count,
+                Dates = dates,
+                Players = pagePlayers
+            };
             return View(viewModel);
         }
 
@@ -52,7 +61,7 @@ namespace MapSqlQuery.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View(new ErrorModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

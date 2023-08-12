@@ -1,5 +1,8 @@
-﻿@using MapSqlQuery.Models.View;
-@using MapSqlQuery.ViewModels;
+﻿@using MapSqlQuery.Models.Output;
+@using MapSqlQuery.Models.View;
+@using X.PagedList.Mvc.Bootstrap4.Core;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
 @model InactivePlayerViewModel
 
 @{
@@ -7,85 +10,98 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>@Model.Players.Count() players of server @ViewData["Server"] </p>
-@using (Html.BeginForm("InactivePlayers", "Home", FormMethod.Post))
+@using (Html.BeginForm("InactivePlayers", "Home", FormMethod.Get))
 { 
     <table>
         <tr>
             <td>Enter Days: </td>
-            <td>@Html.TextBoxFor(m => m.FormInput.Days, new {@type = "number"})</td>
+            <td>@Html.TextBoxFor(m => m.Input.Days, new {@type = "number"})</td>
         </tr>
         <tr>
-            <td colspan="2"><input type="submit" value="Submit Form" /></td>
+            <td colspan="2"><input type="submit" value="Find" /></td>
         </tr>
     </table>
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Link to profile
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((PlayerPopulation model) => model.PlayerName)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.AllianceName)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.Tribe)
-            </th>
-            <th>
-                Village count
-            </th>
-            @for (var i = 0; i < (int)ViewData["Days"]! ; i++)
-            {
-                <th>
-                    Day @i
-                </th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Players)
-        {
+<p>Found @Model.PlayerTotal inactive players of server @Model.Server </p>
+    <table class="table">
+        <thead>
             <tr>
-                <td>
-                    <a href="https:/@ViewData["Server"]/profile/@item.PlayerId" target="_blank">Show</a>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PlayerName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AllianceName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Tribe)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.VillageCount)
-                </td>
-
-                @for (var i = 0; i < (int)ViewData["Days"]!; i++)
+                <th>
+                    Profile
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((PlayerPopulation model) => model.PlayerName)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.AllianceName)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.Tribe)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.VillageCount)
+                </th>
+                @for (var i = 0; i < Model.Dates.Count ; i++)
                 {
-                    <td>
-                        @if (i >= item.Population.Count()) {
-                            <p>
-                                ~
-                            </p>
-                        }
-                        else
-                        {
-                            <p>
-                                @Html.DisplayFor(modelItem => item.Population[i])
-
-                                @if (i == item.Population.Count() - 1) continue;
-                                [ @(item.Population[i] - item.Population[i + 1]) ]
-                            </p>
-                        }
-                    </td>
+                    <th>
+                        @Model.Dates[i].ToString("dd/MM/yyyy")
+                    </th>
                 }
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var player in Model.Players)
+            {
+                <tr>
+                    <td>
+                        <a href="https://@Model.Server/profile/@player.PlayerId" target="_blank">Show</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => player.PlayerName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => player.AllianceName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => player.Tribe)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => player.VillageCount)
+                    </td>
+
+                    @for (var i = 0; i < Model.Dates.Count; i++)
+                    {
+                        <td>
+                            @if (i >= player.Population.Count()){
+                                <p>~</p>
+                            }
+                            else
+                            {
+                                <p>
+                                    @Html.DisplayFor(m => player.Population[i])
+
+                                    @if (i == player.Population.Count() - 1) continue;
+                                    [ @(player.Population[i] - player.Population[i + 1]) ]
+                                </p>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+@using (Html.BeginForm())
+{
+    <div id="container" style="margin-left: 20px">
+        <p></p>
+        <p></p>
+        <div class="pagination" style="margin-left: 400px">
+            Page @(Model.Players.PageCount < Model.Players.PageNumber ? 0 : Model.Players.PageNumber)
+            of @Model.Players.PageCount  
+            @Html.PagedListPager(Model.Players, page => {
+                Model.Input.PageNumber = page;
+                return Url.Action("InactivePlayers", Model.Input );
+            }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    </div>
+}
