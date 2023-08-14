@@ -25,7 +25,7 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             await context.Database.EnsureCreatedAsync();
 
             var alliances = GetAlliances(villageRaws);
-            await context.BulkSynchronizeAsync(alliances, options => options.SynchronizeKeepidentity = true);
+            await context.BulkMergeAsync(alliances, , options => options.MergeKeepIdentity = true);
             _logger.LogInformation("Updated {count} alliances", alliances.Count);
 
             var players = GetPlayers(villageRaws);
