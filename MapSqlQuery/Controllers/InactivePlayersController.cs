@@ -19,27 +19,11 @@ namespace MapSqlQuery.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(InactiveFormInput input)
         {
-            var input = new InactiveFormInput();
+            input ??= new InactiveFormInput();
             var viewModel = GetViewModel(input);
             return View(viewModel);
-        }
-
-        [HttpPost]
-        public IActionResult Form(InactiveFormInput input)
-        {
-            input ??= new InactiveFormInput();
-            var viewModel = GetViewModel(input);
-            return View("Index", viewModel);
-        }
-
-        [HttpGet]
-        public IActionResult Paging(InactiveFormInput input)
-        {
-            input ??= new InactiveFormInput();
-            var viewModel = GetViewModel(input);
-            return View("Index", viewModel);
         }
 
         private InactivePlayerViewModel GetViewModel(InactiveFormInput input)

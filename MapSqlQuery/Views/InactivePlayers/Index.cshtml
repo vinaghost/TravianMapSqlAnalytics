@@ -10,7 +10,7 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-@using (Html.BeginForm("Form", "InactivePlayers", FormMethod.Post))
+@using (Html.BeginForm("Index", "InactivePlayers", FormMethod.Post))
 { 
     <table>
         <tr>
@@ -100,7 +100,7 @@
             of @Model.Players.PageCount  
             @Html.PagedListPager(Model.Players, page => {
                 Model.Input.PageNumber = page;
-                return Url.Action("Paging", Model.Input );
+                return Url.Action("Index", Model.Input );
             }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     </div>
