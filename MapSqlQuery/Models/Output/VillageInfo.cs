@@ -1,4 +1,4 @@
-﻿namespace MapSqlQuery.Models.View
+﻿namespace MapSqlQuery.Models.Output
 {
     public class VillageInfo
     {

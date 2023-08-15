@@ -1,9 +1,7 @@
 ﻿using MainCore;
 using MapSqlQuery.Models;
-using MapSqlQuery.Models.Form;
 using MapSqlQuery.Models.Input;
 using MapSqlQuery.Models.Output;
-using MapSqlQuery.Models.View;
 using MapSqlQuery.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -47,10 +45,11 @@ namespace MapSqlQuery.Services.Implementations
         public List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input)
         {
             var players = GetPlayersPopulation(input, 0);
-            return players;
+            var filterdPlayers = players.Where(x => x.Population.Count < input.Days).ToList();
+            return filterdPlayers;
         }
 
-        public List<VillageInfo> GetVillageData(VillageFormInput input)
+        public List<VillageInfo> GetVillageData(VillageFilterFormInput input)
         {
             var villages = GetVillageInfo(input);
             return villages;
@@ -125,7 +124,7 @@ namespace MapSqlQuery.Services.Implementations
             return population;
         }
 
-        private List<VillageInfo> GetVillageInfo(VillageFormInput input, CancellationToken cancellationToken = default)
+        private List<VillageInfo> GetVillageInfo(VillageFilterFormInput input, CancellationToken cancellationToken = default)
         {
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();

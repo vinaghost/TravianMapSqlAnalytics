@@ -1,7 +1,5 @@
-﻿using MapSqlQuery.Models.Form;
-using MapSqlQuery.Models.Input;
+﻿using MapSqlQuery.Models.Input;
 using MapSqlQuery.Models.Output;
-using MapSqlQuery.Models.View;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MapSqlQuery.Services.Interfaces
@@ -16,6 +14,6 @@ namespace MapSqlQuery.Services.Interfaces
 
         List<SelectListItem> GetTribeSelectList();
 
-        List<VillageInfo> GetVillageData(VillageFormInput input);
+        List<VillageInfo> GetVillageData(VillageFilterFormInput input);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using MapSqlQuery.Models;
 using MapSqlQuery.Services.Interfaces;
-using MapSqlQuery.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -24,16 +23,6 @@ namespace MapSqlQuery.Controllers
             ViewBag.NewestDateTime = DateTime.Today.ToString("yyyy-MM-dd");
             ViewData["Server"] = _configuration["WorldUrl"];
             return View();
-        }
-
-        public IActionResult VillageFilter(VillageFilterViewModel viewModel)
-        {
-            ViewData["Server"] = _configuration["WorldUrl"];
-
-            viewModel.Villages = _dataProvider.GetVillageData(viewModel.FormInput);
-            viewModel.Alliances = _dataProvider.GetAllianceSelectList();
-            viewModel.Tribes = _dataProvider.GetTribeSelectList();
-            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

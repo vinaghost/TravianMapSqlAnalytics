@@ -1,5 +1,8 @@
-﻿@using MapSqlQuery.Models.View;
-@using MapSqlQuery.ViewModels;
+﻿@using MapSqlQuery.Models.Output;
+@using MapSqlQuery.Models.View;
+@using X.PagedList.Mvc.Bootstrap4.Core;
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
 @model VillageFilterViewModel
 
 @{
@@ -7,40 +10,39 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-<p>@Model.Villages.Count() players of server @ViewData["Server"] </p>
 
-@using (Html.BeginForm("VillageFilter", "Home", FormMethod.Post))
+@using (Html.BeginForm("Index", "VillageFilter", FormMethod.Post))
 { 
 	<table>
         <tr>
             <td>
-                @Html.LabelFor(m => m.FormInput.AllianceId)
+                @Html.LabelFor(m => m.Input.AllianceId)
             </td>
             <td>
-                @Html.DropDownListFor(m => m.FormInput.AllianceId, Model.Alliances)
+                @Html.DropDownListFor(m => m.Input.AllianceId, Model.Alliances)
             </td>
         </tr>
         <tr>
             <td>
-                @Html.LabelFor(m => m.FormInput.TribeId)
+                @Html.LabelFor(m => m.Input.TribeId)
             </td>
             <td>
-                @Html.DropDownListFor(m => m.FormInput.TribeId, Model.Tribes)
+                @Html.DropDownListFor(m => m.Input.TribeId, Model.Tribes)
             </td>
         </tr>
         <tr>
             <td>Enter X: </td>
-            <td>@Html.TextBoxFor(m => m.FormInput.X, new {@type = "number"})</td>
+            <td>@Html.TextBoxFor(m => m.Input.X, new {@type = "number"})</td>
             <td>Enter Y: </td>
-            <td>@Html.TextBoxFor(m => m.FormInput.Y, new {@type = "number"})</td>
+            <td>@Html.TextBoxFor(m => m.Input.Y, new {@type = "number"})</td>
         </tr>
 		<tr>
 			<td>Enter min population: </td>
-			<td>@Html.TextBoxFor(m => m.FormInput.MinPop, new {@type = "number"})</td>
+            <td>@Html.TextBoxFor(m => m.Input.MinPop, new {@type = "number"})</td>
 		</tr>
 		<tr>
             <td>Enter max population: </td>
-			<td>@Html.TextBoxFor(m => m.FormInput.MaxPop, new {@type = "number"})</td>
+            <td>@Html.TextBoxFor(m => m.Input.MaxPop, new {@type = "number"})</td>
 		</tr>
 		<tr>
 			<td colspan="2"><input type="submit" value="Submit Form" /></td>
@@ -48,6 +50,7 @@
 	</table>
 }
 
+<p>@Model.VillageTotal players of server @Model.Server </p>
 <table class="table">
     <thead>
         <tr>
@@ -115,3 +118,18 @@
         }
     </tbody>
 </table>
+@using (Html.BeginForm())
+{
+    <div id="container" style="margin-left: 20px">
+        <p></p>
+        <p></p>
+        <div class="pagination" style="margin-left: 400px">
+            Page @(Model.Villages.PageCount < Model.Villages.PageNumber ? 0 : Model.Villages.PageNumber)
+            of @Model.Villages.PageCount
+            @Html.PagedListPager(Model.Villages, page => {
+                Model.Input.PageNumber = page;
+                return Url.Action("Index", Model.Input );
+                }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    </div>
+}

@@ -23,73 +23,73 @@
     </table>
 }
 <p>Found @Model.PlayerTotal inactive players of server @Model.Server </p>
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Profile
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerPopulation model) => model.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.Tribe)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.VillageCount)
+            </th>
+            @for (var i = 0; i < Model.Dates.Count ; i++)
+            {
+                <th>
+                    @Model.Dates[i].ToString("dd/MM/yyyy")
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var player in Model.Players)
+        {
             <tr>
-                <th>
-                    Profile
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerPopulation model) => model.PlayerName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.AllianceName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.Tribe)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerPopulation model)  => model.VillageCount)
-                </th>
-                @for (var i = 0; i < Model.Dates.Count ; i++)
+                <td>
+                    <a href="https://@Model.Server/profile/@player.PlayerId" target="_blank">Show</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => player.PlayerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => player.AllianceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => player.Tribe)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => player.VillageCount)
+                </td>
+
+                @for (var i = 0; i < Model.Dates.Count; i++)
                 {
-                    <th>
-                        @Model.Dates[i].ToString("dd/MM/yyyy")
-                    </th>
+                    <td>
+                        @if (i >= player.Population.Count()){
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => player.Population[i])
+
+                                @if (i == player.Population.Count() - 1) continue;
+                                [ @(player.Population[i] - player.Population[i + 1]) ]
+                            </p>
+                        }
+                    </td>
                 }
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var player in Model.Players)
-            {
-                <tr>
-                    <td>
-                        <a href="https://@Model.Server/profile/@player.PlayerId" target="_blank">Show</a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => player.PlayerName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => player.AllianceName)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => player.Tribe)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => player.VillageCount)
-                    </td>
-
-                    @for (var i = 0; i < Model.Dates.Count; i++)
-                    {
-                        <td>
-                            @if (i >= player.Population.Count()){
-                                <p>~</p>
-                            }
-                            else
-                            {
-                                <p>
-                                    @Html.DisplayFor(m => player.Population[i])
-
-                                    @if (i == player.Population.Count() - 1) continue;
-                                    [ @(player.Population[i] - player.Population[i + 1]) ]
-                                </p>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 @using (Html.BeginForm())
 {
     <div id="container" style="margin-left: 20px">

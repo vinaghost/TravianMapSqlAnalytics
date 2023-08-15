@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 
-namespace MapSqlQuery.Models.Form
+namespace MapSqlQuery.Models.Input
 {
-    public class VillageFormInput
+    public class VillageFilterFormInput : IPagingInput
     {
         public int MinPop { get; set; } = 700;
         public int MaxPop { get; set; } = -1;
@@ -13,7 +13,10 @@ namespace MapSqlQuery.Models.Form
         [DisplayName("Select tribe: ")]
         public int TribeId { get; set; } = 0;
 
-        public int X { get; set; }
-        public int Y { get; set; }
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
+
+        public int PageNumber { get; set; } = 1;
+        public int PageSize { get; set; } = 20;
     }
 }
