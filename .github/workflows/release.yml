@@ -29,18 +29,29 @@ jobs:
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-nuget-
+          restore-keys: ${{ runner.os }}-nuget-
       - name: Install dependencies
         run: dotnet restore --locked-mode
       - name: Build
-        run: dotnet build MapSqlDatabaseUpdate -c Release --no-restore
+        run: |
+          dotnet build MapSqlDatabaseUpdate -c Release --no-restore
+          dotnet build MapSqlQuery -c Release --no-restore
+      
       - name: Publish 
-        run: dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate --no-restore
-      - name: Build and push
+        run: |
+            dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate --no-restore
+            dotnet publish MapSqlQuery -c Release -p:PublishSingleFile=true -o bin/MapSqlQuery --no-restore
+      - name: Build and push update image
         uses: docker/build-push-action@v4
         with:
           file: ./MapSqlDatabaseUpdate/Dockerfile
           context: .
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest 
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest 
+      - name: Build and push ASP.NET Core MVC image
+        uses: docker/build-push-action@v4
+        with:
+          file: ./MapSqlQuery/Dockerfile
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_ASP_NET_CORE_MVC }}:latest 
