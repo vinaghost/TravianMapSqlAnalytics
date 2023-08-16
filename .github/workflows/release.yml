@@ -1,7 +1,8 @@
 # create these secrets in your repository settings
 # DOCKERHUB_USERNAME
 # DOCKERHUB_TOKEN
-# DOCKERHUB_REPOSITORY
+# DOCKERHUB_REPOSITORY_UPDATE
+# DOCKERHUB_REPOSITORY_ASP_NET_CORE_MVC
 
 name: Release Docker build
 run-name: Release Docker build
@@ -35,12 +36,12 @@ jobs:
       - name: Build
         run: |
           dotnet build MapSqlDatabaseUpdate -c Release --no-restore
-          dotnet build MapSqlQuery -c Release --no-restore
+          dotnet build MapSqlAspNetCoreMVC -c Release --no-restore
       
       - name: Publish 
         run: |
-            dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate --no-restore
-            dotnet publish MapSqlQuery -c Release -p:PublishSingleFile=true -o bin/MapSqlQuery --no-restore
+          dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate --no-restore
+          dotnet publish MapSqlAspNetCoreMVC -c Release -p:PublishSingleFile=true -o bin/MapSqMapSqlAspNetCoreMVClQuery --no-restore
       - name: Build and push update image
         uses: docker/build-push-action@v4
         with:
@@ -51,7 +52,7 @@ jobs:
       - name: Build and push ASP.NET Core MVC image
         uses: docker/build-push-action@v4
         with:
-          file: ./MapSqlQuery/Dockerfile
+          file: ./MapSqlAspNetCoreMVC/Dockerfile
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_ASP_NET_CORE_MVC }}:latest 
