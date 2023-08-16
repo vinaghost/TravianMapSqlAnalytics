@@ -1,7 +1,7 @@
 # create these secrets in your repository settings
 # DOCKERHUB_USERNAME
 # DOCKERHUB_TOKEN
-# DOCKERHUB_REPOSITORY
+# DOCKERHUB_REPOSITORY_UPDATE
 # MYSQL_HOST
 # MYSQL_PORT
 # MYSQL_USERNAME
@@ -32,5 +32,5 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run update database
-        run: docker run ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY }}:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
+        run: docker run ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest WorldUrl=${{ matrix.world }} Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
       
