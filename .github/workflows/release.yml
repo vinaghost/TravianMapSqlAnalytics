@@ -41,7 +41,7 @@ jobs:
       - name: Publish 
         run: |
           dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate --no-restore
-          dotnet publish MapSqlAspNetCoreMVC -c Release -p:PublishSingleFile=true -o bin/MapSqMapSqlAspNetCoreMVClQuery --no-restore
+          dotnet publish MapSqlAspNetCoreMVC -c Release -p:PublishSingleFile=true -o bin/MapSqlAspNetCoreMVC --no-restore
       - name: Build and push update image
         uses: docker/build-push-action@v4
         with:
