@@ -366,3 +366,4 @@ launchSettings.json
 launchSettings.json
 /MapSqlDatabaseUpdate/Properties/launchSettings.json
 /MapSqlQuery/appsettings.Development.json
+/MapSqlAspNetCoreMVC/appsettings.Development.json
