@@ -1,0 +1,117 @@
+﻿@using MapSqlQuery.Models.View;
+@using static MapSqlQuery.Models.Output.PlayerInfo;
+@model PlayerLookupViewModel
+@{
+    ViewData["Title"] = "Player lookup";
+}
+<h1>@ViewData["Title"]</h1>
+
+@using (Html.BeginForm("Index", "PlayerLookup", FormMethod.Post))
+{
+    <table>
+        <tr>
+            <td>Enter player's' name: </td>
+            <td>@Html.TextBoxFor(m => m.Input.PlayerName)</td>
+        </tr>
+        <tr>
+            <td>Enter days: </td>
+            <td>@Html.TextBoxFor(m => m.Input.Days, new {@type = "number"})</td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" value="Find" /></td>
+        </tr>
+    </table>
+}
+
+
+@if (Model.Player == null)
+{
+    if (string.IsNullOrWhiteSpace(Model.Input.PlayerName))
+    {
+        <p>Enter player's name to find</p>
+    }
+    else
+    {
+        <p>Player [@Model.Input.PlayerName] not found</p>
+
+    }
+	return;
+}
+
+<div>
+    <p>@Html.DisplayNameFor(m => m.Player.PlayerName) : @Html.DisplayFor(m => m.Player.PlayerName)</p>
+    <p>@Html.DisplayNameFor(m => m.Player.AllianceName) : @Html.DisplayFor(m => m.Player.AllianceName)</p>
+    <p>@Html.DisplayNameFor(m => m.Player.Tribe) : @Html.DisplayFor(m => m.Player.Tribe)</p>
+    <p>@Html.DisplayNameFor(m => m.Player.Population)</p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Link to village
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model) => model.VillageName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageInfo model) => model.Coordinate)
+            </th>
+            @for (var i = 0; i < Model.Dates.Count; i++)
+            {
+                <th>
+                    @Model.Dates[i].ToString("dd/MM/yyyy")
+                </th>
+            }
+            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var village in Model.Player.Population)
+        {
+            <tr>
+                <td>
+                    @if(village.VillageName.Equals(VillageInfo.Total))
+					{
+						<p>~</p>
+					}
+					else
+					{
+                        <a href="https://@Model.Server/position_details.php?x=@village.X&y=@village.Y" target="_blank">Show</a>
+					}
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => village.VillageName)
+                </td>
+                <td>
+                    @if (village.VillageName.Equals(VillageInfo.Total))
+                    {
+                        <p>~</p>
+                    }
+                    else
+                    {
+                        <p>@Html.DisplayFor(modelItem => village.Coordinate)</p>
+                    }
+                </td>
+                @for (var i = 0; i < Model.Dates.Count; i++)
+                {
+                    <td>
+                        @if (i >= village.Population.Count())
+                        {
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => village.Population[i])
+
+                                @if (i == village.Population.Count() - 1) continue;
+                                [ @(village.Population[i] - village.Population[i + 1]) ]
+                            </p>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>

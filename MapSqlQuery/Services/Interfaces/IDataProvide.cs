@@ -12,6 +12,8 @@ namespace MapSqlQuery.Services.Interfaces
 
         List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input);
 
+        PlayerInfo GetPlayerInfo(PlayerLookupInput input);
+
         List<SelectListItem> GetTribeSelectList();
 
         List<VillageInfo> GetVillageData(VillageFilterFormInput input);
