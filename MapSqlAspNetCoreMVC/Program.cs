@@ -1,6 +1,7 @@
 using MainCore;
 using MapSqlQuery.Services.Implementations;
 using MapSqlQuery.Services.Interfaces;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 
 namespace MapSqlQuery
@@ -26,6 +27,8 @@ namespace MapSqlQuery
 
             builder.Services.AddSingleton<IDataProvide, DataProvide>();
 
+            builder.Services.AddAuthentication();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -36,6 +39,11 @@ namespace MapSqlQuery
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
