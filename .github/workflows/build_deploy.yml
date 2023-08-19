@@ -30,7 +30,7 @@ jobs:
           dotnet build MapSqlAspNetCoreMVC -c Release --no-restore -r linux-arm64
       - name: Publish 
         run: |
-          dotnet publish MapSqlAspNetCoreMVC -c Release -o bin/MapSqlAspNetCoreMVC --no-build
+          dotnet publish MapSqlAspNetCoreMVC -c Release -o bin/MapSqlAspNetCoreMVC -r linux-arm64 --no-build
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         with:
