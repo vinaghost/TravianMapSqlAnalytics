@@ -27,10 +27,10 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Build
         run: |
-          dotnet build MapSqlAspNetCoreMVC -c Release --no-restore -r linux-arm64
+          dotnet build MapSqlAspNetCoreMVC -c Release --no-restore -r linux-arm64 --self-contained
       - name: Publish 
         run: |
-          dotnet publish MapSqlAspNetCoreMVC -c Release -o bin/MapSqlAspNetCoreMVC -r linux-arm64 --no-build
+          dotnet publish MapSqlAspNetCoreMVC -c Release -o bin/MapSqlAspNetCoreMVC -r linux-arm64 --no-build --self-contained
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         with:
