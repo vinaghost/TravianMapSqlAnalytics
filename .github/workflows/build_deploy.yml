@@ -27,16 +27,16 @@ jobs:
         run: dotnet restore --locked-mode
       - name: Build
         run: |
-          dotnet build MapSqlDatabaseUpdate -c Release --no-restore -r linux-arm64
+          dotnet build MapSqlAspNetCoreMVC -c Release --no-restore -r linux-arm64
       - name: Publish 
         run: |
-          dotnet publish MapSqlDatabaseUpdate -c Release -o bin/MapSqlDatabaseUpdate --no-build
+          dotnet publish MapSqlAspNetCoreMVC -c Release -o bin/MapSqlAspNetCoreMVC --no-build
       - name: Deploy to Server
         uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           ARGS: "-rlgoDzvc -i --delete"
-          SOURCE: "bin/MapSqlDatabaseUpdate/"
+          SOURCE: "bin/MapSqlAspNetCoreMVC/"
           REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
           REMOTE_USER: ${{ secrets.REMOTE_USER }}
           TARGET: ${{ secrets.REMOTE_TARGET }}
