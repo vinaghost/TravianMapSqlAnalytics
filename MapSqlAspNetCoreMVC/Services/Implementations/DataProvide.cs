@@ -42,7 +42,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             _serviceScopeFactory = serviceScopeFactory;
         }
 
-        public List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input)
+        public List<PlayerWithPopulation> GetInactivePlayerData(InactiveFormInput input)
         {
             var players = GetPlayersPopulation(input, 0);
             var filterdPlayers = players.Where(x => x.Population.Count > input.Days).ToList();
@@ -55,13 +55,13 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             return villages;
         }
 
-        public PlayerWithPopulation GetPlayerInfo(PlayerLookupInput input)
+        public PlayerWithVillagePopulation GetPlayerInfo(PlayerLookupInput input)
         {
             var player = GetAccountInfo(input);
             return player;
         }
 
-        private List<PlayerPopulation> GetPlayersPopulation(InactiveFormInput input, int populationChange)
+        private List<PlayerWithPopulation> GetPlayersPopulation(InactiveFormInput input, int populationChange)
         {
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -118,7 +118,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             var result = query.AsEnumerable()
                 .OrderByDescending(x => x.Population[0]);
 
-            var population = result.Select(x => new PlayerPopulation()
+            var population = result.Select(x => new PlayerWithPopulation()
             {
                 PlayerId = x.PlayerId,
                 AllianceName = x.AllianceName,
@@ -230,7 +230,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             return query;
         }
 
-        private PlayerWithPopulation GetAccountInfo(PlayerLookupInput input)
+        private PlayerWithVillagePopulation GetAccountInfo(PlayerLookupInput input)
         {
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -259,7 +259,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
                 return null;
             }
 
-            var playerInfo = new PlayerWithPopulation()
+            var playerInfo = new PlayerWithVillagePopulation()
             {
                 PlayerName = playerQuery.PlayerName,
                 AllianceName = playerQuery.AllianceName,

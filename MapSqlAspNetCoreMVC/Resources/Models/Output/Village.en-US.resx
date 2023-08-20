@@ -120,13 +120,25 @@
   <data name="AllianceName" xml:space="preserve">
     <value>Alliance's name</value>
   </data>
+  <data name="Coordinate" xml:space="preserve">
+    <value>Coordinate</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
+  <data name="IsCapital" xml:space="preserve">
+    <value>Is capital ?</value>
+  </data>
   <data name="PlayerName" xml:space="preserve">
     <value>Player's name</value>
+  </data>
+  <data name="Population" xml:space="preserve">
+    <value>Population</value>
   </data>
   <data name="Tribe" xml:space="preserve">
     <value>Tribe</value>
   </data>
-  <data name="VillageCount" xml:space="preserve">
-    <value>Numer of villages</value>
+  <data name="VillageName" xml:space="preserve">
+    <value>Village's name</value>
   </data>
 </root>

@@ -123,10 +123,10 @@
   <data name="PlayerName" xml:space="preserve">
     <value>Player's name</value>
   </data>
+  <data name="Population" xml:space="preserve">
+    <value>Population</value>
+  </data>
   <data name="Tribe" xml:space="preserve">
     <value>Tribe</value>
-  </data>
-  <data name="VillageCount" xml:space="preserve">
-    <value>Numer of villages</value>
   </data>
 </root>

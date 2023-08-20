@@ -9,7 +9,7 @@ namespace MapSqlAspNetCoreMVC.Models.View
         public string Server { get; set; }
         public int PlayerTotal { get; set; }
         public List<DateTime> Dates { get; set; }
-        public IPagedList<PlayerPopulation> Players { get; set; }
+        public IPagedList<PlayerWithPopulation> Players { get; set; }
 
         public InactiveFormInput Input { get; set; }
     }

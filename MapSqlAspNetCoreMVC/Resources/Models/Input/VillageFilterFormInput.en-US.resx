@@ -117,16 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AllianceName" xml:space="preserve">
-    <value>Alliance's name</value>
+  <data name="AllAlliance" xml:space="preserve">
+    <value>All alliance</value>
   </data>
-  <data name="PlayerName" xml:space="preserve">
-    <value>Player's name</value>
+  <data name="AllianceId" xml:space="preserve">
+    <value>Choose alliance:</value>
   </data>
-  <data name="Tribe" xml:space="preserve">
-    <value>Tribe</value>
+  <data name="MaxPop" xml:space="preserve">
+    <value>Input maximum population (-1 is ignore):</value>
   </data>
-  <data name="VillageCount" xml:space="preserve">
-    <value>Numer of villages</value>
+  <data name="MinPop" xml:space="preserve">
+    <value>Input minimum population:</value>
+  </data>
+  <data name="TribeId" xml:space="preserve">
+    <value>Choose tribe:</value>
+  </data>
+  <data name="X" xml:space="preserve">
+    <value>X: </value>
+  </data>
+  <data name="Y" xml:space="preserve">
+    <value>Y:</value>
   </data>
 </root>

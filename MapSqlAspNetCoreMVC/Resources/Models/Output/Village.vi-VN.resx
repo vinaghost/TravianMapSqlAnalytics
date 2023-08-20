@@ -118,15 +118,27 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AllianceName" xml:space="preserve">
-    <value>Alliance's name</value>
+    <value>Liên minh</value>
+  </data>
+  <data name="Coordinate" xml:space="preserve">
+    <value>Toạ độ</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Khoảng cách</value>
+  </data>
+  <data name="IsCapital" xml:space="preserve">
+    <value>Thủ đô</value>
   </data>
   <data name="PlayerName" xml:space="preserve">
-    <value>Player's name</value>
+    <value>Người chơi</value>
+  </data>
+  <data name="Population" xml:space="preserve">
+    <value>Dân số</value>
   </data>
   <data name="Tribe" xml:space="preserve">
-    <value>Tribe</value>
+    <value>Tộc</value>
   </data>
-  <data name="VillageCount" xml:space="preserve">
-    <value>Numer of villages</value>
+  <data name="VillageName" xml:space="preserve">
+    <value>Làng</value>
   </data>
 </root>

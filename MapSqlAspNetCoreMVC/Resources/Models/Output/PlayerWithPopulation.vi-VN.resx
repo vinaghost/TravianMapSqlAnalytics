@@ -123,10 +123,10 @@
   <data name="PlayerName" xml:space="preserve">
     <value>Người chơi</value>
   </data>
-  <data name="Population" xml:space="preserve">
-    <value>Dân số</value>
-  </data>
   <data name="Tribe" xml:space="preserve">
     <value>Tộc</value>
+  </data>
+  <data name="VillageCount" xml:space="preserve">
+    <value>Số làng</value>
   </data>
 </root>
