@@ -1,12 +1,14 @@
 ﻿@using MapSqlAspNetCoreMVC.Models.Output;
 @using MapSqlAspNetCoreMVC.Models.View;
+@using Microsoft.AspNetCore.Mvc.Localization;
 @using X.PagedList.Mvc.Bootstrap4.Core;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @model InactivePlayerViewModel
+@inject IViewLocalizer ViewLocalizer
 
 @{
-    ViewData["Title"] = "Inactive Players";
+    ViewData["Title"] = @ViewLocalizer["PageName"];
 }
 <h1>@ViewData["Title"]</h1>
 
@@ -14,20 +16,20 @@
 { 
     <table>
         <tr>
-            <td>Enter Days: </td>
+            <td>@Html.DisplayNameFor(m => m.Input.Days)</td>
             <td>@Html.TextBoxFor(m => m.Input.Days, new {@type = "number"})</td>
         </tr>
         <tr>
-            <td colspan="2"><input type="submit" value="Find" /></td>
+            <td colspan="2"><input type="submit" value="@ViewLocalizer["Find"]" /></td>
         </tr>
     </table>
 }
-<p>Found @Model.PlayerTotal inactive players of server @Model.Server </p>
+<p>@ViewLocalizer["FoundMessage", @Model.PlayerTotal, @Model.Server  ]</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Profile
+                ~
             </th>
             <th>
                 @Html.DisplayNameForInnerType((PlayerWithPopulation model) => model.PlayerName)
@@ -54,7 +56,7 @@
         {
             <tr>
                 <td>
-                    <a href="https://@Model.Server/profile/@player.PlayerId" target="_blank">Show</a>
+                    <a href="https://@Model.Server/profile/@player.PlayerId" target="_blank">@ViewLocalizer["ProfileLink"]</a>
                 </td>
                 <td>
                     @Html.DisplayFor(m => player.PlayerName)
@@ -96,8 +98,8 @@
         <p></p>
         <p></p>
         <div class="pagination" style="margin-left: 400px">
-            Page @(Model.Players.PageCount < Model.Players.PageNumber ? 0 : Model.Players.PageNumber)
-            of @Model.Players.PageCount  
+            @ViewLocalizer["Page", (Model.Players.PageCount < Model.Players.PageNumber ? 0 : Model.Players.PageNumber), Model.Players.PageCount]
+
             @Html.PagedListPager(Model.Players, page => {
                 Model.Input.PageNumber = page;
                 return Url.Action("Index", Model.Input );

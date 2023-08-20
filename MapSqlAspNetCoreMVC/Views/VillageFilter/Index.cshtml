@@ -1,12 +1,14 @@
 ﻿@using MapSqlAspNetCoreMVC.Models.Output;
 @using MapSqlAspNetCoreMVC.Models.View;
+@using Microsoft.AspNetCore.Mvc.Localization;
 @using X.PagedList.Mvc.Bootstrap4.Core;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @model VillageFilterViewModel
+@inject IViewLocalizer ViewLocalizer
 
 @{
-    ViewData["Title"] = "Village filter";
+    ViewData["Title"] = @ViewLocalizer["PageName"];
 }
 <h1>@ViewData["Title"]</h1>
 
@@ -16,7 +18,7 @@
 	<table>
         <tr>
             <td>
-                @Html.LabelFor(m => m.Input.AllianceId)
+                @Html.DisplayNameFor(m => m.Input.AllianceId)
             </td>
             <td>
                 @Html.DropDownListFor(m => m.Input.AllianceId, Model.Alliances)
@@ -24,38 +26,46 @@
         </tr>
         <tr>
             <td>
-                @Html.LabelFor(m => m.Input.TribeId)
+                @Html.DisplayNameFor(m => m.Input.TribeId)
             </td>
             <td>
                 @Html.DropDownListFor(m => m.Input.TribeId, Model.Tribes)
             </td>
         </tr>
         <tr>
-            <td>Enter X: </td>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.X)
+            </td>
             <td>@Html.TextBoxFor(m => m.Input.X, new {@type = "number"})</td>
-            <td>Enter Y: </td>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.Y)
+            </td>
             <td>@Html.TextBoxFor(m => m.Input.Y, new {@type = "number"})</td>
         </tr>
 		<tr>
-			<td>Enter min population: </td>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.MinPop)
+            </td>
             <td>@Html.TextBoxFor(m => m.Input.MinPop, new {@type = "number"})</td>
 		</tr>
 		<tr>
-            <td>Enter max population: </td>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.MaxPop)
+            </td>
             <td>@Html.TextBoxFor(m => m.Input.MaxPop, new {@type = "number"})</td>
 		</tr>
 		<tr>
-			<td colspan="2"><input type="submit" value="Submit Form" /></td>
+            <td colspan="2"><input type="submit" value="@ViewLocalizer["Find"]" /></td>
 		</tr>
 	</table>
 }
 
-<p>@Model.VillageTotal players of server @Model.Server </p>
+<p>@ViewLocalizer["FoundMessage",@Model.VillageTotal,@Model.Server]</p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                Link to village
+                ~
             </th>
             <th>
                 @Html.DisplayNameForInnerType((Village model) => model.AllianceName)
@@ -88,7 +98,7 @@
         {
             <tr>
                 <td>
-                    <a href="https://@Model.Server/position_details.php?x=@item.X&y=@item.Y" target="_blank">Show</a>
+                    <a href="https://@Model.Server/position_details.php?x=@item.X&y=@item.Y" target="_blank">@ViewLocalizer["Link"]</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.AllianceName)
@@ -124,8 +134,8 @@
         <p></p>
         <p></p>
         <div class="pagination" style="margin-left: 400px">
-            Page @(Model.Villages.PageCount < Model.Villages.PageNumber ? 0 : Model.Villages.PageNumber)
-            of @Model.Villages.PageCount
+            @ViewLocalizer["Page", (Model.Villages.PageCount < Model.Villages.PageNumber ? 0 : Model.Villages.PageNumber), Model.Villages.PageCount]
+
             @Html.PagedListPager(Model.Villages, page => {
                 Model.Input.PageNumber = page;
                 return Url.Action("Index", Model.Input );
