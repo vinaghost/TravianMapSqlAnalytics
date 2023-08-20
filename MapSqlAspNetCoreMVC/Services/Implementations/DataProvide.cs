@@ -1,12 +1,12 @@
 ﻿using MainCore;
-using MapSqlQuery.Models;
-using MapSqlQuery.Models.Input;
-using MapSqlQuery.Models.Output;
-using MapSqlQuery.Services.Interfaces;
+using MapSqlAspNetCoreMVC.Models;
+using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.Output;
+using MapSqlAspNetCoreMVC.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace MapSqlQuery.Services.Implementations
+namespace MapSqlAspNetCoreMVC.Services.Implementations
 {
     public class DataProvide : IDataProvide
     {
@@ -49,13 +49,13 @@ namespace MapSqlQuery.Services.Implementations
             return filterdPlayers;
         }
 
-        public List<VillageInfo> GetVillageData(VillageFilterFormInput input)
+        public List<Village> GetVillageData(VillageFilterFormInput input)
         {
             var villages = GetVillageInfo(input);
             return villages;
         }
 
-        public PlayerInfo GetPlayerInfo(PlayerLookupInput input)
+        public PlayerWithPopulation GetPlayerInfo(PlayerLookupInput input)
         {
             var player = GetAccountInfo(input);
             return player;
@@ -130,7 +130,7 @@ namespace MapSqlQuery.Services.Implementations
             return population;
         }
 
-        private List<VillageInfo> GetVillageInfo(VillageFilterFormInput input, CancellationToken cancellationToken = default)
+        private List<Village> GetVillageInfo(VillageFilterFormInput input, CancellationToken cancellationToken = default)
         {
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -178,7 +178,7 @@ namespace MapSqlQuery.Services.Implementations
 
             var result = joinQuery.AsEnumerable();
 
-            var villagesInfo = new List<VillageInfo>();
+            var villagesInfo = new List<Village>();
             var centerCoordinate = new Coordinates(input.X, input.Y);
 
             foreach (var village in result)
@@ -186,7 +186,7 @@ namespace MapSqlQuery.Services.Implementations
                 var villageCoordinate = new Coordinates(village.X, village.Y);
                 var distance = centerCoordinate.Distance(villageCoordinate);
 
-                var villageInfo = new VillageInfo
+                var villageInfo = new Village
                 {
                     VillageId = village.VillageId,
                     VillageName = village.VillageName,
@@ -230,7 +230,7 @@ namespace MapSqlQuery.Services.Implementations
             return query;
         }
 
-        private PlayerInfo GetAccountInfo(PlayerLookupInput input)
+        private PlayerWithPopulation GetAccountInfo(PlayerLookupInput input)
         {
             using var scoped = _serviceScopeFactory.CreateScope();
             using var context = scoped.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -259,7 +259,7 @@ namespace MapSqlQuery.Services.Implementations
                 return null;
             }
 
-            var playerInfo = new PlayerInfo()
+            var playerInfo = new PlayerWithPopulation()
             {
                 PlayerName = playerQuery.PlayerName,
                 AllianceName = playerQuery.AllianceName,
@@ -293,7 +293,7 @@ namespace MapSqlQuery.Services.Implementations
                 {
                     populations.Insert(0, population.Population);
                 }
-                var villageInfo = new PlayerInfo.VillageInfo()
+                var villageInfo = new VillageWithPopulation()
                 {
                     VillageName = villageName,
                     X = village.First().X,
@@ -306,9 +306,9 @@ namespace MapSqlQuery.Services.Implementations
 
             var maxDays = playerInfo.Population.Max(x => x.Population.Count);
 
-            var totalInfo = new PlayerInfo.VillageInfo()
+            var totalInfo = new VillageWithPopulation()
             {
-                VillageName = PlayerInfo.VillageInfo.Total,
+                VillageName = VillageWithPopulation.Total,
                 Population = new List<int>(new int[maxDays]),
             };
 

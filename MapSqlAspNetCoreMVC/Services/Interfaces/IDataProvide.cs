@@ -1,8 +1,8 @@
-﻿using MapSqlQuery.Models.Input;
-using MapSqlQuery.Models.Output;
+﻿using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.Output;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace MapSqlQuery.Services.Interfaces
+namespace MapSqlAspNetCoreMVC.Services.Interfaces
 {
     public interface IDataProvide
     {
@@ -12,10 +12,10 @@ namespace MapSqlQuery.Services.Interfaces
 
         List<PlayerPopulation> GetInactivePlayerData(InactiveFormInput input);
 
-        PlayerInfo GetPlayerInfo(PlayerLookupInput input);
+        PlayerWithPopulation GetPlayerInfo(PlayerLookupInput input);
 
         List<SelectListItem> GetTribeSelectList();
 
-        List<VillageInfo> GetVillageData(VillageFilterFormInput input);
+        List<Village> GetVillageData(VillageFilterFormInput input);
     }
 }

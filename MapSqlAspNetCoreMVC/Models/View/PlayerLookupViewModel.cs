@@ -1,12 +1,12 @@
-﻿using MapSqlQuery.Models.Input;
-using MapSqlQuery.Models.Output;
+﻿using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.Output;
 
-namespace MapSqlQuery.Models.View
+namespace MapSqlAspNetCoreMVC.Models.View
 {
     public class PlayerLookupViewModel : IServerViewModel
     {
         public PlayerLookupInput Input { get; set; }
-        public PlayerInfo Player { get; set; }
+        public PlayerWithPopulation Player { get; set; }
         public List<DateTime> Dates { get; set; }
         public string Server { get; set; }
     }

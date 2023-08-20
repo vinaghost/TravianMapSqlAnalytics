@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿﻿@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<Program> Localizer
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -20,16 +23,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="PlayerLookup" asp-action="Index">Player lookup</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="PlayerLookup" asp-action="Index">@Localizer["PlayerLookup"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="InactivePlayers" asp-action="Index">Inactive players</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="InactivePlayers" asp-action="Index">@Localizer["InactivePlayers"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VillageFilter" asp-action="Index">Village Filter</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="VillageFilter" asp-action="Index">@Localizer["VillageFilter"]</a>
                         </li>
                     </ul>
                 </div>

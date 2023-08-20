@@ -1,8 +1,8 @@
-﻿using MapSqlQuery.Models.Input;
-using MapSqlQuery.Models.Output;
+﻿using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.Output;
 using X.PagedList;
 
-namespace MapSqlQuery.Models.View
+namespace MapSqlAspNetCoreMVC.Models.View
 {
     public class InactivePlayerViewModel : IServerViewModel
     {

@@ -1,9 +1,9 @@
-﻿using MapSqlQuery.Models;
-using MapSqlQuery.Services.Interfaces;
+﻿using MapSqlAspNetCoreMVC.Models;
+using MapSqlAspNetCoreMVC.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace MapSqlQuery.Controllers
+namespace MapSqlAspNetCoreMVC.Controllers
 {
     public class HomeController : Controller
     {

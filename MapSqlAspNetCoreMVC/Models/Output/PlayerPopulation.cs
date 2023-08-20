@@ -1,4 +1,4 @@
-﻿namespace MapSqlQuery.Models.Output
+﻿namespace MapSqlAspNetCoreMVC.Models.Output
 {
     public class PlayerPopulation
     {

@@ -1,6 +1,6 @@
-﻿namespace MapSqlQuery.Models.Output
+﻿namespace MapSqlAspNetCoreMVC.Models.Output
 {
-    public class VillageInfo
+    public class Village
     {
         public int VillageId { get; set; }
         public string AllianceName { get; set; }

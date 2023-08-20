@@ -1,10 +1,15 @@
 using MainCore;
-using MapSqlQuery.Services.Implementations;
-using MapSqlQuery.Services.Interfaces;
+using MapSqlAspNetCoreMVC.Middlewares;
+using MapSqlAspNetCoreMVC.Services.Implementations;
+using MapSqlAspNetCoreMVC.Services.Interfaces;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Localization;
 
-namespace MapSqlQuery
+namespace MapSqlAspNetCoreMVC
 {
     public class Program
     {
@@ -13,8 +18,16 @@ namespace MapSqlQuery
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services
+                .AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix, opts =>
+                {
+                    opts.ResourcesPath = "Resources";
+                })
+                .AddDataAnnotationsLocalization();
+            builder.Services.AddAuthentication();
             builder.Services.AddHttpContextAccessor();
+
             builder.Services.AddDbContext<AppDbContext>((serviceProvider, options) =>
             {
                 var worldUrl = "ts8.x1.arabics.travian.com";
@@ -25,9 +38,27 @@ namespace MapSqlQuery
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            builder.Services.AddSingleton<IDataProvide, DataProvide>();
+            builder.Services.TryAddSingleton<IStringLocalizerFactory, ResourceManagerStringLocalizerFactory>();
+            builder.Services.TryAddTransient(typeof(IStringLocalizer<>), typeof(StringLocalizer<>));
 
-            builder.Services.AddAuthentication();
+            builder.Services.AddLocalization(options =>
+            {
+                options.ResourcesPath = "Resources";
+            });
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.SetDefaultCulture("vi-VN");
+                options.AddSupportedUICultures("vi-VN", "en-US");
+                options.FallBackToParentUICultures = true;
+
+                var requestProvider = options.RequestCultureProviders.OfType<AcceptLanguageHeaderRequestCultureProvider>().First();
+                options.RequestCultureProviders.Remove(requestProvider);
+            });
+
+            builder.Services.AddScoped<RequestLocalizationCookiesMiddleware>();
+
+            builder.Services.AddSingleton<IDataProvide, DataProvide>();
 
             var app = builder.Build();
 
@@ -37,7 +68,8 @@ namespace MapSqlQuery
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
-
+            app.UseRequestLocalization();
+            app.UseRequestLocalizationCookies();
             app.UseRouting();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {

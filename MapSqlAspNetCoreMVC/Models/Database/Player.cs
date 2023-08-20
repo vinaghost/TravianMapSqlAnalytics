@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace MapSqlQuery.Models.Database
+namespace MapSqlAspNetCoreMVC.Models.Database
 {
     public class Player
     {

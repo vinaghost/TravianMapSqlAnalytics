@@ -1,4 +1,4 @@
-﻿namespace MapSqlQuery.Models.View
+﻿namespace MapSqlAspNetCoreMVC.Models.View
 {
     public interface IServerViewModel
     {

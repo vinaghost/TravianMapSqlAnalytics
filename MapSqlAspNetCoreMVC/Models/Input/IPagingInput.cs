@@ -1,4 +1,4 @@
-﻿namespace MapSqlQuery.Models.Input
+﻿namespace MapSqlAspNetCoreMVC.Models.Input
 {
     public interface IPagingInput
     {

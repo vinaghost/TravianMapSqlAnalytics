@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace MapSqlQuery.Models.Database
+namespace MapSqlAspNetCoreMVC.Models.Database
 {
     [Index(nameof(Server), IsUnique = true)]
     public class TimeUpdate

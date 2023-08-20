@@ -1,4 +1,4 @@
-namespace MapSqlQuery.Models
+namespace MapSqlAspNetCoreMVC.Models
 {
     public class ErrorModel
     {

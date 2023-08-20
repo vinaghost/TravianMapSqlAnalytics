@@ -1,24 +1,27 @@
-﻿@using MapSqlQuery.Models.View;
-@using static MapSqlQuery.Models.Output.PlayerInfo;
+﻿@using MapSqlAspNetCoreMVC.Models.Output;
+@using MapSqlAspNetCoreMVC.Models.View;
+@using Microsoft.AspNetCore.Mvc.Localization;
+@using static MapSqlAspNetCoreMVC.Models.Output.PlayerWithPopulation;
+@inject IViewLocalizer ViewLocalizer
 @model PlayerLookupViewModel
 @{
-    ViewData["Title"] = "Player lookup";
+    ViewData["Title"] = @ViewLocalizer["PageName"];
 }
 <h1>@ViewData["Title"]</h1>
 
-@using (Html.BeginForm("Index", "PlayerLookup", FormMethod.Post))
+@using (Html.BeginForm("Index", "PlayerLookup", FormMethod.Get))
 {
     <table>
         <tr>
-            <td>Enter player's' name: </td>
+            <td>@Html.DisplayNameFor(m => m.Input.PlayerName)</td>
             <td>@Html.TextBoxFor(m => m.Input.PlayerName)</td>
         </tr>
         <tr>
-            <td>Enter days: </td>
+            <td>@Html.DisplayNameFor(m => m.Input.Days)</td>
             <td>@Html.TextBoxFor(m => m.Input.Days, new {@type = "number"})</td>
         </tr>
         <tr>
-            <td colspan="2"><input type="submit" value="Find" /></td>
+            <td colspan="2"><input type="submit" value="@ViewLocalizer["Find"]" /></td>
         </tr>
     </table>
 }
@@ -28,11 +31,11 @@
 {
     if (string.IsNullOrWhiteSpace(Model.Input.PlayerName))
     {
-        <p>Enter player's name to find</p>
+        <p>@ViewLocalizer["EmptyMessage"]</p>
     }
     else
     {
-        <p>Player [@Model.Input.PlayerName] not found</p>
+        <p>@ViewLocalizer["NotFound", Model.Input.PlayerName]</p>
 
     }
 	return;
@@ -49,13 +52,13 @@
     <thead>
         <tr>
             <th>
-                Link to village
+                ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model) => model.VillageName)
+                @Html.DisplayNameForInnerType((VillageWithPopulation model) => model.VillageName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model) => model.Coordinate)
+                @Html.DisplayNameForInnerType((VillageWithPopulation model) => model.Coordinate)
             </th>
             @for (var i = 0; i < Model.Dates.Count; i++)
             {
@@ -70,29 +73,25 @@
         @foreach (var village in Model.Player.Population)
         {
             <tr>
-                <td>
-                    @if(village.VillageName.Equals(VillageInfo.Total))
-					{
-						<p>~</p>
-					}
-					else
-					{
-                        <a href="https://@Model.Server/position_details.php?x=@village.X&y=@village.Y" target="_blank">Show</a>
-					}
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => village.VillageName)
-                </td>
-                <td>
-                    @if (village.VillageName.Equals(VillageInfo.Total))
-                    {
-                        <p>~</p>
-                    }
-                    else
-                    {
-                        <p>@Html.DisplayFor(modelItem => village.Coordinate)</p>
-                    }
-                </td>
+                @if (village.VillageName.Equals(VillageWithPopulation.Total))
+                {
+                    <td>~</td>
+                    <td>@ViewLocalizer["Total"]</td>
+                    <td>~</td>
+                }
+                else
+				{
+                    <td>
+                        <a href="https://@Model.Server/position_details.php?x=@village.X&y=@village.Y" target="_blank">@ViewLocalizer["LinkTitle"]</a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => village.VillageName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => village.Coordinate)
+                    </td>
+                }
+                    
                 @for (var i = 0; i < Model.Dates.Count; i++)
                 {
                     <td>

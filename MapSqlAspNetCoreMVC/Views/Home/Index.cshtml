@@ -1,9 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Mvc.Localization;
+
+@inject IViewLocalizer ViewLocalizer
+
+@{
+    ViewData["Title"] = @ViewLocalizer["PageName"];
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">@ViewLocalizer["Welcome"]</h1>
     <p>Server @ViewData["Server"] </p>
-    <p>Newest date in database is @ViewBag.NewestDateTime</p>
+    <p>@ViewLocalizer["DateMessage", ViewBag.NewestDateTime]</p>
 </div>

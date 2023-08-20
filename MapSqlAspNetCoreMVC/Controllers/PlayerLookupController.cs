@@ -1,9 +1,9 @@
-﻿using MapSqlQuery.Models.Input;
-using MapSqlQuery.Models.View;
-using MapSqlQuery.Services.Interfaces;
+﻿using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.View;
+using MapSqlAspNetCoreMVC.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace MapSqlQuery.Controllers
+namespace MapSqlAspNetCoreMVC.Controllers
 {
     public class PlayerLookupController : Controller
     {

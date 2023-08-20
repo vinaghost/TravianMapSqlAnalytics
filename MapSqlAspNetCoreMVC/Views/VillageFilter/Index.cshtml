@@ -1,5 +1,5 @@
-﻿@using MapSqlQuery.Models.Output;
-@using MapSqlQuery.Models.View;
+﻿@using MapSqlAspNetCoreMVC.Models.Output;
+@using MapSqlAspNetCoreMVC.Models.View;
 @using X.PagedList.Mvc.Bootstrap4.Core;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
@@ -58,28 +58,28 @@
                 Link to village
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model) => model.AllianceName)
+                @Html.DisplayNameForInnerType((Village model) => model.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.PlayerName)
+                @Html.DisplayNameForInnerType((Village model)  => model.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.VillageName)
+                @Html.DisplayNameForInnerType((Village model)  => model.VillageName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Tribe)
+                @Html.DisplayNameForInnerType((Village model)  => model.Tribe)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Coordinate)
+                @Html.DisplayNameForInnerType((Village model)  => model.Coordinate)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Population)
+                @Html.DisplayNameForInnerType((Village model)  => model.Population)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.IsCapital)
+                @Html.DisplayNameForInnerType((Village model)  => model.IsCapital)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageInfo model)  => model.Distance)
+                @Html.DisplayNameForInnerType((Village model)  => model.Distance)
             </th>
         </tr>
     </thead>

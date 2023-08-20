@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace MapSqlQuery.Models.Input
+namespace MapSqlAspNetCoreMVC.Models.Input
 {
     public class VillageFilterFormInput : IPagingInput
     {
