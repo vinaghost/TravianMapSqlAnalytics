@@ -20,7 +20,7 @@ namespace MapSqlQuery
                 var worldUrl = "ts8.x1.arabics.travian.com";
                 var configuration = serviceProvider.GetService<IConfiguration>();
                 var connectionString = AppDbContext.GetConnectionString(configuration, worldUrl);
-                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                options.UseMySql(connectionString, ServerVersion.Create(8, 0, 34, Pomelo.EntityFrameworkCore.MySql.Infrastructure.ServerType.MySql));
                 //options.EnableSensitiveDataLogging();
                 options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
