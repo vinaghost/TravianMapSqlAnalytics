@@ -12,23 +12,23 @@ namespace MapSqlAspNetCoreMVC.Controllers
         private readonly IDataProvide _dataProvider;
         private readonly IConfiguration _configuration;
 
-        public VillageFilterController(ILogger<VillageFilterController> logger, IDataProvide dataProvider, IConfiguration configuration)
+        public VillageFilterController(ILogger<VillageFilterController> logger, IConfiguration configuration, IDataProvide dataProvider)
         {
             _logger = logger;
-            _dataProvider = dataProvider;
             _configuration = configuration;
+            _dataProvider = dataProvider;
         }
 
-        public IActionResult Index(VillageFilterFormInput input)
+        public async Task<IActionResult> Index(VillageFilterFormInput input)
         {
             input ??= new VillageFilterFormInput();
-            var viewModel = GetViewModel(input);
+            var viewModel = await GetViewModel(input);
             return View(viewModel);
         }
 
-        private VillageFilterViewModel GetViewModel(VillageFilterFormInput input)
+        private async Task<VillageFilterViewModel> GetViewModel(VillageFilterFormInput input)
         {
-            var villages = _dataProvider.GetVillageData(input);
+            var villages = await _dataProvider.GetVillageData(input);
             var pageVillages = villages.ToPagedList(input.PageNumber, input.PageSize);
             var alliances = _dataProvider.GetAllianceSelectList();
             var tribes = _dataProvider.GetTribeSelectList();

@@ -10,10 +10,10 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
 {
     public class UpdateDatabaseService : IUpdateDatabaseService
     {
-        private readonly IDbContextFactory<AppDbContext> _contextFactory;
+        private readonly IDbContextFactory<ServerDbContext> _contextFactory;
         private readonly ILogger<UpdateDatabaseService> _logger;
 
-        public UpdateDatabaseService(IDbContextFactory<AppDbContext> contextFactory, ILogger<UpdateDatabaseService> logger)
+        public UpdateDatabaseService(IDbContextFactory<ServerDbContext> contextFactory, ILogger<UpdateDatabaseService> logger)
         {
             _contextFactory = contextFactory;
             _logger = logger;

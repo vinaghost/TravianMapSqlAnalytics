@@ -19,16 +19,16 @@ namespace MapSqlAspNetCoreMVC.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index(InactiveFormInput input)
+        public async Task<IActionResult> Index(InactiveFormInput input)
         {
             input ??= new InactiveFormInput();
-            var viewModel = GetViewModel(input);
+            var viewModel = await GetViewModel(input);
             return View(viewModel);
         }
 
-        private InactivePlayerViewModel GetViewModel(InactiveFormInput input)
+        private async Task<InactivePlayerViewModel> GetViewModel(InactiveFormInput input)
         {
-            var players = _dataProvider.GetInactivePlayerData(input);
+            var players = await _dataProvider.GetInactivePlayerData(input);
             var pagePlayers = players.ToPagedList(input.PageNumber, input.PageSize);
             var dates = _dataProvider.GetDateBefore(input.Days);
 

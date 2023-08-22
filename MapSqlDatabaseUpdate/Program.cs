@@ -18,7 +18,7 @@ namespace MapSqlDatabaseUpdate
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddDbContextFactory<AppDbContext>(options =>
+                services.AddDbContextFactory<ServerDbContext>(options =>
                 {
                     var host = hostContext.Configuration["Host"];
                     var port = hostContext.Configuration["Port"];

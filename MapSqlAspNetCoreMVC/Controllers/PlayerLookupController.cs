@@ -18,18 +18,18 @@ namespace MapSqlAspNetCoreMVC.Controllers
             _configuration = configuration;
         }
 
-        public IActionResult Index(PlayerLookupInput input)
+        public async Task<IActionResult> Index(PlayerLookupInput input)
         {
             input ??= new PlayerLookupInput();
-            var viewModel = GetViewModel(input);
+            var viewModel = await GetViewModel(input);
             return View(viewModel);
         }
 
-        private PlayerLookupViewModel GetViewModel(PlayerLookupInput input)
+        private async Task<PlayerLookupViewModel> GetViewModel(PlayerLookupInput input)
         {
             if (!string.IsNullOrWhiteSpace(input.PlayerName))
             {
-                var player = _dataProvider.GetPlayerInfo(input);
+                var player = await _dataProvider.GetPlayerInfo(input);
                 var dates = _dataProvider.GetDateBefore(input.Days);
 
                 var viewModel = new PlayerLookupViewModel
@@ -50,9 +50,6 @@ namespace MapSqlAspNetCoreMVC.Controllers
                 };
                 return viewModel;
             }
-
-
-
         }
     }
 }
