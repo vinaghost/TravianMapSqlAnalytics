@@ -16,7 +16,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
             _contextFactory = contextFactory;
         }
 
-        public async Task<List<Village>> Get(VillageFilterFormInput input)
+        public async Task<List<Village>> Get(VillageInput input)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             var query = context.Villages

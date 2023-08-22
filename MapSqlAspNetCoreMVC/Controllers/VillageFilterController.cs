@@ -19,14 +19,14 @@ namespace MapSqlAspNetCoreMVC.Controllers
             _dataProvider = dataProvider;
         }
 
-        public async Task<IActionResult> Index(VillageFilterFormInput input)
+        public async Task<IActionResult> Index(VillageInput input)
         {
-            input ??= new VillageFilterFormInput();
+            input ??= new VillageInput();
             var viewModel = await GetViewModel(input);
             return View(viewModel);
         }
 
-        private async Task<VillageFilterViewModel> GetViewModel(VillageFilterFormInput input)
+        private async Task<VillageFilterViewModel> GetViewModel(VillageInput input)
         {
             var villages = await _dataProvider.GetVillageData(input);
             var pageVillages = villages.ToPagedList(input.PageNumber, input.PageSize);

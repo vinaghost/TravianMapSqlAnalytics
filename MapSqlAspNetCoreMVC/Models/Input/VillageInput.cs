@@ -2,7 +2,7 @@
 
 namespace MapSqlAspNetCoreMVC.Models.Input
 {
-    public class VillageFilterFormInput : IPagingInput
+    public class VillageInput : IPagingInput
     {
         [Display(Name = "MinPop")]
         public int MinPop { get; set; } = 700;

@@ -13,7 +13,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
         private readonly IDbContextFactory<ServerDbContext> _contextFactory;
 
         private readonly IPlayerWithPopulationRepository _playerWithPopulationRepository;
-        private readonly IPlayerWithVillagePopulationRepository _playerWithVillagePopulationRepository;
+        private readonly IPlayerWithDetailRepository _playerWithVillagePopulationRepository;
         private readonly IVillageRepository _villageRepository;
 
         private readonly List<SelectListItem> _tribeNamesList = new()
@@ -29,7 +29,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             new SelectListItem {Value = "8", Text = "Spartans"},
         };
 
-        public DataProvide(IDbContextFactory<ServerDbContext> contextFactory, IPlayerWithPopulationRepository playerWithPopulationRepository, IPlayerWithVillagePopulationRepository playerWithVillagePopulationRepository, IVillageRepository villageRepository)
+        public DataProvide(IDbContextFactory<ServerDbContext> contextFactory, IPlayerWithPopulationRepository playerWithPopulationRepository, IPlayerWithDetailRepository playerWithVillagePopulationRepository, IVillageRepository villageRepository)
         {
             _contextFactory = contextFactory;
             _playerWithPopulationRepository = playerWithPopulationRepository;
@@ -37,7 +37,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             _villageRepository = villageRepository;
         }
 
-        public async Task<List<PlayerWithPopulation>> GetInactivePlayerData(InactiveFormInput input)
+        public async Task<List<PlayerWithPopulation>> GetInactivePlayerData(PlayerWithPopulationInput input)
         {
             var players = await _playerWithPopulationRepository.Get(input);
             var filterdPlayers = players
@@ -46,13 +46,13 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             return filterdPlayers;
         }
 
-        public async Task<List<Village>> GetVillageData(VillageFilterFormInput input)
+        public async Task<List<Village>> GetVillageData(VillageInput input)
         {
             var villages = await _villageRepository.Get(input);
             return villages;
         }
 
-        public async Task<PlayerWithVillagePopulation> GetPlayerInfo(PlayerLookupInput input)
+        public async Task<PlayerWithDetail> GetPlayerInfo(PlayerWithDetailInput input)
         {
             var player = await _playerWithVillagePopulationRepository.Get(input);
             return player;

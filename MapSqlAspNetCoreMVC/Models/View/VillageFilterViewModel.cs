@@ -12,6 +12,6 @@ namespace MapSqlAspNetCoreMVC.Models.View
         public IPagedList<Village> Villages { get; set; }
         public List<SelectListItem> Alliances { get; set; }
         public List<SelectListItem> Tribes { get; set; }
-        public VillageFilterFormInput Input { get; set; }
+        public VillageInput Input { get; set; }
     }
 }

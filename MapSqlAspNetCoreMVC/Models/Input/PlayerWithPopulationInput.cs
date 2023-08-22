@@ -2,7 +2,7 @@
 
 namespace MapSqlAspNetCoreMVC.Models.Input
 {
-    public class InactiveFormInput : IPagingInput
+    public class PlayerWithPopulationInput : IPagingInput
     {
         [Display(Name = "Days")]
         public int Days { get; set; } = 3;

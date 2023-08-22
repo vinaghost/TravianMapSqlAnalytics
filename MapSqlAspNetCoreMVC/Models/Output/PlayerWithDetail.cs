@@ -2,7 +2,7 @@
 
 namespace MapSqlAspNetCoreMVC.Models.Output
 {
-    public class PlayerWithVillagePopulation
+    public class PlayerWithDetail
     {
         [Display(Name = "PlayerName")]
         public string PlayerName { get; set; }

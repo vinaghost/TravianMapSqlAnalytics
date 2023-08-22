@@ -2,7 +2,7 @@
 
 namespace MapSqlAspNetCoreMVC.Models.Input
 {
-    public class PlayerLookupInput
+    public class PlayerWithDetailInput
     {
         [Display(Name = "PlayerNameTitle")]
         public string PlayerName { get; set; }

@@ -24,10 +24,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resources\Models\Output\PlayerWithVillagePopulation.vi-VN.resx">
+    <EmbeddedResource Update="Resources\Models\Output\PlayerWithDetail.vi-VN.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Resources\Models\Output\PlayerWithVillagePopulation.en-US.resx">
+    <EmbeddedResource Update="Resources\Models\Output\PlayerWithDetail.en-US.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Resources\Views\Home\Index.en-US.resx">

@@ -1,15 +1,17 @@
-﻿@using MapSqlAspNetCoreMVC.Models.Output;
+﻿@using MapSqlAspNetCoreMVC.Extension;
+@using MapSqlAspNetCoreMVC.Models.Output;
 @using MapSqlAspNetCoreMVC.Models.View;
+@using MapSqlAspNetCoreMVC.Controllers;
 @using Microsoft.AspNetCore.Mvc.Localization;
-@using static MapSqlAspNetCoreMVC.Models.Output.PlayerWithVillagePopulation;
+@using static MapSqlAspNetCoreMVC.Models.Output.PlayerWithDetail;
 @inject IViewLocalizer ViewLocalizer
-@model PlayerLookupViewModel
+@model PlayerWithDetailViewModel
 @{
     ViewData["Title"] = @ViewLocalizer["PageName"];
 }
 <h1>@ViewData["Title"]</h1>
 
-@using (Html.BeginForm("Index", "PlayerLookup", FormMethod.Get))
+@using (Html.BeginForm(nameof(PlayerWithDetailController.Index), ControllerExtensions.ShortControllerName<PlayerWithDetailController>(), FormMethod.Get))
 {
     <table>
         <tr>

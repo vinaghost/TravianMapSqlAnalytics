@@ -3,7 +3,7 @@ using MapSqlAspNetCoreMVC.Models.Output;
 
 namespace MapSqlAspNetCoreMVC.Repositories.Interfaces
 {
-    public interface IPlayerWithVillagePopulationRepository : IRepository<PlayerLookupInput, PlayerWithVillagePopulation>
+    public interface IPlayerWithDetailRepository : IRepository<PlayerWithDetailInput, PlayerWithDetail>
     {
     }
 }

@@ -10,14 +10,14 @@ namespace MapSqlAspNetCoreMVC.Services.Interfaces
 
         List<DateTime> GetDateBefore(int days);
 
-        Task<List<PlayerWithPopulation>> GetInactivePlayerData(InactiveFormInput input);
+        Task<List<PlayerWithPopulation>> GetInactivePlayerData(PlayerWithPopulationInput input);
 
         DateTime GetNewestDay();
 
-        Task<PlayerWithVillagePopulation> GetPlayerInfo(PlayerLookupInput input);
+        Task<PlayerWithDetail> GetPlayerInfo(PlayerWithDetailInput input);
 
         List<SelectListItem> GetTribeSelectList();
 
-        Task<List<Village>> GetVillageData(VillageFilterFormInput input);
+        Task<List<Village>> GetVillageData(VillageInput input);
     }
 }

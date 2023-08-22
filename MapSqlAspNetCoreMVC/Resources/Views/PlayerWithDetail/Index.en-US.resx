@@ -130,7 +130,7 @@
     <value>Player {0} not found</value>
   </data>
   <data name="PageName" xml:space="preserve">
-    <value>Player lookup</value>
+    <value>Player with detail</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>Total</value>

@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyMessage" xml:space="preserve">
-    <value>Điền account</value>
+    <value>Điền tên người chơi</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Kiểm tra</value>
@@ -130,7 +130,7 @@
     <value>Account {0} không có trong database</value>
   </data>
   <data name="PageName" xml:space="preserve">
-    <value>Tìm thông tin account</value>
+    <value>Thông tin người chơi</value>
   </data>
   <data name="Total" xml:space="preserve">
     <value>Tổng số dân</value>

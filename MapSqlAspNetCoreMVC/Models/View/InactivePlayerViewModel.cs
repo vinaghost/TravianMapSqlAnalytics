@@ -11,6 +11,6 @@ namespace MapSqlAspNetCoreMVC.Models.View
         public List<DateTime> Dates { get; set; }
         public IPagedList<PlayerWithPopulation> Players { get; set; }
 
-        public InactiveFormInput Input { get; set; }
+        public PlayerWithPopulationInput Input { get; set; }
     }
 }

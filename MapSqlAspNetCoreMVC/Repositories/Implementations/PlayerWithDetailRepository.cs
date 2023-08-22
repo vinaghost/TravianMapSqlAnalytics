@@ -6,16 +6,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MapSqlAspNetCoreMVC.Repositories.Implementations
 {
-    public class PlayerWithVillagePopulationRepository : IPlayerWithVillagePopulationRepository
+    public class PlayerWithDetailRepository : IPlayerWithDetailRepository
     {
         private readonly IDbContextFactory<ServerDbContext> _contextFactory;
 
-        public PlayerWithVillagePopulationRepository(IDbContextFactory<ServerDbContext> contextFactory)
+        public PlayerWithDetailRepository(IDbContextFactory<ServerDbContext> contextFactory)
         {
             _contextFactory = contextFactory;
         }
 
-        public async Task<PlayerWithVillagePopulation> Get(PlayerLookupInput input)
+        public async Task<PlayerWithDetail> Get(PlayerWithDetailInput input)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
 
@@ -43,7 +43,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 return null;
             }
 
-            var playerInfo = new PlayerWithVillagePopulation()
+            var playerInfo = new PlayerWithDetail()
             {
                 PlayerName = playerQuery.PlayerName,
                 AllianceName = playerQuery.AllianceName,

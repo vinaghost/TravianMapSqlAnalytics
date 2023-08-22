@@ -3,10 +3,10 @@ using MapSqlAspNetCoreMVC.Models.Output;
 
 namespace MapSqlAspNetCoreMVC.Models.View
 {
-    public class PlayerLookupViewModel : IServerViewModel
+    public class PlayerWithDetailViewModel : IServerViewModel
     {
-        public PlayerLookupInput Input { get; set; }
-        public PlayerWithVillagePopulation Player { get; set; }
+        public PlayerWithDetailInput Input { get; set; }
+        public PlayerWithDetail Player { get; set; }
         public List<DateTime> Dates { get; set; }
         public string Server { get; set; }
     }

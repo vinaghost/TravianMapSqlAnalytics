@@ -1,6 +1,6 @@
 using MainCore;
+using MapSqlAspNetCoreMVC.Extension;
 using MapSqlAspNetCoreMVC.Middlewares;
-using MapSqlAspNetCoreMVC.Middlewares.Extension;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;

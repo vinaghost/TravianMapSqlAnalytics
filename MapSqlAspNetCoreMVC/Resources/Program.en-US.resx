@@ -123,8 +123,8 @@
   <data name="InactivePlayers" xml:space="preserve">
     <value>Inactive players</value>
   </data>
-  <data name="PlayerLookup" xml:space="preserve">
-    <value>Player lookup</value>
+  <data name="PlayerWithDetail" xml:space="preserve">
+    <value>Player with detail</value>
   </data>
   <data name="VillageFilter" xml:space="preserve">
     <value>Village Filter</value>

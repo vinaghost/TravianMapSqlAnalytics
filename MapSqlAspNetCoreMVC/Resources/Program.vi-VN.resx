@@ -123,8 +123,8 @@
   <data name="InactivePlayers" xml:space="preserve">
     <value>Account nghỉ chơi</value>
   </data>
-  <data name="PlayerLookup" xml:space="preserve">
-    <value>Kiểm tra account</value>
+  <data name="PlayerWithDetail" xml:space="preserve">
+    <value>Thông tin người chơi</value>
   </data>
   <data name="VillageFilter" xml:space="preserve">
     <value>Lọc làng</value>

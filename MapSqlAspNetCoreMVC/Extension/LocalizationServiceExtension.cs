@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using MapSqlAspNetCoreMVC.Middlewares;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Localization;
 
-namespace MapSqlAspNetCoreMVC.Middlewares.Extension
+namespace MapSqlAspNetCoreMVC.Extension
 {
     public static class LocalizationServiceExtension
     {

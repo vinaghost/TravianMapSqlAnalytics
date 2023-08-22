@@ -15,7 +15,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
             _contextFactory = contextFactory;
         }
 
-        public async Task<List<PlayerWithPopulation>> Get(InactiveFormInput input)
+        public async Task<List<PlayerWithPopulation>> Get(PlayerWithPopulationInput input)
         {
             using var context = await _contextFactory.CreateDbContextAsync();
             var dates = context.GetDateBefore(input.Days);
