@@ -126,7 +126,7 @@
   <data name="PlayerWithDetail" xml:space="preserve">
     <value>Player with detail</value>
   </data>
-  <data name="VillageFilter" xml:space="preserve">
+  <data name="Village" xml:space="preserve">
     <value>Village Filter</value>
   </data>
 </root>

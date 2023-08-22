@@ -25,16 +25,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">                        
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">@Localizer["Home"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="@nameof(HomeController).RemoveController()" asp-action="@nameof(HomeController.Index)">@Localizer["Home"]</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="@nameof(PlayerWithDetailController).RemoveController()" asp-action="@nameof(PlayerWithDetailController.Index)">@Localizer["PlayerWithDetail"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="InactivePlayers" asp-action="Index">@Localizer["InactivePlayers"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="@nameof(InactivePlayersController).RemoveController()" asp-action="@nameof(InactivePlayersController.Index)">@Localizer["InactivePlayers"]</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="VillageFilter" asp-action="Index">@Localizer["VillageFilter"]</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="@nameof(VillageController).RemoveController()" asp-action="@nameof(VillageController.Index)">@Localizer["Village"]</a>
                         </li>
                     </ul>
                 </div>

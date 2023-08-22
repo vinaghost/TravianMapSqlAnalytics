@@ -126,7 +126,7 @@
   <data name="PlayerWithDetail" xml:space="preserve">
     <value>Thông tin người chơi</value>
   </data>
-  <data name="VillageFilter" xml:space="preserve">
+  <data name="Village" xml:space="preserve">
     <value>Lọc làng</value>
   </data>
 </root>

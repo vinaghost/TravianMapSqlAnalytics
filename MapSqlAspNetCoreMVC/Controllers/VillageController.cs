@@ -6,13 +6,13 @@ using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.Controllers
 {
-    public class VillageFilterController : Controller
+    public class VillageController : Controller
     {
-        private readonly ILogger<VillageFilterController> _logger;
+        private readonly ILogger<VillageController> _logger;
         private readonly IDataProvide _dataProvider;
         private readonly IConfiguration _configuration;
 
-        public VillageFilterController(ILogger<VillageFilterController> logger, IConfiguration configuration, IDataProvide dataProvider)
+        public VillageController(ILogger<VillageController> logger, IConfiguration configuration, IDataProvide dataProvider)
         {
             _logger = logger;
             _configuration = configuration;
@@ -26,14 +26,14 @@ namespace MapSqlAspNetCoreMVC.Controllers
             return View(viewModel);
         }
 
-        private async Task<VillageFilterViewModel> GetViewModel(VillageInput input)
+        private async Task<VillageViewModel> GetViewModel(VillageInput input)
         {
             var villages = await _dataProvider.GetVillageData(input);
             var pageVillages = villages.ToPagedList(input.PageNumber, input.PageSize);
             var alliances = _dataProvider.GetAllianceSelectList();
             var tribes = _dataProvider.GetTribeSelectList();
 
-            var viewModel = new VillageFilterViewModel
+            var viewModel = new VillageViewModel
             {
                 Server = _configuration["WorldUrl"],
                 Input = input,

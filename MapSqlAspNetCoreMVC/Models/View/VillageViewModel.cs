@@ -5,7 +5,7 @@ using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.Models.View
 {
-    public class VillageFilterViewModel : IServerViewModel
+    public class VillageViewModel : IServerViewModel
     {
         public string Server { get; set; }
         public int VillageTotal { get; set; }

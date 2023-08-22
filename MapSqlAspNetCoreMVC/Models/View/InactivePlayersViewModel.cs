@@ -4,7 +4,7 @@ using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.Models.View
 {
-    public class InactivePlayerViewModel : IServerViewModel
+    public class InactivePlayersViewModel : IServerViewModel
     {
         public string Server { get; set; }
         public int PlayerTotal { get; set; }

@@ -26,13 +26,13 @@ namespace MapSqlAspNetCoreMVC.Controllers
             return View(viewModel);
         }
 
-        private async Task<InactivePlayerViewModel> GetViewModel(PlayerWithPopulationInput input)
+        private async Task<InactivePlayersViewModel> GetViewModel(PlayerWithPopulationInput input)
         {
             var players = await _dataProvider.GetInactivePlayerData(input);
             var pagePlayers = players.ToPagedList(input.PageNumber, input.PageSize);
             var dates = _dataProvider.GetDateBefore(input.Days);
 
-            var viewModel = new InactivePlayerViewModel
+            var viewModel = new InactivePlayersViewModel
             {
                 Server = _configuration["WorldUrl"],
                 Input = input,

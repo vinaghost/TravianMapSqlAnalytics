@@ -1,10 +1,12 @@
-﻿@using MapSqlAspNetCoreMVC.Models.Output;
+﻿@using MapSqlAspNetCoreMVC.Extension;
+@using MapSqlAspNetCoreMVC.Models.Output;
 @using MapSqlAspNetCoreMVC.Models.View;
+@using MapSqlAspNetCoreMVC.Controllers;
 @using Microsoft.AspNetCore.Mvc.Localization;
 @using X.PagedList.Mvc.Bootstrap4.Core;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
-@model InactivePlayerViewModel
+@model InactivePlayersViewModel
 @inject IViewLocalizer ViewLocalizer
 
 @{
@@ -12,7 +14,7 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-@using (Html.BeginForm("Index", "InactivePlayers", FormMethod.Post))
+@using (Html.BeginForm(nameof(InactivePlayersController.Index), ControllerExtensions.ShortControllerName<InactivePlayersController>(), FormMethod.Get))
 { 
     <table>
         <tr>
@@ -102,7 +104,7 @@
 
             @Html.PagedListPager(Model.Players, page => {
                 Model.Input.PageNumber = page;
-                return Url.Action("Index", Model.Input );
+                return Url.Action(nameof(InactivePlayersController.Index), Model.Input );
             }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     </div>
