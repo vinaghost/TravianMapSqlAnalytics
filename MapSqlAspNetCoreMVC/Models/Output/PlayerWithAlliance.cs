@@ -9,12 +9,9 @@ namespace MapSqlAspNetCoreMVC.Models.Output
         [Display(Name = "PlayerName")]
         public string PlayerName { get; set; }
 
-        [Display(Name = "Tribe")]
-        public string Tribe { get; set; }
+        [Display(Name = "AllianceChangeNumber")]
+        public int AllianceChangeNumber { get; set; }
 
-        [Display(Name = "VillageCount")]
-        public int VillageCount { get; set; }
-
-        public List<string> AllianceName { get; set; }
+        public List<string> AllianceNames { get; set; }
     }
 }

@@ -13,7 +13,7 @@ namespace MapSqlAspNetCoreMVC.Services.Interfaces
         Task<List<PlayerWithPopulation>> GetInactivePlayerData(PlayerWithPopulationInput input);
 
         DateTime GetNewestDay();
-
+        Task<List<PlayerWithAlliance>> GetPlayerChangeAlliance(PlayerWithAllianceInput input);
         Task<PlayerWithDetail> GetPlayerInfo(PlayerWithDetailInput input);
 
         List<SelectListItem> GetTribeSelectList();

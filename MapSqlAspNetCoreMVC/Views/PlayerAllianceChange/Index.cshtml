@@ -6,7 +6,7 @@
 @using X.PagedList.Mvc.Bootstrap4.Core;
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
-@model InactivePlayersViewModel
+@model PlayerAllianceChangeViewModel
 @inject IViewLocalizer ViewLocalizer
 
 @{
@@ -14,7 +14,7 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-@using (Html.BeginForm(nameof(InactivePlayersController.Index), ControllerExtensions.ShortControllerName<InactivePlayersController>(), FormMethod.Get))
+@using (Html.BeginForm(nameof(PlayerAllianceChangeController.Index), ControllerExtensions.ShortControllerName<PlayerAllianceChangeController>(), FormMethod.Get))
 { 
     <table>
         <tr>
@@ -34,16 +34,10 @@
                 ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerWithPopulation model) => model.PlayerName)
+                @Html.DisplayNameForInnerType((PlayerWithAlliance model) => model.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerWithPopulation model)  => model.AllianceName)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((PlayerWithPopulation model)  => model.Tribe)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((PlayerWithPopulation model)  => model.VillageCount)
+                @Html.DisplayNameForInnerType((PlayerWithAlliance model)  => model.AllianceChangeNumber)
             </th>
             @for (var i = 0; i < Model.Dates.Count ; i++)
             {
@@ -64,28 +58,19 @@
                     @Html.DisplayFor(m => player.PlayerName)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => player.AllianceName)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => player.Tribe)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => player.VillageCount)
+                    @Html.DisplayFor(m => player.AllianceChangeNumber)
                 </td>
 
                 @for (var i = 0; i < Model.Dates.Count; i++)
                 {
                     <td>
-                        @if (i >= player.Population.Count()){
+                        @if (i >= player.AllianceNames.Count()){
                             <p>~</p>
                         }
                         else
                         {
                             <p>
-                                @Html.DisplayFor(m => player.Population[i])
-
-                                @if (i == player.Population.Count - 1) continue;
-                                [ @(player.Population[i] - player.Population[i + 1]) ]
+                                @Html.DisplayFor(m => player.AllianceNames[i])
                             </p>
                         }
                     </td>
@@ -104,7 +89,7 @@
 
             @Html.PagedListPager(Model.Players, page => {
                 Model.Input.PageNumber = page;
-                return Url.Action(nameof(InactivePlayersController.Index), Model.Input );
+                return Url.Action(nameof(PlayerAllianceChangeController.Index), Model.Input );
             }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     </div>

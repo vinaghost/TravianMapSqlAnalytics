@@ -9,10 +9,11 @@ namespace MapSqlAspNetCoreMVC.Extension
     {
         public static IServiceCollection AddAppService(this IServiceCollection services)
         {
-            services.AddTransient<IDataProvide, DataProvide>();
+            services.AddTransient<IPlayerWithAllianceRepository, PlayerWithAllianceRepository>();
             services.AddTransient<IPlayerWithPopulationRepository, PlayerWithPopulationRepository>();
             services.AddTransient<IPlayerWithDetailRepository, PlayerWithDetailRepository>();
             services.AddTransient<IVillageRepository, VillageRepository>();
+            services.AddTransient<IDataProvide, DataProvide>();
             return services;
         }
     }

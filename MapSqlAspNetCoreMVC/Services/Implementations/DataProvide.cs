@@ -15,6 +15,7 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
         private readonly IPlayerWithPopulationRepository _playerWithPopulationRepository;
         private readonly IPlayerWithDetailRepository _playerWithVillagePopulationRepository;
         private readonly IVillageRepository _villageRepository;
+        private readonly IPlayerWithAllianceRepository _playerWithAllianceRepository;
 
         private readonly List<SelectListItem> _tribeNamesList = new()
         {
@@ -29,12 +30,13 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
             new SelectListItem {Value = "8", Text = "Spartans"},
         };
 
-        public DataProvide(IDbContextFactory<ServerDbContext> contextFactory, IPlayerWithPopulationRepository playerWithPopulationRepository, IPlayerWithDetailRepository playerWithVillagePopulationRepository, IVillageRepository villageRepository)
+        public DataProvide(IDbContextFactory<ServerDbContext> contextFactory, IPlayerWithPopulationRepository playerWithPopulationRepository, IPlayerWithDetailRepository playerWithVillagePopulationRepository, IVillageRepository villageRepository, IPlayerWithAllianceRepository playerWithAllianceRepository)
         {
             _contextFactory = contextFactory;
             _playerWithPopulationRepository = playerWithPopulationRepository;
             _playerWithVillagePopulationRepository = playerWithVillagePopulationRepository;
             _villageRepository = villageRepository;
+            _playerWithAllianceRepository = playerWithAllianceRepository;
         }
 
         public async Task<List<PlayerWithPopulation>> GetInactivePlayerData(PlayerWithPopulationInput input)
@@ -56,6 +58,15 @@ namespace MapSqlAspNetCoreMVC.Services.Implementations
         {
             var player = await _playerWithVillagePopulationRepository.Get(input);
             return player;
+        }
+
+        public async Task<List<PlayerWithAlliance>> GetPlayerChangeAlliance(PlayerWithAllianceInput input)
+        {
+            var players = await _playerWithAllianceRepository.Get(input);
+            var filterdPlayers = players
+                .Where(x => x.AllianceChangeNumber != 0)
+                .ToList();
+            return filterdPlayers;
         }
 
         public List<DateTime> GetDateBefore(int days)

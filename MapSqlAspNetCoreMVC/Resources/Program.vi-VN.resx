@@ -121,7 +121,10 @@
     <value>Trang chủ</value>
   </data>
   <data name="InactivePlayers" xml:space="preserve">
-    <value>Account nghỉ chơi</value>
+    <value>Người chơi nghỉ chơi</value>
+  </data>
+  <data name="PlayerAllianceChange" xml:space="preserve">
+    <value>Người chơi thay đổi liên minh</value>
   </data>
   <data name="PlayerWithDetail" xml:space="preserve">
     <value>Thông tin người chơi</value>

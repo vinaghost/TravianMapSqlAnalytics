@@ -106,7 +106,7 @@
                             <p>
                                 @Html.DisplayFor(m => village.Population[i])
 
-                                @if (i == village.Population.Count() - 1) continue;
+                                @if (i == village.Population.Count - 1) continue;
                                 [ @(village.Population[i] - village.Population[i + 1]) ]
                             </p>
                         }

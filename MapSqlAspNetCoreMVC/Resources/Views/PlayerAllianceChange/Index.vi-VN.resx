@@ -117,19 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
+  <data name="Find" xml:space="preserve">
+    <value>Tìm</value>
   </data>
-  <data name="InactivePlayers" xml:space="preserve">
-    <value>Inactive players</value>
+  <data name="FoundMessage" xml:space="preserve">
+    <value>Tìm được {0} người chơi trong server {1}</value>
   </data>
-  <data name="PlayerAllianceChange" xml:space="preserve">
-    <value>Player's alliance change</value>
+  <data name="Page" xml:space="preserve">
+    <value>Trang {0} / {1}</value>
   </data>
-  <data name="PlayerWithDetail" xml:space="preserve">
-    <value>Player with detail</value>
+  <data name="PageName" xml:space="preserve">
+    <value>Tìm người chơi đổi liên minh</value>
   </data>
-  <data name="Village" xml:space="preserve">
-    <value>Village Filter</value>
+  <data name="ProfileLink" xml:space="preserve">
+    <value>Hiện trong travian</value>
   </data>
 </root>
