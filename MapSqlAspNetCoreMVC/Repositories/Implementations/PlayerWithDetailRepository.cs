@@ -49,6 +49,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 AllianceName = playerQuery.AllianceName,
                 Tribe = Constants.TribeNames[playerQuery.TribeId],
                 Population = new(),
+                AllianceNames = new(),
             };
 
             var dates = context.GetDateBefore(input.Days);
@@ -65,7 +66,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                      population.Date,
                      population.Population,
                  })
-                .Where(x => x.Date >= minDate && x.Date <= maxDate)
+                 .Where(x => x.Date >= minDate && x.Date <= maxDate)
                  .GroupBy(x => x.VillageId)
                  .AsEnumerable();
 
@@ -109,6 +110,18 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 }
             }
             playerInfo.Population.Insert(0, totalInfo);
+
+            var allianceQuery = context.PlayersAlliances
+                .Where(x => x.PlayerId == playerQuery.PlayerId && x.Date >= minDate && x.Date <= maxDate)
+                .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (playerAlliance, alliance) => new
+                {
+                    alliance.Name,
+                    playerAlliance.Date,
+                })
+                .OrderByDescending(x => x.Date)
+                .Select(x => x.Name)
+                .AsEnumerable();
+            playerInfo.AllianceNames.AddRange(allianceQuery);
 
             return playerInfo;
         }

@@ -15,5 +15,8 @@ namespace MapSqlAspNetCoreMVC.Models.Output
 
         [Display(Name = "Population")]
         public List<VillageWithPopulation> Population { get; set; }
+
+        [Display(Name = "AllianceNames")]
+        public List<string> AllianceNames { get; set; }
     }
 }

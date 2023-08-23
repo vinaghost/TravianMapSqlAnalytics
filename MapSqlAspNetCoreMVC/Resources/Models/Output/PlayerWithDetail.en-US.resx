@@ -120,6 +120,9 @@
   <data name="AllianceName" xml:space="preserve">
     <value>Alliance's name</value>
   </data>
+  <data name="AllianceNames" xml:space="preserve">
+    <value>Alliance history</value>
+  </data>
   <data name="PlayerName" xml:space="preserve">
     <value>Player's name</value>
   </data>

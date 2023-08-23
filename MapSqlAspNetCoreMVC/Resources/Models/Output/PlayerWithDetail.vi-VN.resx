@@ -120,6 +120,9 @@
   <data name="AllianceName" xml:space="preserve">
     <value>Liên minh</value>
   </data>
+  <data name="AllianceNames" xml:space="preserve">
+    <value>Lịch sử liên minh</value>
+  </data>
   <data name="PlayerName" xml:space="preserve">
     <value>Người chơi</value>
   </data>

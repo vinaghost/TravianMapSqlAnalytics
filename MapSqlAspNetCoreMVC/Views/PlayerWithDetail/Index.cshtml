@@ -47,8 +47,10 @@
     <p>@Html.DisplayNameFor(m => m.Player.PlayerName) : @Html.DisplayFor(m => m.Player.PlayerName)</p>
     <p>@Html.DisplayNameFor(m => m.Player.AllianceName) : @Html.DisplayFor(m => m.Player.AllianceName)</p>
     <p>@Html.DisplayNameFor(m => m.Player.Tribe) : @Html.DisplayFor(m => m.Player.Tribe)</p>
-    <p>@Html.DisplayNameFor(m => m.Player.Population)</p>
+    
 </div>
+
+<h2>@Html.DisplayNameFor(m => m.Player.Population)</h2>
 
 <table class="table">
     <thead>
@@ -114,5 +116,31 @@
                 }
             </tr>
         }
+    </tbody>
+</table>
+
+<h2>@Html.DisplayNameFor(m => m.Player.AllianceNames)</h2>
+
+<table class="table">
+    <thead>
+        <tr>           
+            @for (var i = 0; i < Model.Dates.Count; i++)
+            {
+                <th>
+                    @Model.Dates[i].ToString("dd/MM/yyyy")
+                </th>
+            }
+
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            @foreach (var alliance in Model.Player.AllianceNames)
+        {
+            <td>
+                @Html.DisplayFor(m => alliance)
+            </td>
+        }
+        </tr>
     </tbody>
 </table>
