@@ -23,8 +23,7 @@ namespace MapSqlAspNetCoreMVC.Extension
                 options.AddSupportedUICultures("vi-VN", "en-US");
                 options.FallBackToParentUICultures = true;
 
-                var requestProvider = options.RequestCultureProviders.OfType<AcceptLanguageHeaderRequestCultureProvider>().First();
-                options.RequestCultureProviders.Remove(requestProvider);
+                options.RequestCultureProviders.Remove(typeof(AcceptLanguageHeaderRequestCultureProvider));
             });
 
             services.AddScoped<RequestLocalizationCookiesMiddleware>();

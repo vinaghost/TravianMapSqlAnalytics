@@ -20,7 +20,7 @@ namespace MapSqlAspNetCoreMVC.Controllers
 
         public IActionResult Index()
         {
-            ViewBag.NewestDateTime = DateTime.Today.ToString("yyyy-MM-dd");
+            ViewBag.NewestDateTime = _dataProvider.GetNewestDay().ToString("yyyy-MM-dd");
             ViewData["Server"] = _configuration["WorldUrl"];
             return View();
         }
