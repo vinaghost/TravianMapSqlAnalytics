@@ -38,24 +38,48 @@
             <td>
                 @Html.DisplayNameFor(m => m.Input.X)
             </td>
-            <td>@Html.TextBoxFor(m => m.Input.X, new {@type = "number"})</td>
+            <td>
+                @Html.TextBoxFor(m => m.Input.X, new {@type = "number"})
+            </td>
             <td>
                 @Html.DisplayNameFor(m => m.Input.Y)
             </td>
-            <td>@Html.TextBoxFor(m => m.Input.Y, new {@type = "number"})</td>
+            <td>
+                @Html.TextBoxFor(m => m.Input.Y, new {@type = "number"})
+            </td>
         </tr>
 		<tr>
             <td>
                 @Html.DisplayNameFor(m => m.Input.MinPop)
             </td>
-            <td>@Html.TextBoxFor(m => m.Input.MinPop, new {@type = "number"})</td>
+            <td>
+                @Html.TextBoxFor(m => m.Input.MinPop, new {@type = "number"})
+            </td>
 		</tr>
 		<tr>
             <td>
                 @Html.DisplayNameFor(m => m.Input.MaxPop)
             </td>
-            <td>@Html.TextBoxFor(m => m.Input.MaxPop, new {@type = "number"})</td>
+            <td>
+                @Html.TextBoxFor(m => m.Input.MaxPop, new {@type = "number"})
+            </td>
 		</tr>
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.IgnoreCapital)
+            </td>
+            <td>
+                @Html.CheckBoxFor(m => m.Input.IgnoreCapital)
+            </td>
+        </tr
+        <tr>
+            <td>
+                @Html.DisplayNameFor(m => m.Input.IgnoreNormalVillage)
+            </td>
+            <td>
+                @Html.CheckBoxFor(m => m.Input.IgnoreNormalVillage)
+            </td>
+        </tr>
 		<tr>
             <td colspan="2"><input type="submit" value="@ViewLocalizer["Find"]" /></td>
 		</tr>

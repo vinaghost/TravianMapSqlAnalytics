@@ -123,6 +123,12 @@
   <data name="AllianceId" xml:space="preserve">
     <value>Chọn liên minh:</value>
   </data>
+  <data name="IgnoreCapital" xml:space="preserve">
+    <value>Bỏ qua thủ đô</value>
+  </data>
+  <data name="IgnoreNormalVillage" xml:space="preserve">
+    <value>Bỏ qua làng thường</value>
+  </data>
   <data name="MaxPop" xml:space="preserve">
     <value>Nhập số dân tối đa (-1 là bỏ qua):</value>
   </data>

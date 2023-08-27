@@ -22,6 +22,12 @@ namespace MapSqlAspNetCoreMVC.Models.Input
         [Display(Name = "Y")]
         public int Y { get; set; } = 0;
 
+        [Display(Name = "IgnoreCapital")]
+        public bool IgnoreCapital { get; set; } = false;
+
+        [Display(Name = "IgnoreNormalVillage")]
+        public bool IgnoreNormalVillage { get; set; } = false;
+
         public int PageNumber { get; set; } = 1;
         public int PageSize { get; set; } = 20;
     }

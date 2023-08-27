@@ -123,6 +123,12 @@
   <data name="AllianceId" xml:space="preserve">
     <value>Choose alliance:</value>
   </data>
+  <data name="IgnoreCapital" xml:space="preserve">
+    <value>Ignore capital</value>
+  </data>
+  <data name="IgnoreNormalVillage" xml:space="preserve">
+    <value>Ignore normal village</value>
+  </data>
   <data name="MaxPop" xml:space="preserve">
     <value>Input maximum population (-1 is ignore):</value>
   </data>
