@@ -30,7 +30,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 query = query.Where(x => x.Tribe == input.TribeId);
             }
 
-            var joinQuery = query.Join(context.Players, x => x.PlayerId, x => x.PlayerId, (village, player) => new
+            var getVillageQuery = query.Join(context.Players, x => x.PlayerId, x => x.PlayerId, (village, player) => new
             {
                 village.VillageId,
                 player.AllianceId,
@@ -41,8 +41,19 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 village.Y,
                 village.Population,
                 village.IsCapital,
-            })
-            .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (village, alliance) => new
+            });
+
+            if (input.IgnoreCapital)
+            {
+                getVillageQuery = getVillageQuery.Where(x => x.IsCapital == false);
+            }
+
+            if (input.IgnoreNormalVillage)
+            {
+                getVillageQuery = getVillageQuery.Where(x => x.IsCapital == true);
+            }
+
+            var getAllianceQuery = getVillageQuery.Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (village, alliance) => new
             {
                 village.VillageId,
                 village.AllianceId,
@@ -58,10 +69,10 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
 
             if (input.AllianceId != -1)
             {
-                joinQuery = joinQuery.Where(x => x.AllianceId == input.AllianceId);
+                getAllianceQuery = getAllianceQuery.Where(x => x.AllianceId == input.AllianceId);
             }
 
-            var result = joinQuery.AsEnumerable();
+            var result = getAllianceQuery.AsEnumerable();
 
             var villagesInfo = new List<Village>();
             var centerCoordinate = new Coordinates(input.X, input.Y);
