@@ -26,7 +26,8 @@ namespace MapSqlDatabaseUpdate
                     var password = hostContext.Configuration["Password"];
                     var worldUrl = hostContext.Configuration["WorldUrl"];
                     var connectionString = $"server={host};port={port};user={username};password={password};database={worldUrl}";
-                    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    options
+                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
                 });
                 services.AddHttpClient<IGetFileService, GetFileService>();
                 services.AddTransient<IParseService, ParseService>();

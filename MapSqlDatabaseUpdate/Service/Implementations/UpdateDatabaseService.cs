@@ -1,5 +1,4 @@
 ﻿using MainCore;
-using MainCore.Models;
 using MapSqlDatabaseUpdate.Extensions;
 using MapSqlDatabaseUpdate.Models;
 using MapSqlDatabaseUpdate.Service.Interfaces;
@@ -23,61 +22,52 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
         {
             using var context = _contextFactory.CreateDbContext();
             await context.Database.EnsureCreatedAsync();
+            await ExecuteAlliances(context, villageRaws);
+            await ExecutePlayers(context, villageRaws);
+            await ExecuteVillages(context, villageRaws);
+        }
 
-            var alliances = GetAlliances(villageRaws);
+        private async Task ExecuteAlliances(ServerDbContext context, List<VillageRaw> villageRaws)
+        {
+            var alliances = villageRaws
+                .DistinctBy(x => x.AllianceId)
+                .Select(x => x.GetAlliace());
             await context.BulkMergeAsync(alliances, options => options.MergeKeepIdentity = true);
-            _logger.LogInformation("Updated {count} alliances", alliances.Count);
+            var count = await context.Alliances.CountAsync();
+            _logger.LogInformation("Database has {count} alliances", count);
+        }
 
-            var players = GetPlayers(villageRaws);
-            await context.BulkSynchronizeAsync(players);
-            _logger.LogInformation("Updated {count} players", players.Count);
+        private async Task ExecutePlayers(ServerDbContext context, List<VillageRaw> villageRaws)
+        {
+            var players = villageRaws
+                .DistinctBy(x => x.PlayerId)
+                .Select(x => x.GetPlayer());
+            await context.BulkSynchronizeAsync(players, options => options.MergeKeepIdentity = true);
+            var count = await context.Players.CountAsync();
+            _logger.LogInformation("Database has {count} players", count);
 
-            var villages = GetVillages(villageRaws);
-            await context.BulkSynchronizeAsync(villages);
-            _logger.LogInformation("Updated {count} villages", villages.Count);
-
-            var date = DateTime.Today;
-            if (!context.VillagesPopulations.Any(x => x.Date == date))
+            if (!context.PlayersAlliances.Any(x => x.Date == DateTime.Today))
             {
-                var villagePopulations = GetVillagePopulations(villages, date);
-                await context.BulkInsertAsync(villagePopulations);
-            }
-
-            if (!context.PlayersAlliances.Any(x => x.Date == date))
-            {
-                var playerAlliances = GetPlayerAlliances(players, date);
+                var playerAlliances = players
+                    .Select(x => x.GetPlayerAlliance(DateTime.Today));
                 await context.BulkInsertAsync(playerAlliances);
             }
         }
 
-        private static List<Alliance> GetAlliances(List<VillageRaw> villageRaws)
+        private async Task ExecuteVillages(ServerDbContext context, List<VillageRaw> villageRaws)
         {
-            var alliances = villageRaws.DistinctBy(x => x.AllianceId).Select(x => x.GetAlliace()).ToList();
-            return alliances;
-        }
+            var villages = villageRaws
+                .Select(x => x.GetVillage());
+            await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true);
+            var count = await context.Players.CountAsync();
+            _logger.LogInformation("Database has {count} villages", count);
 
-        private static List<Player> GetPlayers(List<VillageRaw> villageRaws)
-        {
-            var players = villageRaws.DistinctBy(x => x.PlayerId).Select(x => x.GetPlayer()).ToList();
-            return players;
-        }
-
-        private static List<Village> GetVillages(List<VillageRaw> villageRaws)
-        {
-            var villages = villageRaws.Select(x => x.GetVillage()).ToList();
-            return villages;
-        }
-
-        private static List<VillagePopulation> GetVillagePopulations(List<Village> village, DateTime date)
-        {
-            var villagePopulations = village.Select(x => x.GetVillagePopulation(date)).ToList();
-            return villagePopulations;
-        }
-
-        private static List<PlayerAlliance> GetPlayerAlliances(List<Player> player, DateTime date)
-        {
-            var playerAlliance = player.Select(x => x.GetPlayerAlliance(date)).ToList();
-            return playerAlliance;
+            if (!context.VillagesPopulations.Any(x => x.Date == DateTime.Today))
+            {
+                var villagePopulations = villages
+                    .Select(x => x.GetVillagePopulation(DateTime.Today));
+                await context.BulkInsertAsync(villagePopulations);
+            }
         }
     }
 }

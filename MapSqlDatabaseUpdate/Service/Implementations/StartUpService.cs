@@ -43,10 +43,7 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
                 return;
             }
             var villages = _parseService.GetVillages(villageLines);
-            _logger.LogInformation("Found {count} villages in {world}", villages.Count, worldUrl);
-
             await _updateDatabaseService.Execute(villages);
-
             _hostApplicationLifetime.StopApplication();
         }
 

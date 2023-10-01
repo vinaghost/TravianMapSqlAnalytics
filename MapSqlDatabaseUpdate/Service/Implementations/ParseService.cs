@@ -19,7 +19,7 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             return villages;
         }
 
-        public VillageRaw GetVillage(string line)
+        private VillageRaw GetVillage(string line)
         {
             if (string.IsNullOrEmpty(line)) return null;
             var villageLine = line.Remove(0, 30);
