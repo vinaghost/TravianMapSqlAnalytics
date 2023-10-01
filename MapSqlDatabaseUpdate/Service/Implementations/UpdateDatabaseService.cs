@@ -29,11 +29,11 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             _logger.LogInformation("Updated {count} alliances", alliances.Count);
 
             var players = GetPlayers(villageRaws);
-            await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true);
+            await context.BulkSynchronizeAsync(players);
             _logger.LogInformation("Updated {count} players", players.Count);
 
             var villages = GetVillages(villageRaws);
-            await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true);
+            await context.BulkSynchronizeAsync(villages);
             _logger.LogInformation("Updated {count} villages", villages.Count);
 
             var date = DateTime.Today;
