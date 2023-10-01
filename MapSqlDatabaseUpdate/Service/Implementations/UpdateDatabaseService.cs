@@ -42,7 +42,7 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             var players = villageRaws
                 .DistinctBy(x => x.PlayerId)
                 .Select(x => x.GetPlayer());
-            await context.BulkSynchronizeAsync(players, options => options.MergeKeepIdentity = true);
+            await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true);
             var count = await context.Players.CountAsync();
             _logger.LogInformation("Database has {count} players", count);
 
