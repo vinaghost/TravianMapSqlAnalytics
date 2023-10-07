@@ -64,9 +64,9 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
 
             var playerIds = context.Players
                 .Select(x => x.PlayerId)
-                .AsAsyncEnumerable();
+                .AsEnumerable();
             var oldPlayers = new List<int>();
-            await foreach (var playerId in playerIds)
+            foreach (var playerId in playerIds)
             {
                 var player = players.FirstOrDefault(x => x.PlayerId == playerId);
                 if (player is not null)
@@ -116,10 +116,10 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
 
             var villageIds = context.Villages
                 .Select(x => x.VillageId)
-                .AsAsyncEnumerable();
+                .AsEnumerable();
 
             var oldVillages = new List<int>();
-            await foreach (var villageId in villageIds)
+            foreach (var villageId in villageIds)
             {
                 var village = villages.FirstOrDefault(x => x.VillageId == villageId);
                 if (village is not null)
