@@ -62,9 +62,9 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
                 .DistinctBy(x => x.PlayerId)
                 .Select(x => x.GetPlayer());
 
-            var playerIds = context.Players
+            var playerIds = await context.Players
                 .Select(x => x.PlayerId)
-                .AsEnumerable();
+                .ToListAsync();
             var oldPlayers = new List<int>();
             foreach (var playerId in playerIds)
             {
@@ -114,9 +114,9 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             var villages = villageRaws
                 .Select(x => x.GetVillage());
 
-            var villageIds = context.Villages
+            var villageIds = await context.Villages
                 .Select(x => x.VillageId)
-                .AsEnumerable();
+                .ToListAsync();
 
             var oldVillages = new List<int>();
             foreach (var villageId in villageIds)
