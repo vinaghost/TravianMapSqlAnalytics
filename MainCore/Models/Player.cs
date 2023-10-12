@@ -8,12 +8,14 @@ namespace MainCore.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int PlayerId { get; set; }
 
+        // foreign key
+        public List<Village> Villages { get; set; } = new();
+
+        public List<PlayerAlliance> Alliances { get; set; } = new();
+
+        // properties
         public int AllianceId { get; set; }
 
         public string Name { get; set; } = "";
-
-        public ICollection<Village> Villages { get; set; }
-
-        public ICollection<PlayerAlliance> Alliances { get; set; }
     }
 }

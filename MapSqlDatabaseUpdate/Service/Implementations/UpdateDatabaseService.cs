@@ -32,27 +32,8 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             var alliances = villageRaws
                 .DistinctBy(x => x.AllianceId)
                 .Select(x => x.GetAlliace());
-
-            foreach (var alliance in alliances)
-            {
-                var query = context.Alliances
-                    .Where(x => x.AllianceId == alliance.AllianceId);
-                if (await query.AnyAsync())
-                {
-                    await query.ExecuteUpdateAsync(x => x
-                        .SetProperty(x => x.Name, x => alliance.Name)
-                    );
-                }
-                else
-                {
-                    await context.AddAsync(alliance);
-                }
-            }
-            await context.SaveChangesAsync();
-
-            var count = await context.Alliances
-                .AsNoTracking()
-                .CountAsync();
+            await context.BulkMergeAsync(alliances, options => options.MergeKeepIdentity = true);
+            var count = await context.Alliances.CountAsync();
             _logger.LogInformation("Database has {count} alliances", count);
         }
 
@@ -61,44 +42,8 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
             var players = villageRaws
                 .DistinctBy(x => x.PlayerId)
                 .Select(x => x.GetPlayer());
-
-            var playerIds = context.Players
-                .Select(x => x.PlayerId)
-                .AsAsyncEnumerable();
-            var oldPlayers = new List<int>();
-            await foreach (var playerId in playerIds)
-            {
-                var player = players.FirstOrDefault(x => x.PlayerId == playerId);
-                if (player is not null)
-                {
-                    await context.Players
-                        .ExecuteUpdateAsync(x => x
-                            .SetProperty(x => x.Name, x => player.Name)
-                            .SetProperty(x => x.AllianceId, x => player.AllianceId)
-                    );
-                }
-                else
-                {
-                    await context.Villages
-                        .Where(x => x.PlayerId == playerId)
-                        .ExecuteDeleteAsync();
-                }
-
-                oldPlayers.Add(playerId);
-            }
-
-            var newPlayers = players
-                .Where(x => !oldPlayers.Contains(x.PlayerId));
-
-            foreach (var player in newPlayers)
-            {
-                await context.AddAsync(player);
-            }
-            await context.SaveChangesAsync();
-
-            var count = await context.Players
-                .AsNoTracking()
-                .CountAsync();
+            await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true);
+            var count = await context.Players.CountAsync();
             _logger.LogInformation("Database has {count} players", count);
 
             if (!context.PlayersAlliances.Any(x => x.Date == DateTime.Today))
@@ -113,54 +58,9 @@ namespace MapSqlDatabaseUpdate.Service.Implementations
         {
             var villages = villageRaws
                 .Select(x => x.GetVillage());
-
-            var villageIds = context.Villages
-                .Select(x => x.VillageId)
-                .AsAsyncEnumerable();
-
-            var oldVillages = new List<int>();
-            await foreach (var villageId in villageIds)
-            {
-                var village = villages.FirstOrDefault(x => x.VillageId == villageId);
-                if (village is not null)
-                {
-                    await context.Villages
-                        .ExecuteUpdateAsync(x => x
-                            .SetProperty(x => x.PlayerId, x => village.PlayerId)
-                            .SetProperty(x => x.Name, x => village.Name)
-                            .SetProperty(x => x.X, x => village.X)
-                            .SetProperty(x => x.Y, x => village.Y)
-                            .SetProperty(x => x.Tribe, x => village.Tribe)
-                            .SetProperty(x => x.Population, x => village.Population)
-                            .SetProperty(x => x.IsCapital, x => village.IsCapital)
-                            .SetProperty(x => x.IsCity, x => village.IsCity)
-                            .SetProperty(x => x.IsHarbor, x => village.IsHarbor)
-                            .SetProperty(x => x.VictoryPoints, x => village.VictoryPoints)
-                    );
-                }
-                else
-                {
-                    await context.Villages
-                        .Where(x => x.VillageId == villageId)
-                        .ExecuteDeleteAsync();
-                }
-
-                oldVillages.Add(villageId);
-            }
-
-            var newVillages = villages
-                .Where(x => !oldVillages.Contains(x.VillageId));
-
-            foreach (var village in newVillages)
-            {
-                await context.AddAsync(village);
-            }
-            await context.SaveChangesAsync();
-
-            var count = await context.Villages
-                .AsNoTracking()
-                .CountAsync();
-            _logger.LogInformation("Database has {count} players", count);
+            await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true);
+            var count = await context.Players.CountAsync();
+            _logger.LogInformation("Database has {count} villages", count);
 
             if (!context.VillagesPopulations.Any(x => x.Date == DateTime.Today))
             {
