@@ -1,4 +1,5 @@
 ﻿using MainCore;
+using MapSqlDatabaseUpdate.CQRS.Commands;
 using MapSqlDatabaseUpdate.Service.Implementations;
 using MapSqlDatabaseUpdate.Service.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -18,17 +19,23 @@ namespace MapSqlDatabaseUpdate
         Host.CreateDefaultBuilder(args)
             .ConfigureServices((hostContext, services) =>
             {
-                services.AddDbContextFactory<ServerDbContext>(options =>
+                services.AddDbContextFactory<ServerListDbContext>(options =>
                 {
-                    var host = hostContext.Configuration["Host"];
-                    var port = hostContext.Configuration["Port"];
-                    var username = hostContext.Configuration["Username"];
-                    var password = hostContext.Configuration["Password"];
-                    var worldUrl = hostContext.Configuration["WorldUrl"];
-                    var connectionString = $"server={host};port={port};user={username};password={password};database={worldUrl}";
+                    var connectionString = ServerListDbContext.GetConnectionString(hostContext.Configuration);
                     options
-                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+#if DEBUG
+                        .EnableSensitiveDataLogging()
+                        .EnableDetailedErrors();
+#endif
                 });
+                services.AddMediatR(cfg =>
+                {
+                    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+                });
+
+                services.AddHttpClient<GetServerListCommandHandler>();
+
                 services.AddHttpClient<IGetFileService, GetFileService>();
                 services.AddTransient<IParseService, ParseService>();
                 services.AddTransient<IUpdateDatabaseService, UpdateDatabaseService>();
