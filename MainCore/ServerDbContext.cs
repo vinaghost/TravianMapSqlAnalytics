@@ -22,11 +22,11 @@ namespace MainCore
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder
-                .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
 #if DEBUG
                 .EnableSensitiveDataLogging()
-                .EnableDetailedErrors();
+                .EnableDetailedErrors()
 #endif
+                .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString));
         }
 
         public static string GetConnectionString(IConfiguration configuration, string worldUrl)

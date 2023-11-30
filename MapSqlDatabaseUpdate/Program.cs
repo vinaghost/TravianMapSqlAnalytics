@@ -21,11 +21,11 @@ namespace MapSqlDatabaseUpdate
                 {
                     var connectionString = ServerListDbContext.GetConnectionString(hostContext.Configuration);
                     options
-                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
 #if DEBUG
                         .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors();
+                        .EnableDetailedErrors()
 #endif
+                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
                 });
                 services.AddMediatR(cfg =>
                 {
