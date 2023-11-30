@@ -27,12 +27,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-              
-      - name: Install dependencies
-        run: dotnet restore
         
       - name: Publish 
-        run: dotnet publish MapSqlDatabaseUpdate -c Release --no-restore -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate
+        run: dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate
       
       - name: Build and push update image
         uses: docker/build-push-action@v4
