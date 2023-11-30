@@ -1,7 +1,5 @@
 ﻿using MainCore;
-using MapSqlDatabaseUpdate.CQRS.Commands;
-using MapSqlDatabaseUpdate.Service.Implementations;
-using MapSqlDatabaseUpdate.Service.Interfaces;
+using MapSqlDatabaseUpdate.Commands;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -35,10 +33,7 @@ namespace MapSqlDatabaseUpdate
                 });
 
                 services.AddHttpClient<GetServerListCommandHandler>();
-
-                services.AddHttpClient<IGetFileService, GetFileService>();
-                services.AddTransient<IParseService, ParseService>();
-                services.AddTransient<IUpdateDatabaseService, UpdateDatabaseService>();
+                services.AddHttpClient<GetMapSqlCommandHandler>();
 
                 services.AddHostedService<StartUpService>();
             });

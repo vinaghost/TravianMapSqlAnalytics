@@ -7,6 +7,7 @@ namespace MainCore
     public class ServerListDbContext : DbContext
     {
         private const string DATABASE_NAME = "ServerList";
+        public DbSet<Server> Servers { get; set; }
 
         public ServerListDbContext(DbContextOptions<ServerListDbContext> options) : base(options)
         {
@@ -18,7 +19,5 @@ namespace MainCore
             var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={DATABASE_NAME}";
             return connectionString;
         }
-
-        public DbSet<Server> Servers { get; set; }
     }
 }

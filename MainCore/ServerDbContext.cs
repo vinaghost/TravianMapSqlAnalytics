@@ -12,36 +12,28 @@ namespace MainCore
         public DbSet<VillagePopulation> VillagesPopulations { get; set; }
         public DbSet<PlayerAlliance> PlayersAlliances { get; set; }
 
-        public ServerDbContext(DbContextOptions<ServerDbContext> options) : base(options)
+        private readonly string _connectionString;
+
+        public ServerDbContext(IConfiguration configuration, string worldUrl)
         {
+            _connectionString = GetConnectionString(configuration, worldUrl);
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder
+                .UseMySql(_connectionString, ServerVersion.AutoDetect(_connectionString))
+#if DEBUG
+                .EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
+#endif
         }
 
         public static string GetConnectionString(IConfiguration configuration, string worldUrl)
         {
-            var (host, port, username, password) = (configuration["Database:Host"], configuration["Database:Port"], configuration["Database:Username"], configuration["Database:Password"]);
-            var connectionString = $"server={host};port={port};user={username};password={password};database={worldUrl}";
+            var (host, port, username, password) = (configuration["Host"], configuration["Port"], configuration["Username"], configuration["Password"]);
+            var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={worldUrl}";
             return connectionString;
-        }
-
-        public List<DateTime> GetDateBefore(int days)
-        {
-            var dates = new List<DateTime>();
-            var today = GetNewestDay();
-            for (int i = 0; i <= days; i++)
-            {
-                var beforeDate = today.AddDays(-i);
-                dates.Add(beforeDate);
-            }
-            return dates;
-        }
-
-        public DateTime GetNewestDay()
-        {
-            var query = VillagesPopulations
-                .OrderByDescending(x => x.Date)
-                .Select(x => x.Date)
-                .FirstOrDefault();
-            return query;
         }
     }
 }

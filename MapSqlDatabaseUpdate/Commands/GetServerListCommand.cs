@@ -4,7 +4,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
-namespace MapSqlDatabaseUpdate.CQRS.Commands
+namespace MapSqlDatabaseUpdate.Commands
 {
     public class GetServerListCommand : IRequest<List<Server>>
     {
@@ -25,8 +25,11 @@ namespace MapSqlDatabaseUpdate.CQRS.Commands
         public async Task<List<Server>> Handle(GetServerListCommand request, CancellationToken cancellationToken)
         {
             var responseMessage = await _httpClient.GetFromJsonAsync<ResponseMessage>(_url, cancellationToken: cancellationToken);
-            _logger.LogInformation("Found {count} servers", responseMessage.Count);
-            return responseMessage.Rows.Select(x => x.ToServer()).ToList();
+            var servers = responseMessage.Rows
+                .Select(x => x.ToServer())
+                .ToList();
+            _logger.LogInformation("Found {count} servers", servers.Count);
+            return servers;
         }
 
         private class ResponseMessage

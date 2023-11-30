@@ -3,7 +3,7 @@ using MainCore.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace MapSqlDatabaseUpdate.CQRS.Commands
+namespace MapSqlDatabaseUpdate.Commands
 {
     public class UpdateServerListCommand : IRequest
     {
@@ -29,7 +29,7 @@ namespace MapSqlDatabaseUpdate.CQRS.Commands
             using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
             await context.Database.EnsureCreatedAsync(cancellationToken);
 
-            await context.BulkMergeAsync(request.Servers, options => options.MergeKeepIdentity = true);
+            await context.BulkSynchronizeAsync(request.Servers, options => options.SynchronizeKeepidentity = true);
         }
     }
 }
