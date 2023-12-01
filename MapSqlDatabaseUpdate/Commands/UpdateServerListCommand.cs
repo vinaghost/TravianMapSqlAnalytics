@@ -1,5 +1,5 @@
-﻿using MainCore;
-using MainCore.Models;
+﻿using MapSqlDatabaseUpdate.Context;
+using MapSqlDatabaseUpdate.Models.Database;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

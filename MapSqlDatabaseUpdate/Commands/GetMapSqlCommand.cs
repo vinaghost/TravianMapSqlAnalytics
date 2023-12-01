@@ -1,5 +1,5 @@
 ﻿using MapSqlDatabaseUpdate.Extensions;
-using MapSqlDatabaseUpdate.Models;
+using MapSqlDatabaseUpdate.Models.Raw;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -49,7 +49,6 @@ namespace MapSqlDatabaseUpdate.Commands
                 if (village is null) continue;
                 villages.Add(village);
             }
-            _logger.LogInformation("[{thread}] Server {server}", Environment.CurrentManagedThreadId, url);
             return villages;
         }
 

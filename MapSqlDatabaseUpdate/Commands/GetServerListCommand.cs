@@ -1,16 +1,15 @@
-﻿using MainCore.Models;
-using MapSqlDatabaseUpdate.Models;
+﻿using MapSqlDatabaseUpdate.Models.Raw;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
 namespace MapSqlDatabaseUpdate.Commands
 {
-    public class GetServerListCommand : IRequest<List<Server>>
+    public class GetServerListCommand : IRequest<List<ServerRaw>>
     {
     }
 
-    public class GetServerListCommandHandler : IRequestHandler<GetServerListCommand, List<Server>>
+    public class GetServerListCommandHandler : IRequestHandler<GetServerListCommand, List<ServerRaw>>
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger<GetServerListCommand> _logger;
@@ -22,12 +21,10 @@ namespace MapSqlDatabaseUpdate.Commands
             _logger = logger;
         }
 
-        public async Task<List<Server>> Handle(GetServerListCommand request, CancellationToken cancellationToken)
+        public async Task<List<ServerRaw>> Handle(GetServerListCommand request, CancellationToken cancellationToken)
         {
             var responseMessage = await _httpClient.GetFromJsonAsync<ResponseMessage>(_url, cancellationToken: cancellationToken);
-            var servers = responseMessage.Rows
-                .Select(x => x.ToServer())
-                .ToList();
+            var servers = responseMessage.Rows;
             _logger.LogInformation("Found {count} servers", servers.Count);
             return servers;
         }

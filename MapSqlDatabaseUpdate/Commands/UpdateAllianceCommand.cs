@@ -1,6 +1,6 @@
-﻿using MainCore;
+﻿using MapSqlDatabaseUpdate.Context;
 using MapSqlDatabaseUpdate.Extensions;
-using MapSqlDatabaseUpdate.Models;
+using MapSqlDatabaseUpdate.Models.Raw;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

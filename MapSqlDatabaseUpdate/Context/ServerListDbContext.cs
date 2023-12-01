@@ -1,8 +1,8 @@
-﻿using MainCore.Models;
+﻿using MapSqlDatabaseUpdate.Models.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MainCore
+namespace MapSqlDatabaseUpdate.Context
 {
     public class ServerListDbContext : DbContext
     {
@@ -16,7 +16,7 @@ namespace MainCore
         public static string GetConnectionString(IConfiguration configuration)
         {
             var (host, port, username, password) = (configuration["Host"], configuration["Port"], configuration["Username"], configuration["Password"]);
-            var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={DATABASE_NAME}";
+            var connectionString = $"ServerRaw={host};Port={port};Uid={username};Pwd={password};Database={DATABASE_NAME}";
             return connectionString;
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace MainCore.Models
+﻿namespace MapSqlDatabaseUpdate.Models.Database
 {
     public class VillagePopulation
     {
