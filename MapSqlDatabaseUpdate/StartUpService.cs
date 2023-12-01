@@ -54,7 +54,7 @@ namespace MapSqlDatabaseUpdate
 
             await _mediator.Send(new UpdateServerListCommand([.. dataOutput]), cancellationToken);
 
-            var data = dataOutput.ToList();
+            var data = dataOutput.OrderByDescending(x => x.PlayerCount).ToList();
             _logger.LogInformation("Server: {count}", data.Count);
             data.ForEach(x => _logger.LogInformation("{output}", x));
             _hostApplicationLifetime.StopApplication();
