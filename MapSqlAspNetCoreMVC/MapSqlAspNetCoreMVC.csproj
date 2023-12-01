@@ -21,9 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="**\*.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-    </EmbeddedResource>
+    <EmbeddedResource Update="**\*.resx"/>
   </ItemGroup>
 
 

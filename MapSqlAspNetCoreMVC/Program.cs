@@ -4,7 +4,6 @@ using MapSqlAspNetCoreMVC.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace MapSqlAspNetCoreMVC
 {
@@ -57,14 +56,14 @@ namespace MapSqlAspNetCoreMVC
             services.AddAuthentication();
             services.AddHttpContextAccessor();
 
-            services.AddPooledDbContextFactory<ServerDbContext>((serviceProvider, options) =>
+            services.AddDbContextFactory<ServerDbContext>((serviceProvider, options) =>
             {
                 var worldUrl = "ts8.x1.arabics.travian.com";
                 var configuration = serviceProvider.GetService<IConfiguration>();
-                var connectionString = ServerDbContext.GetConnectionString(configuration, worldUrl);
-                options.UseMySql(connectionString, ServerVersion.Create(8, 0, 34, ServerType.MySql));
-                //options.EnableSensitiveDataLogging();
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+                options
+                    .GettOptionsBuilder(configuration, worldUrl)
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
             services.AddAppService();
