@@ -11,5 +11,10 @@
         public int PlayerCount { get; set; }
         public int VillageCount { get; set; }
         public int OasisCount { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Zone} - {Url} - {StartDate} - Alliance: {AllianceCount} - Player: {PlayerCount} - Village: {VillageCount} - Oasis: {OasisCount}";
+        }
     }
 }
