@@ -1,5 +1,5 @@
-﻿using MapSqlDatabaseUpdate.Commands;
-using MapSqlDatabaseUpdate.Context;
+﻿using Core;
+using MapSqlDatabaseUpdate.Commands;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

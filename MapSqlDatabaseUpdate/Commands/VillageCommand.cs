@@ -1,4 +1,4 @@
-﻿using MapSqlDatabaseUpdate.Models.Raw;
+﻿using MapSqlDatabaseUpdate.Models;
 
 namespace MapSqlDatabaseUpdate.Commands
 {

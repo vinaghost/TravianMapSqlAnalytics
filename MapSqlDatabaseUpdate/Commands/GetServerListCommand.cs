@@ -1,4 +1,4 @@
-﻿using MapSqlDatabaseUpdate.Models.Raw;
+﻿using MapSqlDatabaseUpdate.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;

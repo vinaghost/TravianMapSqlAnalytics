@@ -1,6 +1,6 @@
-﻿using MapSqlDatabaseUpdate.Commands;
-using MapSqlDatabaseUpdate.Models.Database;
-using MapSqlDatabaseUpdate.Models.Raw;
+﻿using Core.Models;
+using MapSqlDatabaseUpdate.Commands;
+using MapSqlDatabaseUpdate.Models;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

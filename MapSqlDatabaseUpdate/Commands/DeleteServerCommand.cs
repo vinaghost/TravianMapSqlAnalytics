@@ -1,4 +1,4 @@
-﻿using MapSqlDatabaseUpdate.Context;
+﻿using Core;
 using MediatR;
 using Microsoft.Extensions.Configuration;
 

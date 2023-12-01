@@ -1,4 +1,4 @@
-﻿using MainCore;
+﻿using Core;
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
 using MapSqlAspNetCoreMVC.Repositories.Interfaces;

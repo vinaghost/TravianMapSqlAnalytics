@@ -1,8 +1,8 @@
-﻿using MapSqlDatabaseUpdate.Models.Database;
+﻿using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MapSqlDatabaseUpdate.Context
+namespace Core
 {
     public class ServerListDbContext : DbContext
     {

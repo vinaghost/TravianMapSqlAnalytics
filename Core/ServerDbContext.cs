@@ -1,8 +1,8 @@
-﻿using MapSqlDatabaseUpdate.Models.Database;
+﻿using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MapSqlDatabaseUpdate.Context
+namespace Core
 {
     public class ServerDbContext : DbContext
     {
@@ -34,6 +34,27 @@ namespace MapSqlDatabaseUpdate.Context
             var (host, port, username, password) = (configuration["Host"], configuration["Port"], configuration["Username"], configuration["Password"]);
             var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={worldUrl}";
             return connectionString;
+        }
+
+        public List<DateTime> GetDateBefore(int days)
+        {
+            var dates = new List<DateTime>();
+            var today = GetNewestDay();
+            for (int i = 0; i <= days; i++)
+            {
+                var beforeDate = today.AddDays(-i);
+                dates.Add(beforeDate);
+            }
+            return dates;
+        }
+
+        public DateTime GetNewestDay()
+        {
+            var query = VillagesPopulations
+                .OrderByDescending(x => x.Date)
+                .Select(x => x.Date)
+                .FirstOrDefault();
+            return query;
         }
     }
 }

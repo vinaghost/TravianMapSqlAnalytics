@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace MapSqlDatabaseUpdate.Models.Raw
+namespace MapSqlDatabaseUpdate.Models
 {
     public class ServerRaw
     {

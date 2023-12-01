@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlAspNetCoreMVC", "MapSqlAspNetCoreMVC\MapSqlAspNetCoreMVC.csproj", "{064EB205-16A0-40A9-B1D3-CF595327A90C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlDatabaseUpdate", "MapSqlDatabaseUpdate\MapSqlDatabaseUpdate.csproj", "{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{731E1E6D-7399-4AA7-BA0F-36EA64E57A28}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapSqlAspNetCoreMVC", "MapSqlAspNetCoreMVC\MapSqlAspNetCoreMVC.csproj", "{BCDE83DA-9CBD-45CB-BC6D-5AF184828479}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{064EB205-16A0-40A9-B1D3-CF595327A90C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{966E8ED8-044F-4F4C-8387-A7CFB0A2AB27}.Release|Any CPU.Build.0 = Release|Any CPU
+		{731E1E6D-7399-4AA7-BA0F-36EA64E57A28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{731E1E6D-7399-4AA7-BA0F-36EA64E57A28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{731E1E6D-7399-4AA7-BA0F-36EA64E57A28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{731E1E6D-7399-4AA7-BA0F-36EA64E57A28}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCDE83DA-9CBD-45CB-BC6D-5AF184828479}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCDE83DA-9CBD-45CB-BC6D-5AF184828479}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCDE83DA-9CBD-45CB-BC6D-5AF184828479}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCDE83DA-9CBD-45CB-BC6D-5AF184828479}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

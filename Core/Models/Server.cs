@@ -1,4 +1,4 @@
-﻿namespace MapSqlDatabaseUpdate.Models.Database
+﻿namespace Core.Models
 {
     public class Server
     {

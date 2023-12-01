@@ -1,5 +1,5 @@
 ﻿using MapSqlDatabaseUpdate.Extensions;
-using MapSqlDatabaseUpdate.Models.Raw;
+using MapSqlDatabaseUpdate.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 

@@ -1,4 +1,4 @@
-using MainCore;
+using Core;
 using MapSqlAspNetCoreMVC.Extension;
 using MapSqlAspNetCoreMVC.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;

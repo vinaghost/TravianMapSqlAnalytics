@@ -1,5 +1,5 @@
-﻿using MapSqlDatabaseUpdate.Models.Database;
-using MapSqlDatabaseUpdate.Models.Raw;
+﻿using Core.Models;
+using MapSqlDatabaseUpdate.Models;
 
 namespace MapSqlDatabaseUpdate.Extensions
 {
