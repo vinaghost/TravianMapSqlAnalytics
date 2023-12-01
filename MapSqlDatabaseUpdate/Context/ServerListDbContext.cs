@@ -16,7 +16,7 @@ namespace MapSqlDatabaseUpdate.Context
         public static string GetConnectionString(IConfiguration configuration)
         {
             var (host, port, username, password) = (configuration["Host"], configuration["Port"], configuration["Username"], configuration["Password"]);
-            var connectionString = $"ServerRaw={host};Port={port};Uid={username};Pwd={password};Database={DATABASE_NAME}";
+            var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={DATABASE_NAME}";
             return connectionString;
         }
     }

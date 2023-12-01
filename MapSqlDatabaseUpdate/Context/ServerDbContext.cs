@@ -32,7 +32,7 @@ namespace MapSqlDatabaseUpdate.Context
         public static string GetConnectionString(IConfiguration configuration, string worldUrl)
         {
             var (host, port, username, password) = (configuration["Host"], configuration["Port"], configuration["Username"], configuration["Password"]);
-            var connectionString = $"ServerRaw={host};Port={port};Uid={username};Pwd={password};Database={worldUrl}";
+            var connectionString = $"Server={host};Port={port};Uid={username};Pwd={password};Database={worldUrl}";
             return connectionString;
         }
     }
