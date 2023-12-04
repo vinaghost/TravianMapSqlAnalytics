@@ -23,16 +23,18 @@ namespace MapSqlAspNetCoreMVC
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
             app.UseStaticFiles();
             app.UseRequestLocalization();
             app.UseRequestLocalizationCookies();
+            app.UseRequestServerCookies();
             app.UseRouting();
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });
-            app.UseAuthentication();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapControllerRoute(
@@ -53,6 +55,8 @@ namespace MapSqlAspNetCoreMVC
                 .AddDataAnnotationsLocalization();
 
             services.AddLocalizationService();
+            services.AddServerService();
+
             services.AddAuthentication();
             services.AddHttpContextAccessor();
 

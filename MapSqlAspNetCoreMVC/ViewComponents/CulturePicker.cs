@@ -7,11 +7,11 @@ namespace MapSqlAspNetCoreMVC.ViewComponents
 {
     public class CulturePicker : ViewComponent
     {
-        private readonly IOptions<RequestLocalizationOptions> localizationOptions;
+        private readonly IOptions<RequestLocalizationOptions> _localizationOptions;
 
         public CulturePicker(IOptions<RequestLocalizationOptions> localizationOptions)
         {
-            this.localizationOptions = localizationOptions;
+            _localizationOptions = localizationOptions;
         }
 
         public IViewComponentResult Invoke()
@@ -19,7 +19,7 @@ namespace MapSqlAspNetCoreMVC.ViewComponents
             var cultureFeature = HttpContext.Features.Get<IRequestCultureFeature>();
             var model = new CulturePickerModel
             {
-                SupportedCultures = localizationOptions.Value.SupportedUICultures.ToList(),
+                SupportedCultures = [.. _localizationOptions.Value.SupportedUICultures],
                 CurrentUICulture = cultureFeature.RequestCulture.UICulture
             };
 

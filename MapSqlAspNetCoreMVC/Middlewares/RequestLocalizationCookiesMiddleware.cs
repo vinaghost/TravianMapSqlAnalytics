@@ -27,11 +27,12 @@ namespace MapSqlAspNetCoreMVC.Middlewares
                 if (feature != null)
                 {
                     // remember culture across request
+                    var cookieValue = CookieRequestCultureProvider.MakeCookieValue(feature.RequestCulture);
                     context.Response
                         .Cookies
                         .Append(
                             Provider.CookieName,
-                            CookieRequestCultureProvider.MakeCookieValue(feature.RequestCulture)
+                            cookieValue
                         );
                 }
             }

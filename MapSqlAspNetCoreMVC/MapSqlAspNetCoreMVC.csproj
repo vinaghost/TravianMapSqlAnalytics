@@ -21,7 +21,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="**\*.resx"/>
+    <EmbeddedResource Update="**\*.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Shared\Components\ServerPicker\Default.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Shared\Components\ServerPicker\Default.cshtml" />
   </ItemGroup>
 
 
