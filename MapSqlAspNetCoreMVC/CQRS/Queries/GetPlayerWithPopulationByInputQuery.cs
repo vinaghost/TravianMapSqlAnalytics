@@ -1,29 +1,32 @@
 ﻿using Core;
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
-using MapSqlAspNetCoreMVC.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-namespace MapSqlAspNetCoreMVC.Repositories.Implementations
+namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public class PlayerWithPopulationRepository : IPlayerWithPopulationRepository
-    {
-        private readonly IDbContextFactory<ServerDbContext> _contextFactory;
+    public record GetPlayerWithPopulationByInputQuery(PlayerWithPopulationInput Input) : IRequest<List<PlayerWithPopulation>>;
 
-        public PlayerWithPopulationRepository(IDbContextFactory<ServerDbContext> contextFactory)
+    public class GetPlayerWithPopulationByInputQueryHandler : IRequestHandler<GetPlayerWithPopulationByInputQuery, List<PlayerWithPopulation>>
+    {
+        private readonly ServerDbContext _context;
+
+        public GetPlayerWithPopulationByInputQueryHandler(ServerDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
-        public async Task<List<PlayerWithPopulation>> Get(PlayerWithPopulationInput input)
+        public async Task<List<PlayerWithPopulation>> Handle(GetPlayerWithPopulationByInputQuery request, CancellationToken cancellationToken)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
-            var dates = context.GetDateBefore(input.Days);
+            await Task.CompletedTask;
+            var input = request.Input;
+            var dates = _context.GetDateBefore(input.Days);
+
             var (minDate, maxDate) = (dates[^1], dates[0]);
 
-            var query = context.VillagesPopulations
+            var query = _context.VillagesPopulations
                 .Where(x => x.Date >= minDate && x.Date <= maxDate)
-                .Join(context.Villages, x => x.VillageId, x => x.VillageId, (population, village) => new
+                .Join(_context.Villages, x => x.VillageId, x => x.VillageId, (population, village) => new
                 {
                     village.PlayerId,
                     population.Date,
@@ -47,7 +50,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                     Population = x.Select(x => x.Population).ToList(),
                     VillageCount = x.Select(x => x.VillageCount).First(),
                 })
-                .Join(context.Players, x => x.PlayerId, x => x.PlayerId, (population, player) => new
+                .Join(_context.Players, x => x.PlayerId, x => x.PlayerId, (population, player) => new
                 {
                     population.PlayerId,
                     PlayerName = player.Name,
@@ -56,7 +59,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                     population.Population,
                     population.VillageCount,
                 })
-                .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (population, alliance) => new
+                .Join(_context.Alliances, x => x.AllianceId, x => x.AllianceId, (population, alliance) => new
                 {
                     population.PlayerId,
                     population.PlayerName,
@@ -70,15 +73,18 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
             var result = query.AsEnumerable()
                 .OrderByDescending(x => x.Population[0]);
 
-            var population = result.Select(x => new PlayerWithPopulation()
-            {
-                PlayerId = x.PlayerId,
-                AllianceName = x.AllianceName,
-                PlayerName = x.PlayerName,
-                Tribe = Constants.TribeNames[x.Tribe],
-                Population = x.Population,
-                VillageCount = x.VillageCount,
-            }).ToList();
+            var population = result
+                .Where(x => x.Population.Count > input.Days && x.Population.Max() - x.Population.Min() == 0)
+                .Select(x => new PlayerWithPopulation()
+                {
+                    PlayerId = x.PlayerId,
+                    AllianceName = x.AllianceName,
+                    PlayerName = x.PlayerName,
+                    Tribe = Constants.TribeNames[x.Tribe],
+                    Population = x.Population,
+                    VillageCount = x.VillageCount,
+                })
+                .ToList();
             return population;
         }
     }

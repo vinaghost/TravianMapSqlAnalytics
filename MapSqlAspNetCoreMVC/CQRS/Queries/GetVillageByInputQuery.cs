@@ -2,24 +2,27 @@
 using MapSqlAspNetCoreMVC.Models;
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
-using MapSqlAspNetCoreMVC.Repositories.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using MediatR;
 
-namespace MapSqlAspNetCoreMVC.Repositories.Implementations
+namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public class VillageRepository : IVillageRepository
-    {
-        private readonly IDbContextFactory<ServerDbContext> _contextFactory;
+    public record GetVillageByInputQuery(VillageInput Input) : IRequest<List<Village>>;
 
-        public VillageRepository(IDbContextFactory<ServerDbContext> contextFactory)
+    public class GetVillageByVillageInputQueryHandler : IRequestHandler<GetVillageByInputQuery, List<Village>>
+    {
+        private readonly ServerDbContext _context;
+
+        public GetVillageByVillageInputQueryHandler(ServerDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
-        public async Task<List<Village>> Get(VillageInput input)
+        public async Task<List<Village>> Handle(GetVillageByInputQuery request, CancellationToken cancellationToken)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
-            var query = context.Villages
+            await Task.CompletedTask;
+            var input = request.Input;
+
+            var query = _context.Villages
                 .Where(x => x.Population >= input.MinPop);
             if (input.MaxPop != -1 && input.MaxPop > input.MinPop)
             {
@@ -30,7 +33,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 query = query.Where(x => x.Tribe == input.TribeId);
             }
 
-            var getVillageQuery = query.Join(context.Players, x => x.PlayerId, x => x.PlayerId, (village, player) => new
+            var getVillageQuery = query.Join(_context.Players, x => x.PlayerId, x => x.PlayerId, (village, player) => new
             {
                 village.VillageId,
                 player.AllianceId,
@@ -53,7 +56,7 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 getVillageQuery = getVillageQuery.Where(x => x.IsCapital == true);
             }
 
-            var getAllianceQuery = getVillageQuery.Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (village, alliance) => new
+            var getAllianceQuery = getVillageQuery.Join(_context.Alliances, x => x.AllianceId, x => x.AllianceId, (village, alliance) => new
             {
                 village.VillageId,
                 village.AllianceId,

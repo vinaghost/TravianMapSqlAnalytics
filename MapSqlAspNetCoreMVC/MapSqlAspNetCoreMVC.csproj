@@ -11,6 +11,7 @@
 
 
   <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.2.0" />
     <PackageReference Include="X.PagedList" Version="8.4.7" />
     <PackageReference Include="X.PagedList.Mvc.Bootstrap4" Version="8.1.0" />
     <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
@@ -30,6 +31,10 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\Shared\Components\ServerPicker\Default.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CQRS\Commands\" />
   </ItemGroup>
 
 

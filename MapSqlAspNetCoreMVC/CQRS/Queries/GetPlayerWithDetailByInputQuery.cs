@@ -1,42 +1,45 @@
 ﻿using Core;
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
-using MapSqlAspNetCoreMVC.Repositories.Interfaces;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace MapSqlAspNetCoreMVC.Repositories.Implementations
+namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public class PlayerWithDetailRepository : IPlayerWithDetailRepository
-    {
-        private readonly IDbContextFactory<ServerDbContext> _contextFactory;
+    public record GetPlayerWithDetailByInputQuery(PlayerWithDetailInput Input) : IRequest<PlayerWithDetail>;
 
-        public PlayerWithDetailRepository(IDbContextFactory<ServerDbContext> contextFactory)
+    public class GetPlayerWithDetailWithInputQueryHandler : IRequestHandler<GetPlayerWithDetailByInputQuery, PlayerWithDetail>
+    {
+        private readonly ServerDbContext _context;
+
+        public GetPlayerWithDetailWithInputQueryHandler(ServerDbContext context)
         {
-            _contextFactory = contextFactory;
+            _context = context;
         }
 
-        public async Task<PlayerWithDetail> Get(PlayerWithDetailInput input)
+        public async Task<PlayerWithDetail> Handle(GetPlayerWithDetailByInputQuery request, CancellationToken cancellationToken)
         {
-            using var context = await _contextFactory.CreateDbContextAsync();
+            await Task.CompletedTask;
+            var input = request.Input;
 
-            var playerQuery = context.Players
-                .Where(x => x.Name.Equals(input.PlayerName))
-                .Include(x => x.Villages)
-                .Select(x => new
-                {
-                    x.PlayerId,
-                    x.AllianceId,
-                    PlayerName = x.Name,
-                    TribeId = x.Villages.First().Tribe,
-                })
-                .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (player, alliance) => new
-                {
-                    player.PlayerId,
-                    player.PlayerName,
-                    AllianceName = alliance.Name,
-                    player.TribeId,
-                })
-                .FirstOrDefault();
+            var playerQuery = _context.Players
+                   .Where(x => x.Name.Equals(input.PlayerName))
+                   .Include(x => x.Villages)
+                   .Select(x => new
+                   {
+                       x.PlayerId,
+                       x.AllianceId,
+                       PlayerName = x.Name,
+                       TribeId = x.Villages.First().Tribe,
+                   })
+                   .Join(_context.Alliances, x => x.AllianceId, x => x.AllianceId, (player, alliance) => new
+                   {
+                       player.PlayerId,
+                       player.PlayerName,
+                       AllianceName = alliance.Name,
+                       player.TribeId,
+                   })
+                   .FirstOrDefault();
 
             if (playerQuery is null)
             {
@@ -52,12 +55,12 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
                 AllianceNames = new(),
             };
 
-            var dates = context.GetDateBefore(input.Days);
+            var dates = _context.GetDateBefore(input.Days);
             var (minDate, maxDate) = (dates[^1], dates[0]);
 
-            var populationQuery = context.Villages
+            var populationQuery = _context.Villages
                  .Where(x => x.PlayerId == playerQuery.PlayerId)
-                 .Join(context.VillagesPopulations, x => x.VillageId, x => x.VillageId, (village, population) => new
+                 .Join(_context.VillagesPopulations, x => x.VillageId, x => x.VillageId, (village, population) => new
                  {
                      village.VillageId,
                      VillageName = village.Name,
@@ -111,9 +114,9 @@ namespace MapSqlAspNetCoreMVC.Repositories.Implementations
             }
             playerInfo.Population.Insert(0, totalInfo);
 
-            var allianceQuery = context.PlayersAlliances
+            var allianceQuery = _context.PlayersAlliances
                 .Where(x => x.PlayerId == playerQuery.PlayerId && x.Date >= minDate && x.Date <= maxDate)
-                .Join(context.Alliances, x => x.AllianceId, x => x.AllianceId, (playerAlliance, alliance) => new
+                .Join(_context.Alliances, x => x.AllianceId, x => x.AllianceId, (playerAlliance, alliance) => new
                 {
                     alliance.Name,
                     playerAlliance.Date,

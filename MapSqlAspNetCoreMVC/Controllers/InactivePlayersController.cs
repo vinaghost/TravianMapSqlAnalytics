@@ -1,6 +1,7 @@
-﻿using MapSqlAspNetCoreMVC.Models.Input;
+﻿using MapSqlAspNetCoreMVC.CQRS.Queries;
+using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.View;
-using MapSqlAspNetCoreMVC.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
 
@@ -9,14 +10,16 @@ namespace MapSqlAspNetCoreMVC.Controllers
     public class InactivePlayersController : Controller
     {
         private readonly ILogger<InactivePlayersController> _logger;
-        private readonly IDataProvide _dataProvider;
-        private readonly IConfiguration _configuration;
 
-        public InactivePlayersController(ILogger<InactivePlayersController> logger, IDataProvide dataProvider, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
+
+        public InactivePlayersController(ILogger<InactivePlayersController> logger, IConfiguration configuration, IMediator mediator)
         {
             _logger = logger;
-            _dataProvider = dataProvider;
+
             _configuration = configuration;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> Index(PlayerWithPopulationInput input)
@@ -28,9 +31,9 @@ namespace MapSqlAspNetCoreMVC.Controllers
 
         private async Task<InactivePlayersViewModel> GetViewModel(PlayerWithPopulationInput input)
         {
-            var players = await _dataProvider.GetInactivePlayerData(input);
+            var players = await _mediator.Send(new GetPlayerWithPopulationByInputQuery(input));
             var pagePlayers = players.ToPagedList(input.PageNumber, input.PageSize);
-            var dates = _dataProvider.GetDateBefore(input.Days);
+            var dates = await _mediator.Send(new GetDateBeforeQuery(input.Days));
 
             var viewModel = new InactivePlayersViewModel
             {

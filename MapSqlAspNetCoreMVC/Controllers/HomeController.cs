@@ -1,5 +1,6 @@
-﻿using MapSqlAspNetCoreMVC.Models;
-using MapSqlAspNetCoreMVC.Services.Interfaces;
+﻿using MapSqlAspNetCoreMVC.CQRS.Queries;
+using MapSqlAspNetCoreMVC.Models;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,20 +9,20 @@ namespace MapSqlAspNetCoreMVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IDataProvide _dataProvider;
         private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
 
-        public HomeController(ILogger<HomeController> logger, IDataProvide dataProvider, IConfiguration configuration)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, IMediator mediator)
         {
             _logger = logger;
-            _dataProvider = dataProvider;
             _configuration = configuration;
+            _mediator = mediator;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            ViewBag.NewestDateTime = _dataProvider.GetNewestDay().ToString("yyyy-MM-dd");
-            ViewData["ServerInfo"] = _configuration["WorldUrl"];
+            ViewBag.NewestDateTime = (await _mediator.Send(new GetNewestDayQuery())).ToString("yyyy-MM-dd");
+            ViewData["ServerInfo"] = HttpContext.Items["server"] as string;
             return View();
         }
 

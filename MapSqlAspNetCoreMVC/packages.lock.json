@@ -2,6 +2,16 @@
   "version": 1,
   "dependencies": {
     "net8.0": {
+      "MediatR": {
+        "type": "Direct",
+        "requested": "[12.2.0, )",
+        "resolved": "12.2.0",
+        "contentHash": "8TUFrHapKi6D74PhnSNEguRsH91HNGyP3R4ZQdgDorJgl9Wac5Prh0vA33QfrniAaS6L2xNNhc6vxzg+5AIbwA==",
+        "dependencies": {
+          "MediatR.Contracts": "[2.0.1, 3.0.0)",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
+        }
+      },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
         "requested": "[8.0.0, )",
@@ -39,6 +49,11 @@
         "type": "Transitive",
         "resolved": "2022.3.1",
         "contentHash": "11nsS3+lFICGkztVs9PP2NRItxf9fF+qD6xEW/T0YGto52zj07wseUeBdMAU1ah9HNVTDZyRC1u4NWdtJScwhw=="
+      },
+      "MediatR.Contracts": {
+        "type": "Transitive",
+        "resolved": "2.0.1",
+        "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
@@ -165,13 +180,6 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "[8.0.0, )",
           "Pomelo.EntityFrameworkCore.MySql": "[8.0.0-beta.2, )"
-        }
-      },
-      "Core": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore": "[7.0.12, )",
-          "Pomelo.EntityFrameworkCore.MySql": "[7.0.0, )"
         }
       }
     },

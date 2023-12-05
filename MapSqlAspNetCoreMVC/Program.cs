@@ -55,22 +55,34 @@ namespace MapSqlAspNetCoreMVC
                 .AddDataAnnotationsLocalization();
 
             services.AddLocalizationService();
-            services.AddServerService();
+            services.AddMiddleware();
 
             services.AddAuthentication();
             services.AddHttpContextAccessor();
-
-            services.AddDbContextFactory<ServerDbContext>((serviceProvider, options) =>
+            services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
             {
-                var worldUrl = "ts8.x1.arabics.travian.com";
                 var configuration = serviceProvider.GetService<IConfiguration>();
-
+                var connectionString = ServerListDbContext.GetConnectionString(configuration);
                 options
-                    .GettOptionsBuilder(configuration, worldUrl)
+                    .GettOptionsBuilder(configuration)
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            services.AddAppService();
+            services.AddDbContext<ServerDbContext>((serviceProvider, options) =>
+            {
+                var configuration = serviceProvider.GetService<IConfiguration>();
+                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
+
+                var server = httpContextAccessor.HttpContext.Items["server"] as string;
+                options
+                    .GettOptionsBuilder(configuration, server)
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            });
         }
     }
 }

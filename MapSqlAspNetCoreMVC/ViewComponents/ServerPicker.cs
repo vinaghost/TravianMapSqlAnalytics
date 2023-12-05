@@ -1,14 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using MapSqlAspNetCoreMVC.CQRS.Queries;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MapSqlAspNetCoreMVC.ViewComponents
 {
     public class ServerPicker : ViewComponent
     {
-        public IViewComponentResult Invoke()
+        private readonly IMediator _mediator;
+
+        public ServerPicker(IMediator mediator)
         {
-            var server = HttpContext.Request.Cookies["server"];
-            List<string> availableServers = ["xyz", "acb", "asd"];
-            var currentServer = string.IsNullOrWhiteSpace(server) ? availableServers[0] : server;
+            _mediator = mediator;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var currentServer = HttpContext.Items["server"] as string;
+            var availableServers = await _mediator.Send(new GetServersQuery());
             var model = new ServerPickerModel()
             {
                 CurrentServer = currentServer,

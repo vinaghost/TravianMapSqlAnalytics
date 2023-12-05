@@ -1,6 +1,5 @@
 ﻿using Core;
 using MapSqlDatabaseUpdate.Commands;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -19,13 +18,7 @@ namespace MapSqlDatabaseUpdate
             {
                 services.AddDbContextFactory<ServerListDbContext>(options =>
                 {
-                    var connectionString = ServerListDbContext.GetConnectionString(hostContext.Configuration);
-                    options
-#if DEBUG
-                        .EnableSensitiveDataLogging()
-                        .EnableDetailedErrors()
-#endif
-                        .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    options.GettOptionsBuilder(hostContext.Configuration);
                 });
                 services.AddMediatR(cfg =>
                 {

@@ -1,6 +1,7 @@
-﻿using MapSqlAspNetCoreMVC.Models.Input;
+﻿using MapSqlAspNetCoreMVC.CQRS.Queries;
+using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.View;
-using MapSqlAspNetCoreMVC.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MapSqlAspNetCoreMVC.Controllers
@@ -8,14 +9,16 @@ namespace MapSqlAspNetCoreMVC.Controllers
     public class PlayerWithDetailController : Controller
     {
         private readonly ILogger<PlayerWithDetailController> _logger;
-        private readonly IDataProvide _dataProvider;
-        private readonly IConfiguration _configuration;
 
-        public PlayerWithDetailController(ILogger<PlayerWithDetailController> logger, IDataProvide dataProvider, IConfiguration configuration)
+        private readonly IConfiguration _configuration;
+        private readonly IMediator _mediator;
+
+        public PlayerWithDetailController(ILogger<PlayerWithDetailController> logger, IConfiguration configuration, IMediator mediator)
         {
             _logger = logger;
-            _dataProvider = dataProvider;
+
             _configuration = configuration;
+            _mediator = mediator;
         }
 
         public async Task<IActionResult> Index(PlayerWithDetailInput input)
@@ -29,8 +32,8 @@ namespace MapSqlAspNetCoreMVC.Controllers
         {
             if (!string.IsNullOrWhiteSpace(input.PlayerName))
             {
-                var player = await _dataProvider.GetPlayerInfo(input);
-                var dates = _dataProvider.GetDateBefore(input.Days);
+                var player = await _mediator.Send(new GetPlayerWithDetailByInputQuery(input));
+                var dates = await _mediator.Send(new GetDateBeforeQuery(input.Days));
 
                 var viewModel = new PlayerWithDetailViewModel
                 {
