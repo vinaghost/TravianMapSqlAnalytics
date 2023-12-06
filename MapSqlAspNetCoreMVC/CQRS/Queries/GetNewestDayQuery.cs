@@ -3,9 +3,9 @@ using MediatR;
 
 namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public record GetNewestDayQuery : IRequest<DateTime>;
+    public record GetNewestDayQuery : IRequest<string>;
 
-    public class GetNewestDayQueryHandler : IRequestHandler<GetNewestDayQuery, DateTime>
+    public class GetNewestDayQueryHandler : IRequestHandler<GetNewestDayQuery, string>
     {
         private readonly ServerDbContext _context;
 
@@ -14,10 +14,10 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
             _context = context;
         }
 
-        public async Task<DateTime> Handle(GetNewestDayQuery request, CancellationToken cancellationToken)
+        public async Task<string> Handle(GetNewestDayQuery request, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
-            return _context.GetNewestDay();
+            return _context.GetNewestDay().ToString("yyyy-MM-dd");
         }
     }
 }

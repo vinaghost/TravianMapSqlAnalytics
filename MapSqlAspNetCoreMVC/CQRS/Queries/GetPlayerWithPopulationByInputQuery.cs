@@ -2,12 +2,13 @@
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
 using MediatR;
+using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public record GetPlayerWithPopulationByInputQuery(PlayerWithPopulationInput Input) : IRequest<List<PlayerWithPopulation>>;
+    public record GetPlayerWithPopulationByInputQuery(PlayerWithPopulationInput Input) : IRequest<IPagedList<PlayerWithPopulation>>;
 
-    public class GetPlayerWithPopulationByInputQueryHandler : IRequestHandler<GetPlayerWithPopulationByInputQuery, List<PlayerWithPopulation>>
+    public class GetPlayerWithPopulationByInputQueryHandler : IRequestHandler<GetPlayerWithPopulationByInputQuery, IPagedList<PlayerWithPopulation>>
     {
         private readonly ServerDbContext _context;
 
@@ -16,7 +17,7 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
             _context = context;
         }
 
-        public async Task<List<PlayerWithPopulation>> Handle(GetPlayerWithPopulationByInputQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerWithPopulation>> Handle(GetPlayerWithPopulationByInputQuery request, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
             var input = request.Input;
@@ -68,12 +69,9 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                     population.Population,
                     population.VillageCount,
                 })
-                .OrderByDescending(x => x.VillageCount);
-
-            var result = query.AsEnumerable()
-                .OrderByDescending(x => x.Population[0]);
-
-            var population = result
+                .OrderByDescending(x => x.VillageCount)
+                .AsEnumerable()
+                .OrderByDescending(x => x.Population[0])
                 .Where(x => x.Population.Count > input.Days && x.Population.Max() - x.Population.Min() == 0)
                 .Select(x => new PlayerWithPopulation()
                 {
@@ -84,8 +82,8 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                     Population = x.Population,
                     VillageCount = x.VillageCount,
                 })
-                .ToList();
-            return population;
+                .ToPagedList(input.PageNumber, input.PageSize);
+            return query;
         }
     }
 }

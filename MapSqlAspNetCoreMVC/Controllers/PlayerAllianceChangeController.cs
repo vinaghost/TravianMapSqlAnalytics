@@ -3,7 +3,6 @@ using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.View;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.Controllers
 {
@@ -32,16 +31,15 @@ namespace MapSqlAspNetCoreMVC.Controllers
         private async Task<PlayerAllianceChangeViewModel> GetViewModel(PlayerWithAllianceInput input)
         {
             var players = await _mediator.Send(new GetPlayerWithAllianceByInputQuery(input));
-            var pagePlayers = players.ToPagedList(input.PageNumber, input.PageSize);
             var dates = await _mediator.Send(new GetDateBeforeQuery(input.Days));
 
             var viewModel = new PlayerAllianceChangeViewModel
             {
                 Server = _configuration["WorldUrl"],
                 Input = input,
-                PlayerTotal = players.Count,
+                PlayerTotal = players.TotalItemCount,
                 Dates = dates,
-                Players = pagePlayers
+                Players = players
             };
             return viewModel;
         }

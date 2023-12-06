@@ -51,8 +51,8 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                 PlayerName = playerQuery.PlayerName,
                 AllianceName = playerQuery.AllianceName,
                 Tribe = Constants.TribeNames[playerQuery.TribeId],
-                Population = new(),
-                AllianceNames = new(),
+                Population = [],
+                AllianceNames = [],
             };
 
             var dates = _context.GetDateBefore(input.Days);

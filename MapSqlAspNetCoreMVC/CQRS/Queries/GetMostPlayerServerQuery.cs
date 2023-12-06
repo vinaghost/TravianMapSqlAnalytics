@@ -17,7 +17,11 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
 
         public async Task<string> Handle(GetMostPlayerServerQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Servers.OrderByDescending(x => x.PlayerCount).Select(x => x.Url).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            var server = await _context.Servers
+                .OrderByDescending(x => x.PlayerCount)
+                .Select(x => x.Url)
+                .FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            return server;
         }
     }
 }

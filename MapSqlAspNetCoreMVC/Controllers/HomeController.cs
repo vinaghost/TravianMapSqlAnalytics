@@ -1,5 +1,7 @@
 ﻿using MapSqlAspNetCoreMVC.CQRS.Queries;
 using MapSqlAspNetCoreMVC.Models;
+using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.View;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -19,11 +21,18 @@ namespace MapSqlAspNetCoreMVC.Controllers
             _mediator = mediator;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(HomeInput input)
         {
-            ViewBag.NewestDateTime = (await _mediator.Send(new GetNewestDayQuery())).ToString("yyyy-MM-dd");
-            ViewData["ServerInfo"] = HttpContext.Items["server"] as string;
-            return View();
+            input ??= new HomeInput();
+
+            var viewModel = new HomeViewModel()
+            {
+                Input = input,
+                Servers = await _mediator.Send(new GetServersQuery(input)),
+                ServerUrl = HttpContext.Items["server"] as string,
+                Today = await _mediator.Send(new GetNewestDayQuery()),
+            };
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

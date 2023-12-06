@@ -1,12 +1,14 @@
 ﻿using Core;
+using MapSqlAspNetCoreMVC.Models.Input;
+using MapSqlAspNetCoreMVC.Models.Output;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
+using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public record GetServersQuery : IRequest<List<string>>;
+    public record GetServersQuery(HomeInput Input) : IRequest<IPagedList<Server>>;
 
-    public class GetServersQueryHandler : IRequestHandler<GetServersQuery, List<string>>
+    public class GetServersQueryHandler : IRequestHandler<GetServersQuery, IPagedList<Server>>
     {
         private readonly ServerListDbContext _context;
 
@@ -15,9 +17,20 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
             _context = context;
         }
 
-        public async Task<List<string>> Handle(GetServersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<Server>> Handle(GetServersQuery request, CancellationToken cancellationToken)
         {
-            return await _context.Servers.OrderByDescending(x => x.PlayerCount).Select(x => x.Url).ToListAsync(cancellationToken: cancellationToken);
+            var servers = _context.Servers
+                .OrderByDescending(x => x.PlayerCount)
+                .Select(x => new Server
+                {
+                    Url = x.Url,
+                    Region = x.Zone,
+                    StartDate = x.StartDate,
+                    AllianceCount = x.AllianceCount,
+                    PlayerCount = x.AllianceCount,
+                    VillageCount = x.VillageCount,
+                });
+            return await servers.ToPagedListAsync(request.Input.PageNumber, request.Input.PageSize);
         }
     }
 }

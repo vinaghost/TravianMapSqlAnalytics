@@ -2,12 +2,13 @@
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
 using MediatR;
+using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public record GetPlayerWithAllianceByInputQuery(PlayerWithAllianceInput Input) : IRequest<List<PlayerWithAlliance>>;
+    public record GetPlayerWithAllianceByInputQuery(PlayerWithAllianceInput Input) : IRequest<IPagedList<PlayerWithAlliance>>;
 
-    public class GetPlayerWithAllianceByInputQueryHandler : IRequestHandler<GetPlayerWithAllianceByInputQuery, List<PlayerWithAlliance>>
+    public class GetPlayerWithAllianceByInputQueryHandler : IRequestHandler<GetPlayerWithAllianceByInputQuery, IPagedList<PlayerWithAlliance>>
     {
         private readonly ServerDbContext _context;
 
@@ -16,7 +17,7 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
             _context = context;
         }
 
-        public async Task<List<PlayerWithAlliance>> Handle(GetPlayerWithAllianceByInputQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerWithAlliance>> Handle(GetPlayerWithAllianceByInputQuery request, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
             var input = request.Input;
@@ -47,8 +48,7 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                     PlayerName = x.Select(x => x.PlayerName).FirstOrDefault(),
                     Alliance = x.OrderByDescending(x => x.Date).Select(x => x.AllianceName).ToList(),
                 })
-                .AsEnumerable();
-            var players = query
+                .AsEnumerable()
                 .Select(x => new PlayerWithAlliance()
                 {
                     PlayerId = x.PlayerId,
@@ -57,8 +57,8 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                     AllianceNames = x.Alliance,
                 })
                 .Where(x => x.AllianceChangeNumber != 0)
-                .ToList();
-            return players;
+                .ToPagedList(input.PageNumber, input.PageSize);
+            return query;
         }
     }
 }

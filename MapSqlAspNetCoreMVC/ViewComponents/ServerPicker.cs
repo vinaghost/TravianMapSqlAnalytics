@@ -16,7 +16,7 @@ namespace MapSqlAspNetCoreMVC.ViewComponents
         public async Task<IViewComponentResult> InvokeAsync()
         {
             var currentServer = HttpContext.Items["server"] as string;
-            var availableServers = await _mediator.Send(new GetServersQuery());
+            var availableServers = await _mediator.Send(new GetServerUrlsQuery());
             var model = new ServerPickerModel()
             {
                 CurrentServer = currentServer,

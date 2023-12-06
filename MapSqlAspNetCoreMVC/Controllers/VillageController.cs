@@ -3,7 +3,6 @@ using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.View;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.Controllers
 {
@@ -32,7 +31,6 @@ namespace MapSqlAspNetCoreMVC.Controllers
         private async Task<VillageViewModel> GetViewModel(VillageInput input)
         {
             var villages = await _mediator.Send(new GetVillageByInputQuery(input));
-            var pageVillages = villages.ToPagedList(input.PageNumber, input.PageSize);
             var alliances = await _mediator.Send(new GetAllianceSelectListQuery());
             var tribes = await _mediator.Send(new GetTribeSelectListQuery());
 
@@ -40,8 +38,8 @@ namespace MapSqlAspNetCoreMVC.Controllers
             {
                 Server = _configuration["WorldUrl"],
                 Input = input,
-                VillageTotal = villages.Count,
-                Villages = pageVillages,
+                VillageTotal = villages.TotalItemCount,
+                Villages = villages,
                 Alliances = alliances,
                 Tribes = tribes
             };

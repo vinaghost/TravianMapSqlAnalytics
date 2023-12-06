@@ -3,12 +3,13 @@ using MapSqlAspNetCoreMVC.Models;
 using MapSqlAspNetCoreMVC.Models.Input;
 using MapSqlAspNetCoreMVC.Models.Output;
 using MediatR;
+using X.PagedList;
 
 namespace MapSqlAspNetCoreMVC.CQRS.Queries
 {
-    public record GetVillageByInputQuery(VillageInput Input) : IRequest<List<Village>>;
+    public record GetVillageByInputQuery(VillageInput Input) : IRequest<IPagedList<Village>>;
 
-    public class GetVillageByVillageInputQueryHandler : IRequestHandler<GetVillageByInputQuery, List<Village>>
+    public class GetVillageByVillageInputQueryHandler : IRequestHandler<GetVillageByInputQuery, IPagedList<Village>>
     {
         private readonly ServerDbContext _context;
 
@@ -17,7 +18,7 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
             _context = context;
         }
 
-        public async Task<List<Village>> Handle(GetVillageByInputQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<Village>> Handle(GetVillageByInputQuery request, CancellationToken cancellationToken)
         {
             await Task.CompletedTask;
             var input = request.Input;
@@ -75,34 +76,25 @@ namespace MapSqlAspNetCoreMVC.CQRS.Queries
                 getAllianceQuery = getAllianceQuery.Where(x => x.AllianceId == input.AllianceId);
             }
 
-            var result = getAllianceQuery.AsEnumerable();
-
-            var villagesInfo = new List<Village>();
             var centerCoordinate = new Coordinates(input.X, input.Y);
-
-            foreach (var village in result)
-            {
-                var villageCoordinate = new Coordinates(village.X, village.Y);
-                var distance = centerCoordinate.Distance(villageCoordinate);
-
-                var villageInfo = new Village
+            var result = getAllianceQuery
+                .AsEnumerable()
+                .Select(x => new Village
                 {
-                    VillageId = village.VillageId,
-                    VillageName = village.VillageName,
-                    PlayerName = village.PlayerName,
-                    AllianceName = village.AllianceName,
-                    Tribe = Constants.TribeNames[village.TribeId],
-                    X = village.X,
-                    Y = village.Y,
-                    Population = village.Population,
-                    IsCapital = village.IsCapital,
-                    Distance = distance,
-                };
-                villagesInfo.Add(villageInfo);
-            }
-
-            var oredered = villagesInfo.OrderBy(x => x.Distance).ToList();
-            return oredered;
+                    VillageId = x.VillageId,
+                    VillageName = x.VillageName,
+                    PlayerName = x.PlayerName,
+                    AllianceName = x.AllianceName,
+                    Tribe = Constants.TribeNames[x.TribeId],
+                    X = x.X,
+                    Y = x.Y,
+                    Population = x.Population,
+                    IsCapital = x.IsCapital,
+                    Distance = centerCoordinate.Distance(new Coordinates(x.X, x.Y)),
+                })
+                .OrderBy(x => x.Distance)
+                .ToPagedList(input.PageNumber, input.PageSize);
+            return result;
         }
     }
 }
