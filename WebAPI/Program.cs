@@ -1,4 +1,8 @@
+using Core;
 using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using WebAPI.Models.Config;
 
 namespace WebAPI
 {
@@ -8,12 +12,9 @@ namespace WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            BindConfiguration(builder);
             // Add services to the container.
-
-            builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            ConfigureServices(builder.Services);
 
             var app = builder.Build();
 
@@ -35,6 +36,40 @@ namespace WebAPI
             app.MapControllers();
 
             app.Run();
+        }
+
+        private static void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen();
+
+            services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
+            {
+                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
+
+                var connectionString = $"{GetDatabaseInfo(option)};Database={ServerListDbContext.DATABASE_NAME}";
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+#endif
+                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+        }
+
+        private static void BindConfiguration(WebApplicationBuilder builder)
+        {
+            builder.Services.Configure<DatabaseOption>(
+                builder.Configuration.GetSection(DatabaseOption.Position));
+        }
+
+        private static string GetDatabaseInfo(IOptions<DatabaseOption> options)
+        {
+            var value = options.Value;
+            return $"Server={value.Host};Port={value.Port};Uid={value.Username};Pwd={value.Password};";
         }
     }
 }
