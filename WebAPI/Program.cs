@@ -1,8 +1,11 @@
 using Core;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using WebAPI.Middlewares;
 using WebAPI.Models.Config;
+using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -27,6 +30,8 @@ namespace WebAPI
 
             app.UseAuthorization();
 
+            app.UseMiddleware<ServerMiddleware>();
+
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
@@ -45,6 +50,8 @@ namespace WebAPI
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
+            services.AddHttpContextAccessor();
+
             services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
             {
                 var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
@@ -58,6 +65,24 @@ namespace WebAPI
                     .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
+
+            services.AddDbContext<ServerDbContext>((serviceProvider, options) =>
+            {
+                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
+                var dataService = serviceProvider.GetRequiredService<DataService>();
+
+                var connectionString = $"{GetDatabaseInfo(option)};Database={dataService.Server}";
+                options
+#if DEBUG
+                    .EnableSensitiveDataLogging()
+                    .EnableDetailedErrors()
+#endif
+                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+            });
+
+            services.TryAddScoped<DataService>();
+            services.TryAddScoped<ServerMiddleware>();
         }
 
         private static void BindConfiguration(WebApplicationBuilder builder)
