@@ -1,4 +1,4 @@
 ﻿namespace WebAPI.Models.Output
 {
-    public record Village(string VillageName, int Population);
+    public record Village(int VillageId, string VillageName, int X, int Y, int Population);
 }

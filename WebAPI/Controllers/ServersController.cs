@@ -10,7 +10,7 @@ namespace WebAPI.Controllers
     {
         private readonly ServerListDbContext _dbContext = dbContext;
 
-        [HttpGet(Name = "GetServers")]
+        [HttpGet]
         public IEnumerable<Server> Get()
         {
             var servers = _dbContext.Servers
