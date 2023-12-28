@@ -1,22 +1,22 @@
 ﻿using WebAPI.Models.Output;
 using VillageEntity = Core.Models.Village;
 
-namespace WebAPI.Specifications.Villages
+namespace WebAPI.Specifications
 {
-    public class VillagePopulationSpecification : ISpecification<Village>, ISpecification<VillageEntity>
+    public class MinMaxSpecification : ISpecification<VillageEntity>, ISpecification<Player>
     {
         public required int Min { get; init; }
         public required int Max { get; init; }
 
-        public IQueryable<Village> Apply(IQueryable<Village> query)
+        public IQueryable<VillageEntity> Apply(IQueryable<VillageEntity> query)
         {
             query
-                .Where(x => x.Population >= Min)
-                .Where(x => x.Population <= Max);
+               .Where(x => x.Population >= Min)
+               .Where(x => x.Population <= Max);
             return query;
         }
 
-        public IQueryable<VillageEntity> Apply(IQueryable<VillageEntity> query)
+        public IQueryable<Player> Apply(IQueryable<Player> query)
         {
             query
                .Where(x => x.Population >= Min)

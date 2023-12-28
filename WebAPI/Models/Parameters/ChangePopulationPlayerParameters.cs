@@ -4,6 +4,6 @@
     {
         public int MinChangePopulation { get; set; } = 0;
         public int MaxChangePopulation { get; set; } = 10000;
-        public int Days { get; set; } = 3;
+        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
     }
 }

@@ -1,11 +1,10 @@
-﻿using Core;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 using WebAPI.Queries;
-using WebAPI.Specifications.Villages;
+using WebAPI.Specifications;
 using X.PagedList;
 
 namespace WebAPI.Controllers
@@ -13,9 +12,8 @@ namespace WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(404)]
-    public class VillagesController(ServerDbContext dbContext, IMediator mediator) : ControllerBase
+    public class VillagesController(IMediator mediator) : ControllerBase
     {
-        private readonly ServerDbContext _dbContext = dbContext;
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
@@ -24,7 +22,7 @@ namespace WebAPI.Controllers
         {
             var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
 
-            var populationSpecification = new VillagePopulationSpecification()
+            var populationSpecification = new MinMaxSpecification()
             {
                 Max = villageParameters.MaxPopulation,
                 Min = villageParameters.MinPopulation,
@@ -33,6 +31,17 @@ namespace WebAPI.Controllers
             villageQuery = populationSpecification.Apply(villageQuery);
 
             var rawVillages = await villageQuery
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.VillageId,
+                    VillageName = x.Name,
+                    x.X,
+                    x.Y,
+                    x.Population,
+                    x.IsCapital,
+                    x.Tribe
+                })
                 .OrderByDescending(x => x.Population)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
@@ -50,7 +59,7 @@ namespace WebAPI.Controllers
                         x.PlayerId,
                         player.Name,
                         x.VillageId,
-                        x.Name,
+                        x.VillageName,
                         x.X,
                         x.Y,
                         x.Population,
@@ -58,7 +67,7 @@ namespace WebAPI.Controllers
                         x.Tribe);
                 });
 
-            Response.Headers.Append("X-Pagination", rawVillages.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
             return Ok(villages);
         }
 
@@ -67,9 +76,17 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get([FromBody] ChangePopulationVillageParameters villageParameters)
         {
             var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
+
+            var populationSpecification = new MinMaxSpecification()
+            {
+                Max = villageParameters.MaxPopulation,
+                Min = villageParameters.MinPopulation,
+            };
+
+            villageQuery = populationSpecification.Apply(villageQuery);
+
             var date = villageParameters.Date.ToDateTime(TimeOnly.MinValue);
             var rawVillages = await villageQuery
-                .AsSplitQuery()
                 .Select(x => new
                 {
                     x.PlayerId,
@@ -94,6 +111,8 @@ namespace WebAPI.Controllers
                     ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
                     Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
                 })
+                .Where(x => x.ChangePopulation >= villageParameters.MinChangePopulation)
+                .Where(x => x.ChangePopulation <= villageParameters.MaxChangePopulation)
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
@@ -120,7 +139,7 @@ namespace WebAPI.Controllers
                         x.Populations);
                 });
 
-            Response.Headers.Append("X-Pagination", rawVillages.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
             return Ok(villages);
         }
     }
