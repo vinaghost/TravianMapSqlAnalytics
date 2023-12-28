@@ -32,11 +32,33 @@ namespace WebAPI.Controllers
 
             villageQuery = populationSpecification.Apply(villageQuery);
 
-            var villages = await villageQuery
+            var rawVillages = await villageQuery
                 .OrderByDescending(x => x.Population)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
-            Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
+            var players = await _mediator.Send(new PlayerNameQuery(rawVillages.Select(x => x.PlayerId)));
+            var alliances = await _mediator.Send(new AllianceInfoQuery(players.Values.Select(x => x.AllianceId)));
+
+            var villages = rawVillages
+                .Select(x =>
+                {
+                    var player = players[x.PlayerId];
+                    var alliance = alliances[player.AllianceId];
+                    return new Village(
+                        player.AllianceId,
+                        alliance,
+                        x.PlayerId,
+                        player.Name,
+                        x.VillageId,
+                        x.Name,
+                        x.X,
+                        x.Y,
+                        x.Population,
+                        x.IsCapital,
+                        x.Tribe);
+                });
+
+            Response.Headers.Append("X-Pagination", rawVillages.ToXpagination().ToJson());
             return Ok(villages);
         }
 
@@ -46,32 +68,59 @@ namespace WebAPI.Controllers
         {
             var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
             var date = villageParameters.Date.ToDateTime(TimeOnly.MinValue);
-            var populationQuery = villageQuery
+            var rawVillages = await villageQuery
                 .AsSplitQuery()
                 .Select(x => new
                 {
+                    x.PlayerId,
                     x.VillageId,
                     x.Name,
                     x.X,
                     x.Y,
                     x.IsCapital,
+                    x.Tribe,
                     Populations = x.Populations.OrderByDescending(x => x.Date).Where(x => x.Date >= date),
                 })
                 .AsEnumerable()
-                .Select(x => new ChangePopulationVillage(
-                        x.VillageId,
-                        x.Name,
-                        x.X,
-                        x.Y,
-                        x.IsCapital,
-                        x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                        x.Populations.Select(x => new Population(x.Population, x.Date))));
-
-            var villages = await populationQuery
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.VillageId,
+                    VillageName = x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    x.Tribe,
+                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
+                })
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
-            Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
+            var players = await _mediator.Send(new PlayerNameQuery(rawVillages.Select(x => x.PlayerId)));
+            var alliances = await _mediator.Send(new AllianceInfoQuery(players.Values.Select(x => x.AllianceId)));
+
+            var villages = rawVillages
+                .Select(x =>
+                {
+                    var player = players[x.PlayerId];
+                    var alliance = alliances[player.AllianceId];
+                    return new ChangePopulationVillage(
+                        player.AllianceId,
+                        alliance,
+                        x.PlayerId,
+                        player.Name,
+                        x.VillageId,
+                        x.VillageName,
+                        x.X,
+                        x.Y,
+                        x.IsCapital,
+                        x.Tribe,
+                        x.ChangePopulation,
+                        x.Populations);
+                });
+
+            Response.Headers.Append("X-Pagination", rawVillages.ToXpagination().ToJson());
             return Ok(villages);
         }
     }
