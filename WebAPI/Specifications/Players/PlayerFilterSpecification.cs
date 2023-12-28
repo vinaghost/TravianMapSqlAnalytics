@@ -1,6 +1,6 @@
 ﻿using Core.Models;
 
-namespace WebAPI.Specifications
+namespace WebAPI.Specifications.Players
 {
     public class PlayerFilterSpecification : ISpecification<Alliance, Player>
     {

@@ -9,7 +9,7 @@ namespace Core.Models
         public int VillageId { get; set; }
 
         // foreign key
-        public List<VillagePopulation> Populations { get; set; } = new();
+        public ICollection<VillagePopulation> Populations { get; set; }
 
         // properties
         public int MapId { get; set; }

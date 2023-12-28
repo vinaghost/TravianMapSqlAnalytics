@@ -52,6 +52,8 @@ namespace WebAPI
 
             services.AddHttpContextAccessor();
 
+            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+
             services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
             {
                 var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();

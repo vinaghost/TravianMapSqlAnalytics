@@ -1,35 +1,39 @@
 ﻿using Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
-using WebAPI.Specifications;
+using WebAPI.Queries;
+using WebAPI.Specifications.Villages;
 using X.PagedList;
-using VillageEnitty = Core.Models.Village;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(404)]
-    public class VillagesController(ServerDbContext dbContext) : ControllerBase
+    public class VillagesController(ServerDbContext dbContext, IMediator mediator) : ControllerBase
     {
         private readonly ServerDbContext _dbContext = dbContext;
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<Village>), 200)]
         public async Task<IActionResult> Get([FromBody] VillageParameters villageParameters)
         {
-            var baseQuery = GetBaseQuery(villageParameters);
+            var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
 
-            var villages = await baseQuery
+            var populationSpecification = new VillagePopulationSpecification()
+            {
+                Max = villageParameters.MaxPopulation,
+                Min = villageParameters.MinPopulation,
+            };
+
+            villageQuery = populationSpecification.Apply(villageQuery);
+
+            var villages = await villageQuery
                 .OrderByDescending(x => x.Population)
-                .Select(x => new Village(x.VillageId,
-                                         x.Name,
-                                         x.X,
-                                         x.Y,
-                                         x.Population,
-                                         x.IsCapital))
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
             Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
@@ -40,46 +44,28 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IPagedList<ChangePopulationVillage>), 200)]
         public async Task<IActionResult> Get([FromBody] ChangePopulationVillageParameters villageParameters)
         {
-            var newestDate = await _dbContext.VillagesPopulations
-                .OrderByDescending(x => x.Date)
-                .Select(x => x.Date)
-                .FirstOrDefaultAsync();
-
-            var minDate = newestDate.AddDays(-villageParameters.Days);
-
-            var baseQuery = GetBaseQuery(villageParameters);
-
-            var populationQuery = baseQuery
-                .Join(
-                    _dbContext.VillagesPopulations
-                        .Where(x => x.Date <= newestDate || x.Date >= minDate),
-                    x => x.VillageId,
-                    x => x.VillageId,
-                    (village, population) => new
-                    {
-                        village.VillageId,
-                        VillageName = village.Name,
-                        village.X,
-                        village.Y,
-                        village.IsCapital,
-                        population.Population,
-                        population.Date,
-                    })
-                .GroupBy(x => x.VillageId)
-                .AsEnumerable()
-                .Select(x =>
+            var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
+            var date = villageParameters.Date.ToDateTime(TimeOnly.MinValue);
+            var populationQuery = villageQuery
+                .AsSplitQuery()
+                .Select(x => new
                 {
-                    var village = x.First();
-                    var populations = x.OrderByDescending(x => x.Date).Select(x => new Population(x.Population, x.Date)).ToList();
-                    return new ChangePopulationVillage(
-                        x.Key,
-                        village.VillageName,
-                        village.X,
-                        village.Y,
-                        village.IsCapital,
-                        populations.First().Amount - populations.Last().Amount,
-                        populations);
-                });
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    Populations = x.Populations.OrderByDescending(x => x.Date).Where(x => x.Date >= date),
+                })
+                .AsEnumerable()
+                .Select(x => new ChangePopulationVillage(
+                        x.VillageId,
+                        x.Name,
+                        x.X,
+                        x.Y,
+                        x.IsCapital,
+                        x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                        x.Populations.Select(x => new Population(x.Population, x.Date))));
 
             var villages = await populationQuery
                 .OrderByDescending(x => x.ChangePopulation)
@@ -87,29 +73,6 @@ namespace WebAPI.Controllers
 
             Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
             return Ok(villages);
-        }
-
-        private IQueryable<VillageEnitty> GetBaseQuery(VillageParameters villageParameters)
-        {
-            IQueryable<VillageEnitty> query;
-            if (villageParameters.Alliances.Count > 0)
-            {
-                var specification = new VillageFilterSpecification() { Ids = villageParameters.Alliances };
-                query = specification.Apply(_dbContext.Alliances.AsQueryable());
-            }
-            else if (villageParameters.Players.Count > 0)
-            {
-                var specification = new VillageFilterSpecification() { Ids = villageParameters.Players };
-                query = specification.Apply(_dbContext.Players.AsQueryable());
-            }
-            else
-            {
-                query = _dbContext.Villages.AsQueryable();
-            }
-
-            var populationSpecification = new VillagePopulationSpecification() { Min = villageParameters.MinPopulation, Max = villageParameters.MaxPopulation };
-            query = populationSpecification.Apply(query);
-            return query;
         }
     }
 }

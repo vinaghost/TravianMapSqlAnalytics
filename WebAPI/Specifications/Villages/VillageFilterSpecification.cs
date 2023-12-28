@@ -1,6 +1,6 @@
 ﻿using Core.Models;
 
-namespace WebAPI.Specifications
+namespace WebAPI.Specifications.Villages
 {
     public class VillageFilterSpecification : ISpecification<Player, Village>, ISpecification<Alliance, Village>
     {
