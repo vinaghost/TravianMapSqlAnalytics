@@ -1,16 +1,10 @@
 ﻿namespace WebAPI.Models.Output
 {
-    public record ChangePopulationVillage(
+    public record ChangePopulationPlayer(
         int AllianceId,
         string AllianceName,
         int PlayerId,
         string PlayerName,
-        int VillageId,
-        string VillageName,
-        int X,
-        int Y,
-        bool IsCapital,
-        int Tribe,
         int ChangePopulation,
         IEnumerable<Population> Populations);
 }

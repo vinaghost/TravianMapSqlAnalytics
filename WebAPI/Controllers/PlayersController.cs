@@ -60,42 +60,55 @@ namespace WebAPI.Controllers
         {
             var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
             var date = playerParameters.Date.ToDateTime(TimeOnly.MinValue);
-            var latestDate = await _mediator.Send(new GetLatestDateQuery());
 
             var countPlayer = await _mediator.Send(new GetPlayerCountQuery());
 
             var rawPlayers = await playerQuery
                 .Select(x => new
                 {
+                    x.AllianceId,
                     x.PlayerId,
+                    PlayerName = x.Name,
                     Populations = x.Villages
                         .SelectMany(x => x.Populations
-                                        .Where(x => x.Date == date || x.Date == latestDate))
+                                        .Where(x => x.Date >= date))
                         .GroupBy(x => x.Date)
                         .OrderByDescending(x => x.Key)
-                        .Select(x => x
-                                    .OrderByDescending(x => x.Date)
+                        .Select(x => new
+                        {
+                            Date = x.Key,
+                            Population = x
+                                    .OrderBy(x => x.Date)
                                     .Select(x => x.Population)
-                                    .Sum())
+                                    .Sum(),
+                        })
                 })
                 .AsEnumerable()
                 .Select(x => new
                 {
+                    x.AllianceId,
                     x.PlayerId,
-                    ChangePopulation = x.Populations.FirstOrDefault() - x.Populations.LastOrDefault(),
+                    x.PlayerName,
+                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
                 })
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize, countPlayer);
 
-            //.Select(x => new
-            //{
-            //    x.AllianceId,
-            //    x.PlayerId,
-            //    x.PlayerName,
-            //    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-            //    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
-            //})
-            var players = rawPlayers;
+            var alliances = await _mediator.Send(new AllianceInfoQuery(rawPlayers.Select(x => x.AllianceId)));
+
+            var players = rawPlayers
+                .Select(x =>
+                {
+                    var alliance = alliances[x.AllianceId];
+                    return new ChangePopulationPlayer(
+                        x.AllianceId,
+                        alliance,
+                        x.PlayerId,
+                        x.PlayerName,
+                        x.ChangePopulation,
+                        x.Populations);
+                });
 
             Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
 
