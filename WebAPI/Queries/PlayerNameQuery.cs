@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Queries
 {
-    public record PlayerNameQuery(IEnumerable<int> Ids) : IRequest<Dictionary<int, PlayerInfo>>;
+    public record PlayerNameQuery(IEnumerable<int> Ids) : IQuery<Dictionary<int, PlayerInfo>>;
 
     public class PlayerNameQueryHandler(ServerDbContext dbContext) : IRequestHandler<PlayerNameQuery, Dictionary<int, PlayerInfo>>
     {

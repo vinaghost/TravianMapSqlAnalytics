@@ -4,7 +4,7 @@ using PlayerEnitty = Core.Models.Player;
 
 namespace WebAPI.Queries
 {
-    public record FilteredPlayerQuery(List<int> Alliances) : IRequest<IQueryable<PlayerEnitty>>;
+    public record FilteredPlayerQuery(List<int> Alliances) : IQuery<IQueryable<PlayerEnitty>>;
 
     public class PlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<FilteredPlayerQuery, IQueryable<PlayerEnitty>>
     {

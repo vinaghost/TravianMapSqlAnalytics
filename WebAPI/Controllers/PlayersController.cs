@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 using WebAPI.Queries;
@@ -19,6 +20,9 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get([FromBody] PlayerParameters playerParameters)
         {
             var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
+
+            var countPlayer = await _mediator.Send(new GetPlayerCountQuery());
+
             var rawPlayers = await playerQuery
                 .Select(x => new
                 {
@@ -29,7 +33,7 @@ namespace WebAPI.Controllers
                     Population = x.Villages.Sum(x => x.Population),
                 })
                 .OrderByDescending(x => x.VillageCount)
-                .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize);
+                .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize, countPlayer);
             var alliances = await _mediator.Send(new AllianceInfoQuery(rawPlayers.Select(x => x.AllianceId)));
 
             var players = rawPlayers
@@ -56,24 +60,41 @@ namespace WebAPI.Controllers
         {
             var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
             var date = playerParameters.Date.ToDateTime(TimeOnly.MinValue);
+            var latestDate = await _mediator.Send(new GetLatestDateQuery());
+
+            var countPlayer = await _mediator.Send(new GetPlayerCountQuery());
+
             var rawPlayers = await playerQuery
                 .Select(x => new
                 {
-                    x.AllianceId,
                     x.PlayerId,
-                    PlayerName = x.Name,
-                    Populations = x.Villages.SelectMany(x => x.Populations.Where(x => x.Date >= date)).GroupBy(x => x.Date).Select(x => new { Date = x.Key, Population = x.OrderBy(x => x.Date).Select(x => x.Population).Sum() }),
+                    Populations = x.Villages
+                        .SelectMany(x => x.Populations
+                                        .Where(x => x.Date == date || x.Date == latestDate))
+                        .GroupBy(x => x.Date)
+                        .OrderByDescending(x => x.Key)
+                        .Select(x => x
+                                    .OrderByDescending(x => x.Date)
+                                    .Select(x => x.Population)
+                                    .Sum())
                 })
                 .AsEnumerable()
                 .Select(x => new
                 {
-                    x.AllianceId,
                     x.PlayerId,
-                    x.PlayerName,
-                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
+                    ChangePopulation = x.Populations.FirstOrDefault() - x.Populations.LastOrDefault(),
                 })
-                .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize);
+                .OrderByDescending(x => x.ChangePopulation)
+                .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize, countPlayer);
+
+            //.Select(x => new
+            //{
+            //    x.AllianceId,
+            //    x.PlayerId,
+            //    x.PlayerName,
+            //    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+            //    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
+            //})
             var players = rawPlayers;
 
             Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());

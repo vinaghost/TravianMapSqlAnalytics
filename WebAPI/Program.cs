@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using WebAPI.Behaviors;
 using WebAPI.Middlewares;
 using WebAPI.Models.Config;
 using WebAPI.Services;
@@ -51,8 +52,14 @@ namespace WebAPI
             services.AddSwaggerGen();
 
             services.AddHttpContextAccessor();
+            services.AddMemoryCache();
 
-            services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
+            services.AddMediatR(cfg =>
+            {
+                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+
+                cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
+            });
 
             services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
             {
@@ -84,6 +91,7 @@ namespace WebAPI
             });
 
             services.TryAddScoped<DataService>();
+            services.TryAddSingleton<ICacheService, CacheService>();
             services.TryAddScoped<ServerMiddleware>();
         }
 

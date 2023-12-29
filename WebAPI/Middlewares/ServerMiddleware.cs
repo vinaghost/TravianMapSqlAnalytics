@@ -1,13 +1,13 @@
-﻿using Core;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using WebAPI.Queries;
 using WebAPI.Services;
 
 namespace WebAPI.Middlewares
 {
-    public class ServerMiddleware(DataService dataService, ServerListDbContext serverListDbContext) : IMiddleware
+    public class ServerMiddleware(DataService dataService, IMediator mediator) : IMiddleware
     {
         private readonly DataService _dataService = dataService;
-        private readonly ServerListDbContext _serverListContext = serverListDbContext;
+        private readonly IMediator _mediator = mediator;
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -15,7 +15,8 @@ namespace WebAPI.Middlewares
             if (value.ContainsKey("server"))
             {
                 var server = value["server"].ToString();
-                if (!await ValidateServer(server))
+                var isValid = await _mediator.Send(new ValidateServerQuery(server));
+                if (!isValid)
                 {
                     context.Response.StatusCode = StatusCodes.Status404NotFound;
                     return;
@@ -24,13 +25,6 @@ namespace WebAPI.Middlewares
             }
 
             await next(context);
-        }
-
-        private async Task<bool> ValidateServer(string server)
-        {
-            return await _serverListContext.Servers
-                .Where(x => x.Url == server)
-                .AnyAsync();
         }
     }
 }

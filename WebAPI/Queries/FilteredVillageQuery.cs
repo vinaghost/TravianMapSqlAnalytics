@@ -4,7 +4,7 @@ using VillageEnitty = Core.Models.Village;
 
 namespace WebAPI.Queries
 {
-    public record FilteredVillageQuery(List<int> Alliances, List<int> Players) : IRequest<IQueryable<VillageEnitty>>;
+    public record FilteredVillageQuery(List<int> Alliances, List<int> Players) : IQuery<IQueryable<VillageEnitty>>;
 
     public class VillageQueryHandler(ServerDbContext dbContext) : IRequestHandler<FilteredVillageQuery, IQueryable<VillageEnitty>>
     {
