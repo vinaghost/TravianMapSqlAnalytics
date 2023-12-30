@@ -4,7 +4,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Queries
 {
-    public record AllianceInfoQuery(IEnumerable<int> Ids) : IRequest<Dictionary<int, string>>;
+    public record AllianceInfoQuery(List<int> Ids) : IRequest<Dictionary<int, string>>
+    {
+        private readonly List<int> ids = Ids;
+        public List<int> Ids => ids.Distinct().Order().ToList();
+        public string CacheKey => $"{nameof(AllianceInfoQuery)}_{string.Join(',', Ids)}";
+
+        public TimeSpan? Expiation => null;
+
+        public bool IsServerBased => true;
+    }
 
     public class AllianceInfoQueryHandler(ServerDbContext dbContext) : IRequestHandler<AllianceInfoQuery, Dictionary<int, string>>
     {

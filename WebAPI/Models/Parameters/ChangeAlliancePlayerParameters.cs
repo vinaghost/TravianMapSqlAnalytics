@@ -1,7 +1,7 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public class ChangeAlliancePlayerParameters : PlayerParameters
+    public class ChangeAlliancePlayerParameters : PlayerParameters, IChangeParameters
     {
-        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateOnly Date { get; } = DefaultParameters.Date;
     }
 }

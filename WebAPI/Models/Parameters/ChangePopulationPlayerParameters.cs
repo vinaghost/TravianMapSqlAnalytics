@@ -1,9 +1,9 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public class ChangePopulationPlayerParameters : PlayerParameters
+    public class ChangePopulationPlayerParameters : PlayerParameters, IChangePopulationFilterParameter
     {
-        public int MinChangePopulation { get; set; } = 0;
-        public int MaxChangePopulation { get; set; } = 10000;
-        public DateOnly Date { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public int MinChangePopulation { get; } = DefaultParameters.MinChangePopulation;
+        public int MaxChangePopulation { get; } = DefaultParameters.MaxChangePopulation;
+        public DateOnly Date { get; } = DefaultParameters.Date;
     }
 }

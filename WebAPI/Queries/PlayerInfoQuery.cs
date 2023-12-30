@@ -4,13 +4,22 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Queries
 {
-    public record PlayerNameQuery(IEnumerable<int> Ids) : IQuery<Dictionary<int, PlayerInfo>>;
+    public record PlayerInfoQuery(List<int> Ids) : ICachedQuery<Dictionary<int, PlayerInfo>>
+    {
+        private readonly List<int> ids = Ids;
+        public List<int> Ids => ids.Distinct().Order().ToList();
+        public string CacheKey => $"{nameof(PlayerInfoQuery)}_{string.Join(',', Ids)}";
 
-    public class PlayerNameQueryHandler(ServerDbContext dbContext) : IRequestHandler<PlayerNameQuery, Dictionary<int, PlayerInfo>>
+        public TimeSpan? Expiation => null;
+
+        public bool IsServerBased => true;
+    }
+
+    public class PlayerNameQueryHandler(ServerDbContext dbContext) : IRequestHandler<PlayerInfoQuery, Dictionary<int, PlayerInfo>>
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public async Task<Dictionary<int, PlayerInfo>> Handle(PlayerNameQuery request, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, PlayerInfo>> Handle(PlayerInfoQuery request, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
                 .Where(x => request.Ids.Contains(x.PlayerId))

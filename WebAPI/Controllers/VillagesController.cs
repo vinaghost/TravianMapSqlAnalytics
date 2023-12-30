@@ -1,10 +1,11 @@
-﻿using MediatR;
+﻿using Core;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using WebAPI.Extensions;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 using WebAPI.Queries;
-using WebAPI.Specifications;
 using X.PagedList;
 
 namespace WebAPI.Controllers
@@ -12,25 +13,18 @@ namespace WebAPI.Controllers
     [ApiController]
     [Route("[controller]")]
     [ProducesResponseType(404)]
-    public class VillagesController(IMediator mediator) : ControllerBase
+    public class VillagesController(ServerDbContext dbContext, IMediator mediator) : ControllerBase
     {
         private readonly IMediator _mediator = mediator;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         [HttpGet]
         [ProducesResponseType(typeof(IPagedList<Village>), 200)]
         public async Task<IActionResult> Get([FromBody] VillageParameters villageParameters)
         {
-            var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
-
-            var populationSpecification = new MinMaxSpecification()
-            {
-                Max = villageParameters.MaxPopulation,
-                Min = villageParameters.MinPopulation,
-            };
-
-            villageQuery = populationSpecification.Apply(villageQuery);
-
-            var rawVillages = await villageQuery
+            var (Alliances, Players, Villages, MinPopulation, MaxPopulation) = villageParameters;
+            var villageCount = await _mediator.Send(new GetVillageCountQuery(Alliances, Players, Villages, MinPopulation, MaxPopulation));
+            var rawVillages = await _dbContext.GetQueryable(villageParameters)
                 .Select(x => new
                 {
                     x.PlayerId,
@@ -45,8 +39,8 @@ namespace WebAPI.Controllers
                 .OrderByDescending(x => x.Population)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
-            var players = await _mediator.Send(new PlayerNameQuery(rawVillages.Select(x => x.PlayerId)));
-            var alliances = await _mediator.Send(new AllianceInfoQuery(players.Values.Select(x => x.AllianceId)));
+            var players = await _mediator.Send(new PlayerInfoQuery([.. rawVillages.Select(x => x.PlayerId)]));
+            var alliances = await _mediator.Send(new AllianceInfoQuery([.. players.Values.Select(x => x.AllianceId)]));
 
             var villages = rawVillages
                 .Select(x =>
@@ -75,18 +69,11 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IPagedList<ChangePopulationVillage>), 200)]
         public async Task<IActionResult> Get([FromBody] ChangePopulationVillageParameters villageParameters)
         {
-            var villageQuery = await _mediator.Send(new FilteredVillageQuery(villageParameters.Alliances, villageParameters.Players));
-
-            var populationSpecification = new MinMaxSpecification()
-            {
-                Max = villageParameters.MaxPopulation,
-                Min = villageParameters.MinPopulation,
-            };
-
-            villageQuery = populationSpecification.Apply(villageQuery);
+            var (Alliances, Players, Villages, MinPopulation, MaxPopulation) = villageParameters;
+            var villageQuery = await _mediator.Send(new GetVillageCountQuery(Alliances, Players, Villages, MinPopulation, MaxPopulation));
 
             var date = villageParameters.Date.ToDateTime(TimeOnly.MinValue);
-            var rawVillages = await villageQuery
+            var rawVillages = await _dbContext.GetQueryable(villageParameters)
                 .Select(x => new
                 {
                     x.PlayerId,
@@ -116,8 +103,8 @@ namespace WebAPI.Controllers
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(villageParameters.PageNumber, villageParameters.PageSize);
 
-            var players = await _mediator.Send(new PlayerNameQuery(rawVillages.Select(x => x.PlayerId)));
-            var alliances = await _mediator.Send(new AllianceInfoQuery(players.Values.Select(x => x.AllianceId)));
+            var players = await _mediator.Send(new PlayerInfoQuery([.. rawVillages.Select(x => x.PlayerId)]));
+            var alliances = await _mediator.Send(new AllianceInfoQuery([.. players.Values.Select(x => x.AllianceId)]));
 
             var villages = rawVillages
                 .Select(x =>
