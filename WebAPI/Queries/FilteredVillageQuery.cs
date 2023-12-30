@@ -1,10 +1,25 @@
 ﻿using Core;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using VillageEnitty = Core.Models.Village;
 
 namespace WebAPI.Queries
 {
-    public record FilteredVillageQuery(List<int> Alliances, List<int> Players) : IQuery<IQueryable<VillageEnitty>>;
+    public interface IVillageFilterdRequest
+    {
+        List<int> Alliances { get; }
+        List<int> Players { get; }
+    }
+
+    public record GetVillageCountQuery(List<int> Alliances, List<int> Players) : ICachedQuery<int>, IVillageFilterdRequest
+    {
+        public string CacheKey => $"village_count_{string.Join(',', Alliances)}_{string.Join(',', Players)}";
+
+        public TimeSpan? Expiation => null;
+
+        public bool IsServerBased => true;
+    }
+    public record FilteredVillageQuery(List<int> Alliances, List<int> Players) : IQuery<IQueryable<VillageEnitty>>, IVillageFilterdRequest;
 
     public class VillageQueryHandler(ServerDbContext dbContext) : IRequestHandler<FilteredVillageQuery, IQueryable<VillageEnitty>>
     {
@@ -17,7 +32,13 @@ namespace WebAPI.Queries
             return filterQuery;
         }
 
-        private IQueryable<VillageEnitty> GetQuery(FilteredVillageQuery request)
+        public async Task<int> Handle(GetVillageCountQuery request, CancellationToken cancellationToken)
+        {
+            var filterQuery = GetQuery(request);
+            return await filterQuery.CountAsync(cancellationToken: cancellationToken);
+        }
+
+        private IQueryable<VillageEnitty> GetQuery(IVillageFilterdRequest request)
         {
             if (request.Alliances.Count > 0)
             {

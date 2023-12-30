@@ -1,12 +1,26 @@
 ﻿using Core;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using PlayerEnitty = Core.Models.Player;
 
 namespace WebAPI.Queries
 {
-    public record FilteredPlayerQuery(List<int> Alliances) : IQuery<IQueryable<PlayerEnitty>>;
+    public interface IPlayerFilterdRequest
+    {
+        List<int> Alliances { get; }
+    }
 
-    public class PlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<FilteredPlayerQuery, IQueryable<PlayerEnitty>>
+    public record FilteredPlayerQuery(List<int> Alliances) : IQuery<IQueryable<PlayerEnitty>>, IPlayerFilterdRequest;
+    public record GetPlayerCountQuery(List<int> Alliances) : ICachedQuery<int>, IPlayerFilterdRequest
+    {
+        public string CacheKey => $"player_count_{string.Join(',', Alliances)}";
+
+        public TimeSpan? Expiation => null;
+
+        public bool IsServerBased => true;
+    }
+
+    public class PlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<FilteredPlayerQuery, IQueryable<PlayerEnitty>>, IRequestHandler<GetPlayerCountQuery, int>
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
@@ -17,7 +31,13 @@ namespace WebAPI.Queries
             return filterQuery;
         }
 
-        private IQueryable<PlayerEnitty> GetQuery(FilteredPlayerQuery request)
+        public async Task<int> Handle(GetPlayerCountQuery request, CancellationToken cancellationToken)
+        {
+            var filterQuery = GetQuery(request);
+            return await filterQuery.CountAsync(cancellationToken: cancellationToken);
+        }
+
+        private IQueryable<PlayerEnitty> GetQuery(IPlayerFilterdRequest request)
         {
             if (request.Alliances.Count > 0)
             {

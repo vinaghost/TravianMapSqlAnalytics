@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         {
             var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
 
-            var countPlayer = await _mediator.Send(new GetPlayerCountQuery());
+            var countPlayer = await _mediator.Send(new GetPlayerCountQuery(playerParameters.Alliances));
 
             var rawPlayers = await playerQuery
                 .Select(x => new
@@ -61,7 +61,7 @@ namespace WebAPI.Controllers
             var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
             var date = playerParameters.Date.ToDateTime(TimeOnly.MinValue);
 
-            var countPlayer = await _mediator.Send(new GetPlayerCountQuery());
+            var countPlayer = await _mediator.Send(new GetPlayerCountQuery(playerParameters.Alliances));
 
             var rawPlayers = await playerQuery
                 .Select(x => new
@@ -90,7 +90,7 @@ namespace WebAPI.Controllers
                     x.PlayerId,
                     x.PlayerName,
                     ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
+                    Populations = x.Populations.Select(x => new PopulationRecord(x.Population, x.Date))
                 })
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize, countPlayer);
@@ -109,6 +109,63 @@ namespace WebAPI.Controllers
                         x.ChangePopulation,
                         x.Populations);
                 });
+
+            Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
+
+            return Ok(players);
+        }
+
+        [HttpGet("change_alliance")]
+        [ProducesResponseType(typeof(IPagedList<Player>), 200)]
+        public async Task<IActionResult> Get([FromBody] ChangeAlliancePlayerParameters playerParameters)
+        {
+            var playerQuery = await _mediator.Send(new FilteredPlayerQuery(playerParameters.Alliances));
+            var date = playerParameters.Date.ToDateTime(TimeOnly.MinValue);
+
+            var countPlayer = await _mediator.Send(new GetPlayerCountQuery(playerParameters.Alliances));
+
+            var rawPlayers = await playerQuery
+                .Select(x => new
+                {
+                    x.AllianceId,
+                    x.PlayerId,
+                    PlayerName = x.Name,
+                    Alliances = x.Alliances
+                        .Where(x => x.Date >= date)
+                        .Select(x => new
+                        {
+                            x.Date,
+                            x.AllianceId,
+                        })
+                })
+                .AsEnumerable()
+                .Select(x => new
+                {
+                    x.AllianceId,
+                    x.PlayerId,
+                    x.PlayerName,
+                    ChangeAlliances = x.Alliances.DistinctBy(x => x.AllianceId).Count(),
+                    x.Alliances
+                })
+                .OrderByDescending(x => x.ChangeAlliances)
+                .ToPagedListAsync(playerParameters.PageNumber, playerParameters.PageSize, countPlayer);
+
+            var oldAllianceId = rawPlayers.SelectMany(x => x.Alliances).DistinctBy(x => x.AllianceId).Select(x => x.AllianceId);
+            var currentAllianceId = rawPlayers.Select(x => x.AllianceId);
+
+            var alliances = await _mediator.Send(new AllianceInfoQuery(currentAllianceId.Concat(oldAllianceId)));
+
+            var players = rawPlayers
+                .Select(x => new ChangeAlliancePlayer(
+                        x.AllianceId,
+                        alliances[x.AllianceId],
+                        x.PlayerId,
+                        x.PlayerName,
+                        x.ChangeAlliances,
+                        x.Alliances.Select(alliance => new AllianceRecord(
+                            alliance.AllianceId,
+                            alliances[alliance.AllianceId],
+                            alliance.Date))));
 
             Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
 

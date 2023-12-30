@@ -109,7 +109,7 @@ namespace WebAPI.Controllers
                     x.IsCapital,
                     x.Tribe,
                     ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new Population(x.Population, x.Date))
+                    Populations = x.Populations.Select(x => new PopulationRecord(x.Population, x.Date))
                 })
                 .Where(x => x.ChangePopulation >= villageParameters.MinChangePopulation)
                 .Where(x => x.ChangePopulation <= villageParameters.MaxChangePopulation)
