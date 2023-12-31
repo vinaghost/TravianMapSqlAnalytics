@@ -2,11 +2,11 @@
 {
     public class PlayerParameters : IPaginationParameters, IPlayerFilterParameter
     {
-        public int PageNumber { get; } = DefaultParameters.PageNumber;
-        public int PageSize { get; } = DefaultParameters.PageSize;
+        public int PageNumber { get; set; } = DefaultParameters.PageNumber;
+        public int PageSize { get; set; } = DefaultParameters.PageSize;
 
-        public List<int> Alliances { get; } = [];
-        public List<int> Players { get; } = [];
+        public List<int> Alliances { get; set; } = [];
+        public List<int> Players { get; set; } = [];
 
         public void Deconstruct(
             out List<int> alliances,

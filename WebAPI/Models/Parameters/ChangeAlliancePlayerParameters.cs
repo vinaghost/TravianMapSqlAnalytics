@@ -2,6 +2,6 @@
 {
     public class ChangeAlliancePlayerParameters : PlayerParameters, IChangeParameters
     {
-        public DateOnly Date { get; } = DefaultParameters.Date;
+        public DateOnly Date { get; set; } = DefaultParameters.Date;
     }
 }

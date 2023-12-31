@@ -2,13 +2,13 @@
 {
     public record VillageParameters : IPaginationParameters, IVillageFilterParameter
     {
-        public int PageNumber { get; } = DefaultParameters.PageNumber;
-        public int PageSize { get; } = DefaultParameters.PageSize;
-        public int MinPopulation { get; } = DefaultParameters.MinPopulation;
-        public int MaxPopulation { get; } = DefaultParameters.MaxPopulation;
-        public List<int> Alliances { get; } = [];
-        public List<int> Players { get; } = [];
-        public List<int> Villages { get; } = [];
+        public int PageNumber { get; set; } = DefaultParameters.PageNumber;
+        public int PageSize { get; set; } = DefaultParameters.PageSize;
+        public int MinPopulation { get; set; } = DefaultParameters.MinPopulation;
+        public int MaxPopulation { get; set; } = DefaultParameters.MaxPopulation;
+        public List<int> Alliances { get; set; } = [];
+        public List<int> Players { get; set; } = [];
+        public List<int> Villages { get; set; } = [];
 
         public void Deconstruct(
             out List<int> alliances,

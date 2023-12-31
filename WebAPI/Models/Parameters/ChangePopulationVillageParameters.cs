@@ -2,9 +2,9 @@
 {
     public record ChangePopulationVillageParameters : VillageParameters, IChangePopulationFilterParameter
     {
-        public int MinChangePopulation { get; } = DefaultParameters.MinChangePopulation;
-        public int MaxChangePopulation { get; } = DefaultParameters.MaxChangePopulation;
-        public DateOnly Date { get; } = DefaultParameters.Date;
+        public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
+        public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;
+        public DateOnly Date { get; set; } = DefaultParameters.Date;
 
         public void Deconstruct(
             out DateOnly date,

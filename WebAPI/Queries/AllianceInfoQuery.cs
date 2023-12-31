@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Queries
 {
-    public record AllianceInfoQuery(List<int> Ids) : IRequest<Dictionary<int, string>>
+    public record AllianceInfoQuery(List<int> Ids) : ICachedQuery<Dictionary<int, string>>
     {
         private readonly List<int> ids = Ids;
         public List<int> Ids => ids.Distinct().Order().ToList();
