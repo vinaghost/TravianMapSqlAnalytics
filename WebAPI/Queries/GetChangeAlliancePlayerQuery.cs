@@ -6,7 +6,12 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangeAlliancePlayersQuery(ChangeAlliancePlayerParameters Parameters) : IQuery<IPagedList<ChangeAlliancePlayer>>;
+    public record GetChangeAlliancePlayersQuery(ChangeAlliancePlayerParameters Parameters) : ICachedQuery<IPagedList<ChangeAlliancePlayer>>
+    {
+        public string CacheKey => Parameters.Key;
+        public TimeSpan? Expiation => null;
+        public bool IsServerBased => true;
+    }
 
     public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangeAlliancePlayersQuery, IPagedList<ChangeAlliancePlayer>>
     {

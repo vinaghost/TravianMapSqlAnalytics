@@ -7,7 +7,12 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetVillagesQuery(VillageParameters Parameters) : IQuery<IPagedList<Village>>;
+    public record GetVillagesQuery(VillageParameters Parameters) : ICachedQuery<IPagedList<Village>>
+    {
+        public string CacheKey => Parameters.Key;
+        public TimeSpan? Expiation => null;
+        public bool IsServerBased => true;
+    }
 
     public class GetVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetVillagesQuery, IPagedList<Village>>
     {

@@ -8,9 +8,6 @@
         public List<int> Alliances { get; set; } = [];
         public List<int> Players { get; set; } = [];
 
-        public void Deconstruct(
-            out List<int> alliances,
-            out List<int> players
-        ) => (alliances, players) = (Alliances, Players);
+        public virtual string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances)}_{string.Join(',', Players)}";
     }
 }

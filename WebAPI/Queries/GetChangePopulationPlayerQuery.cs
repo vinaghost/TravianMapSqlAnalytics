@@ -6,7 +6,12 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangePopulationPlayersQuery(ChangePopulationPlayerParameters Parameters) : IQuery<IPagedList<ChangePopulationPlayer>>;
+    public record GetChangePopulationPlayersQuery(ChangePopulationPlayerParameters Parameters) : ICachedQuery<IPagedList<ChangePopulationPlayer>>
+    {
+        public string CacheKey => Parameters.Key;
+        public TimeSpan? Expiation => null;
+        public bool IsServerBased => true;
+    }
 
     public class GetChangePopulationPlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationPlayersQuery, IPagedList<ChangePopulationPlayer>>
     {
