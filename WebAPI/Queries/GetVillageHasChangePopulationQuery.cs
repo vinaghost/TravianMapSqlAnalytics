@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangePopulationVillagesQuery(ChangePopulationVillageParameters Parameters) : ICachedQuery<IPagedList<ChangePopulationVillage>>
+    public record GetChangePopulationVillagesQuery(VillageHasChangePopulationParameters Parameters) : ICachedQuery<IPagedList<VillageHasChangePopulation>>
     {
-        public string CacheKey => Parameters.Key;
+        public string CacheKey => $"{nameof(GetChangePopulationVillagesQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangePopulationVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationVillagesQuery, IPagedList<ChangePopulationVillage>>
+    public class GetChangePopulationVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationVillagesQuery, IPagedList<VillageHasChangePopulation>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<ChangePopulationVillage>> Handle(GetChangePopulationVillagesQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageHasChangePopulation>> Handle(GetChangePopulationVillagesQuery request, CancellationToken cancellationToken)
         {
             var rawVillageQueryable = _unitOfRepository.VillageRepository.GetQueryable(request.Parameters);
 
@@ -46,7 +46,7 @@ namespace WebAPI.Queries
                     x.IsCapital,
                     x.Tribe,
                     ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new RecordPopulation(x.Population, x.Date))
+                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))
                 })
                 .Where(x => x.ChangePopulation >= request.Parameters.MinChangePopulation)
                 .Where(x => x.ChangePopulation <= request.Parameters.MaxChangePopulation)
@@ -61,7 +61,7 @@ namespace WebAPI.Queries
                 {
                     var player = players[x.PlayerId];
                     var alliance = alliances[player.AllianceId];
-                    return new ChangePopulationVillage(
+                    return new VillageHasChangePopulation(
                         player.AllianceId,
                         alliance.Name,
                         x.PlayerId,

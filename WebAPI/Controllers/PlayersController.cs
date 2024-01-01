@@ -25,8 +25,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("change_population")]
-        [ProducesResponseType(typeof(IPagedList<ChangePopulationPlayer>), 200)]
-        public async Task<IActionResult> Get([FromBody] ChangePopulationPlayerParameters playerParameters)
+        [ProducesResponseType(typeof(IPagedList<PlayerHasChangePopulation>), 200)]
+        public async Task<IActionResult> Get([FromBody] PlayerHasChangePopulationParameters playerParameters)
         {
             var players = await _mediator.Send(new GetChangePopulationPlayersQuery(playerParameters));
             Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
@@ -35,7 +35,7 @@ namespace WebAPI.Controllers
 
         [HttpGet("change_alliance")]
         [ProducesResponseType(typeof(IPagedList<Player>), 200)]
-        public async Task<IActionResult> Get([FromBody] ChangeAlliancePlayerParameters playerParameters)
+        public async Task<IActionResult> Get([FromBody] PlayerHasChangeAllianceParameters playerParameters)
         {
             var players = await _mediator.Send(new GetChangeAlliancePlayersQuery(playerParameters));
 

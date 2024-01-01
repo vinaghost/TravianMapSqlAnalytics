@@ -9,7 +9,7 @@ namespace WebAPI.Queries
 {
     public record GetVillagesQuery(VillageParameters Parameters) : ICachedQuery<IPagedList<Village>>
     {
-        public string CacheKey => Parameters.Key;
+        public string CacheKey => $"{nameof(GetVillagesQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }

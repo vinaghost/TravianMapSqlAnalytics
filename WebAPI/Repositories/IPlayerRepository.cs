@@ -6,6 +6,6 @@ namespace WebAPI.Repositories
     public interface IPlayerRepository
     {
         IQueryable<Core.Models.Player> GetQueryable(IPlayerFilterParameter parameters);
-        Task<Dictionary<int, RecordPlayer>> GetRecords(List<int> PlayersId, CancellationToken cancellationToken);
+        Task<Dictionary<int, PlayerRecord>> GetRecords(List<int> PlayersId, CancellationToken cancellationToken);
     }
 }

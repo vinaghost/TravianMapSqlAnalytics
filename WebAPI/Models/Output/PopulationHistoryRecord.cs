@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Output
 {
-    public record RecordPopulation(
+    public record PopulationHistoryRecord(
         int Amount,
         DateTime Date);
 }

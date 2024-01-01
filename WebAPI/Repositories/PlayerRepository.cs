@@ -10,11 +10,11 @@ namespace WebAPI.Repositories
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public async Task<Dictionary<int, RecordPlayer>> GetRecords(List<int> playersId, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, PlayerRecord>> GetRecords(List<int> playersId, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
                 .Where(x => playersId.Contains(x.PlayerId))
-                .ToDictionaryAsync(x => x.PlayerId, x => new RecordPlayer(x.AllianceId, x.Name), cancellationToken: cancellationToken);
+                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken: cancellationToken);
         }
 
         public IQueryable<PlayerEntity> GetQueryable(IPlayerFilterParameter parameters)

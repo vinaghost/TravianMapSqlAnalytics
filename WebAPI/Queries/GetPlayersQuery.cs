@@ -9,7 +9,7 @@ namespace WebAPI.Queries
 {
     public record GetPlayersQuery(PlayerParameters Parameters) : ICachedQuery<IPagedList<Player>>
     {
-        public string CacheKey => Parameters.Key;
+        public string CacheKey => $"{nameof(GetPlayersQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }

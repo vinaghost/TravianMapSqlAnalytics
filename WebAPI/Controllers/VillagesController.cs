@@ -25,8 +25,8 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("change_population")]
-        [ProducesResponseType(typeof(IPagedList<ChangePopulationVillage>), 200)]
-        public async Task<IActionResult> Get([FromBody] ChangePopulationVillageParameters villageParameters)
+        [ProducesResponseType(typeof(IPagedList<VillageHasChangePopulation>), 200)]
+        public async Task<IActionResult> Get([FromBody] VillageHasChangePopulationParameters villageParameters)
         {
             var villages = await _mediator.Send(new GetChangePopulationVillagesQuery(villageParameters));
             Response.Headers.Append("X-Pagination", villages.ToXpagination().ToJson());
