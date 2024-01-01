@@ -1,9 +1,9 @@
 using Core;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using WebAPI.Behaviors;
+using WebAPI.Extensions;
 using WebAPI.Middlewares;
 using WebAPI.Models.Config;
 using WebAPI.Services;
@@ -90,9 +90,11 @@ namespace WebAPI
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            services.TryAddScoped<DataService>();
-            services.TryAddSingleton<ICacheService, CacheService>();
-            services.TryAddScoped<ServerMiddleware>();
+            services.AddServices();
+
+            services.AddMiddleware();
+
+            services.AddRepository();
         }
 
         private static void BindConfiguration(WebApplicationBuilder builder)

@@ -1,6 +1,5 @@
-﻿using Core;
-using MediatR;
-using Microsoft.EntityFrameworkCore;
+﻿using MediatR;
+using WebAPI.Repositories;
 
 namespace WebAPI.Queries
 {
@@ -13,15 +12,13 @@ namespace WebAPI.Queries
         public bool IsServerBased => false;
     }
 
-    public class ValidateServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<ValidateServerQuery, bool>
+    public class ValidateServerQueryHandler(IServerRepository serverRepository) : IRequestHandler<ValidateServerQuery, bool>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly IServerRepository _serverRepository = serverRepository;
 
         public async Task<bool> Handle(ValidateServerQuery request, CancellationToken cancellationToken)
         {
-            return await _dbContext.Servers
-                            .Where(x => x.Url == request.Server)
-                            .AnyAsync(cancellationToken: cancellationToken);
+            return await _serverRepository.Validate(request.Server, cancellationToken);
         }
     }
 }

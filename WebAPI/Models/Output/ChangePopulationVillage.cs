@@ -12,5 +12,5 @@
         bool IsCapital,
         int Tribe,
         int ChangePopulation,
-        IEnumerable<PopulationRecord> Populations);
+        IEnumerable<RecordPopulation> Populations);
 }

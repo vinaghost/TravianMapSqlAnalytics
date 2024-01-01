@@ -9,13 +9,5 @@
         public List<int> Alliances { get; set; } = [];
         public List<int> Players { get; set; } = [];
         public List<int> Villages { get; set; } = [];
-
-        public void Deconstruct(
-            out List<int> alliances,
-            out List<int> players,
-            out List<int> villages,
-            out int minPopulation,
-            out int maxPopulation
-        ) => (alliances, players, villages, minPopulation, maxPopulation) = (Alliances, Players, Villages, MinPopulation, MaxPopulation);
     }
 }

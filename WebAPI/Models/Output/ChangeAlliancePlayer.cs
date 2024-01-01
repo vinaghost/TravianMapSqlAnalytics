@@ -6,10 +6,10 @@
         int PlayerId,
         string PlayerName,
         int ChangeAlliance,
-        IEnumerable<AllianceRecord> Alliances);
+        IEnumerable<AllianceHistoryRecord> Alliances);
 
-    public record AllianceRecord(
+    public record AllianceHistoryRecord(
        int AllianceId,
        string AllianceName,
-       DateTime date);
+       DateTime Date);
 }
