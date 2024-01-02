@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public interface IChangeParameters
+    public interface IHistoryParameters
     {
         DateOnly Date { get; }
     }

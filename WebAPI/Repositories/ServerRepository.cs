@@ -27,8 +27,8 @@ namespace WebAPI.Repositories
         public async Task<IPagedList<Server>> GetServers(IPaginationParameters parameters)
         {
             return await _dbContext.Servers
-                .Select(x => new Server(x.Url, x.Zone, x.StartDate, x.AllianceCount, x.PlayerCount, x.VillageCount))
                 .OrderByDescending(x => x.PlayerCount)
+                .Select(x => new Server(x.Url, x.Zone, x.StartDate, x.AllianceCount, x.PlayerCount, x.VillageCount))
                 .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
     }

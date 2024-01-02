@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public class PlayerHasChangeAllianceParameters : PlayerParameters, IChangeAllianceFilterParameter
+    public class PlayerContainsAllianceHistoryParameters : PlayerParameters, IAllianceHistoryFilterParameter
     {
         public DateOnly Date { get; set; } = DefaultParameters.Date;
         public int MinChangeAlliance { get; set; } = DefaultParameters.MinChangeAlliance;

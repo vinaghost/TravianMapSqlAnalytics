@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public interface IChangeAllianceFilterParameter : IChangeParameters
+    public interface IAllianceHistoryFilterParameter : IHistoryParameters
     {
         int MinChangeAlliance { get; }
         int MaxChangeAlliance { get; }

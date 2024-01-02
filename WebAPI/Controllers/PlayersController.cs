@@ -24,18 +24,18 @@ namespace WebAPI.Controllers
             return Ok(players);
         }
 
-        [HttpGet("change_population")]
-        [ProducesResponseType(typeof(IPagedList<PlayerHasChangePopulation>), 200)]
-        public async Task<IActionResult> Get([FromBody] PlayerHasChangePopulationParameters playerParameters)
+        [HttpGet("population_history")]
+        [ProducesResponseType(typeof(IPagedList<PlayerContainsPopulationHistory>), 200)]
+        public async Task<IActionResult> Get([FromBody] PlayerContainsPopulationHistoryParameters playerParameters)
         {
             var players = await _mediator.Send(new GetChangePopulationPlayersQuery(playerParameters));
             Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
             return Ok(players);
         }
 
-        [HttpGet("change_alliance")]
-        [ProducesResponseType(typeof(IPagedList<Player>), 200)]
-        public async Task<IActionResult> Get([FromBody] PlayerHasChangeAllianceParameters playerParameters)
+        [HttpGet("alliance_history")]
+        [ProducesResponseType(typeof(IPagedList<PlayerContainsAllianceHistory>), 200)]
+        public async Task<IActionResult> Get([FromBody] PlayerContainsAllianceHistoryParameters playerParameters)
         {
             var players = await _mediator.Send(new GetChangeAlliancePlayersQuery(playerParameters));
 

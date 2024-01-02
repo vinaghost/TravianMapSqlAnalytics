@@ -6,7 +6,7 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangePopulationVillagesQuery(VillageHasChangePopulationParameters Parameters) : ICachedQuery<IPagedList<VillageHasChangePopulation>>
+    public record GetChangePopulationVillagesQuery(VillageContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<VillageHasChangePopulation>>
     {
         public string CacheKey => $"{nameof(GetChangePopulationVillagesQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;

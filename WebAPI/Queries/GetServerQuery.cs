@@ -15,9 +15,9 @@ namespace WebAPI.Queries
         public bool IsServerBased => false;
     }
 
-    public class GetServerQueryHandler(ServerRepository serverRepository) : IRequestHandler<GetServerQuery, IPagedList<Server>>
+    public class GetServerQueryHandler(IServerRepository serverRepository) : IRequestHandler<GetServerQuery, IPagedList<Server>>
     {
-        private readonly ServerRepository _serverRepository = serverRepository;
+        private readonly IServerRepository _serverRepository = serverRepository;
 
         public async Task<IPagedList<Server>> Handle(GetServerQuery request, CancellationToken cancellationToken)
         {

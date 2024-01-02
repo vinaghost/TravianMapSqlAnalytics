@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public record VillageHasChangePopulationParameters : VillageParameters, IChangePopulationFilterParameter
+    public class PlayerContainsPopulationHistoryParameters : PlayerParameters, IPopulationHistoryFilterParameter
     {
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;

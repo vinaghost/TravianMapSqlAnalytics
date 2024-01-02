@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangeAlliancePlayersQuery(PlayerHasChangeAllianceParameters Parameters) : ICachedQuery<IPagedList<PlayerHasChangeAlliance>>
+    public record GetChangeAlliancePlayersQuery(PlayerContainsAllianceHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsAllianceHistory>>
     {
         public string CacheKey => $"{nameof(GetChangeAlliancePlayersQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangeAlliancePlayersQuery, IPagedList<PlayerHasChangeAlliance>>
+    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangeAlliancePlayersQuery, IPagedList<PlayerContainsAllianceHistory>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerHasChangeAlliance>> Handle(GetChangeAlliancePlayersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsAllianceHistory>> Handle(GetChangeAlliancePlayersQuery request, CancellationToken cancellationToken)
         {
             var date = request.Parameters.Date.ToDateTime(TimeOnly.MinValue);
             var playerQueryable = _unitOfRepository.PlayerRepository.GetQueryable(request.Parameters);
@@ -59,7 +59,7 @@ namespace WebAPI.Queries
                 {
                     var alliance = alliances[x.AllianceId];
 
-                    return new PlayerHasChangeAlliance(
+                    return new PlayerContainsAllianceHistory(
                             x.AllianceId,
                             alliance.Name,
                             x.PlayerId,

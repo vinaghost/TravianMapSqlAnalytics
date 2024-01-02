@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Output
 {
-    public record PlayerHasChangePopulation(
+    public record PlayerContainsPopulationHistory(
         int AllianceId,
         string AllianceName,
         int PlayerId,

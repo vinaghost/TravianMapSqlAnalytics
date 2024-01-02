@@ -1,21 +1,24 @@
-﻿using Core;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models.Output;
+using WebAPI.Models.Parameters;
+using WebAPI.Queries;
+using X.PagedList;
 
 namespace WebAPI.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ServersController(ServerListDbContext dbContext) : ControllerBase
+    public class ServersController(IMediator mediator) : ControllerBase
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        public IEnumerable<Server> Get()
+        [ProducesResponseType(typeof(IPagedList<Server>), 200)]
+        public async Task<IActionResult> Get([FromBody] ServerParameters serverParameters)
         {
-            var servers = _dbContext.Servers
-                 .Select(x => new Server(x.Url, x.Zone, x.StartDate, x.AllianceCount, x.PlayerCount, x.VillageCount));
-            return servers;
+            var servers = await _mediator.Send(new GetServerQuery(serverParameters));
+            return Ok(servers);
         }
     }
 }

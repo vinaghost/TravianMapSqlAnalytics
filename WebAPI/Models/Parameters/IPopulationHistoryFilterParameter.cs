@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public interface IChangePopulationFilterParameter : IChangeParameters
+    public interface IPopulationHistoryFilterParameter : IHistoryParameters
     {
         int MinChangePopulation { get; }
         int MaxChangePopulation { get; }
