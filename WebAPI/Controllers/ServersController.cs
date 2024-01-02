@@ -1,8 +1,8 @@
-﻿using MediatR;
+﻿using Core.Models;
+using Core.Parameters;
+using Core.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models.Output;
-using WebAPI.Models.Parameters;
-using WebAPI.Queries;
 using X.PagedList;
 
 namespace WebAPI.Controllers

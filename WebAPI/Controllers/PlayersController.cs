@@ -1,9 +1,10 @@
-﻿using MediatR;
+﻿using Core.Models;
+using Core.Parameters;
+using Core.Queries;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using WebAPI.Models.Output;
-using WebAPI.Models.Parameters;
-using WebAPI.Queries;
+using WebAPI.Extensions;
 using X.PagedList;
 
 namespace WebAPI.Controllers
@@ -20,7 +21,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get([FromBody] PlayerParameters playerParameters)
         {
             var players = await _mediator.Send(new GetPlayersQuery(playerParameters));
-            Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", players.ToJson());
             return Ok(players);
         }
 
@@ -29,7 +30,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> Get([FromBody] PlayerContainsPopulationHistoryParameters playerParameters)
         {
             var players = await _mediator.Send(new GetChangePopulationPlayersQuery(playerParameters));
-            Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", players.ToJson());
             return Ok(players);
         }
 
@@ -39,7 +40,7 @@ namespace WebAPI.Controllers
         {
             var players = await _mediator.Send(new GetChangeAlliancePlayersQuery(playerParameters));
 
-            Response.Headers.Append("X-Pagination", players.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", players.ToJson());
 
             return Ok(players);
         }

@@ -1,5 +1,5 @@
 ﻿using Core;
-using Core.Models;
+using Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,9 +7,9 @@ namespace MapSqlDatabaseUpdate.Commands
 {
     public class UpdateServerListCommand : IRequest
     {
-        public List<ServerEntity> Servers { get; }
+        public List<Server> Servers { get; }
 
-        public UpdateServerListCommand(List<ServerEntity> servers)
+        public UpdateServerListCommand(List<Server> servers)
         {
             Servers = servers;
         }

@@ -1,6 +1,6 @@
-﻿using MediatR;
-using WebAPI.Queries;
-using WebAPI.Services;
+﻿using Core.Queries;
+using Core.Services;
+using MediatR;
 
 namespace WebAPI.Middlewares
 {

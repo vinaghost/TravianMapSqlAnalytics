@@ -178,8 +178,10 @@
       "core": {
         "type": "Project",
         "dependencies": {
+          "MediatR": "[12.2.0, )",
           "Microsoft.EntityFrameworkCore": "[8.0.0, )",
-          "Pomelo.EntityFrameworkCore.MySql": "[8.0.0-beta.2, )"
+          "Pomelo.EntityFrameworkCore.MySql": "[8.0.0-beta.2, )",
+          "X.PagedList": "[8.4.7, )"
         }
       }
     },

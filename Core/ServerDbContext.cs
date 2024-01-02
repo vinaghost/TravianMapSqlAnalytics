@@ -1,4 +1,4 @@
-﻿using Core.Models;
+﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,9 +7,9 @@ namespace Core
 {
     public class ServerDbContext : DbContext
     {
-        public DbSet<AllianceEntity> Alliances { get; set; }
-        public DbSet<PlayerEntity> Players { get; set; }
-        public DbSet<VillageEntity> Villages { get; set; }
+        public DbSet<Alliance> Alliances { get; set; }
+        public DbSet<Player> Players { get; set; }
+        public DbSet<Village> Villages { get; set; }
         public DbSet<VillagePopulation> VillagesPopulations { get; set; }
         public DbSet<PlayerAlliance> PlayersAlliances { get; set; }
 

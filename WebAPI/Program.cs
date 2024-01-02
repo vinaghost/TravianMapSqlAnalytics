@@ -1,12 +1,8 @@
-using Core;
+using Core.Config;
+using Core.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using WebAPI.Behaviors;
 using WebAPI.Extensions;
 using WebAPI.Middlewares;
-using WebAPI.Models.Config;
-using WebAPI.Services;
 
 namespace WebAPI
 {
@@ -52,61 +48,16 @@ namespace WebAPI
             services.AddSwaggerGen();
 
             services.AddHttpContextAccessor();
-            services.AddMemoryCache();
-
-            services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-
-                cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
-            });
-
-            services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
-            {
-                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
-
-                var connectionString = $"{GetDatabaseInfo(option)};Database={ServerListDbContext.DATABASE_NAME}";
-                options
-#if DEBUG
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors()
-#endif
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-
-            services.AddDbContext<ServerDbContext>((serviceProvider, options) =>
-            {
-                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
-                var dataService = serviceProvider.GetRequiredService<DataService>();
-
-                var connectionString = $"{GetDatabaseInfo(option)};Database={dataService.Server}";
-                options
-#if DEBUG
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors()
-#endif
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-
-            services.AddServices();
 
             services.AddMiddleware();
 
-            services.AddRepository();
+            services.AddCore();
         }
 
         private static void BindConfiguration(WebApplicationBuilder builder)
         {
             builder.Services.Configure<DatabaseOption>(
                 builder.Configuration.GetSection(DatabaseOption.Position));
-        }
-
-        private static string GetDatabaseInfo(IOptions<DatabaseOption> options)
-        {
-            var value = options.Value;
-            return $"Server={value.Host};Port={value.Port};Uid={value.Username};Pwd={value.Password};";
         }
     }
 }

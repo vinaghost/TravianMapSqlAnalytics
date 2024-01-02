@@ -1,22 +1,22 @@
-﻿using Core.Models;
+﻿using Core.Entities;
 using MapSqlDatabaseUpdate.Models;
 
 namespace MapSqlDatabaseUpdate.Extensions
 {
     public static class VillageRawExtension
     {
-        public static AllianceEntity GetAlliace(this VillageRaw villageRaw)
+        public static Alliance GetAlliace(this VillageRaw villageRaw)
         {
-            return new AllianceEntity
+            return new Alliance
             {
                 AllianceId = villageRaw.AllianceId,
                 Name = villageRaw.AllianceName
             };
         }
 
-        public static PlayerEntity GetPlayer(this VillageRaw villageRaw)
+        public static Player GetPlayer(this VillageRaw villageRaw)
         {
-            return new PlayerEntity
+            return new Player
             {
                 PlayerId = villageRaw.PlayerId,
                 Name = villageRaw.PlayerName,
@@ -24,9 +24,9 @@ namespace MapSqlDatabaseUpdate.Extensions
             };
         }
 
-        public static VillageEntity GetVillage(this VillageRaw villageRaw)
+        public static Village GetVillage(this VillageRaw villageRaw)
         {
-            return new VillageEntity
+            return new Village
             {
                 VillageId = villageRaw.VillageId,
                 MapId = villageRaw.MapId,
@@ -44,7 +44,7 @@ namespace MapSqlDatabaseUpdate.Extensions
             };
         }
 
-        public static VillagePopulation GetVillagePopulation(this VillageEntity village, DateTime date)
+        public static VillagePopulation GetVillagePopulation(this Village village, DateTime date)
         {
             return new VillagePopulation
             {
@@ -54,7 +54,7 @@ namespace MapSqlDatabaseUpdate.Extensions
             };
         }
 
-        public static PlayerAlliance GetPlayerAlliance(this PlayerEntity player, DateTime date)
+        public static PlayerAlliance GetPlayerAlliance(this Player player, DateTime date)
         {
             return new PlayerAlliance
             {

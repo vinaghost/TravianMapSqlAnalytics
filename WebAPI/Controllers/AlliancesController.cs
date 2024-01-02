@@ -1,10 +1,11 @@
 ﻿using Core;
+using Core.Models;
+using Core.Parameters;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Models.Output;
-using WebAPI.Models.Parameters;
+using WebAPI.Extensions;
 using X.PagedList;
 
-using AllianceEnitty = Core.Models.AllianceEntity;
+using AllianceEnitty = Core.Entities.Alliance;
 
 namespace WebAPI.Controllers
 {
@@ -28,7 +29,7 @@ namespace WebAPI.Controllers
                 .Select(x => new Alliance(x.AllianceId, x.Name))
                 .ToPagedListAsync(allianceParameters.PageNumber, allianceParameters.PageSize);
 
-            Response.Headers.Append("X-Pagination", alliances.ToXpagination().ToJson());
+            Response.Headers.Append("X-Pagination", alliances.ToJson());
 
             return Ok(alliances);
         }
