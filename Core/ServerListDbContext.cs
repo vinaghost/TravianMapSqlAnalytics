@@ -7,7 +7,7 @@ namespace Core
     public class ServerListDbContext : DbContext
     {
         public const string DATABASE_NAME = "ServerList";
-        public DbSet<Server> Servers { get; set; }
+        public DbSet<ServerEntity> Servers { get; set; }
 
         public ServerListDbContext(DbContextOptions<ServerListDbContext> options) : base(options)
         {

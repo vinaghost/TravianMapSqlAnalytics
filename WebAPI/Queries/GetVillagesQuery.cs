@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.EntityFrameworkCore;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 using WebAPI.Repositories;
@@ -20,23 +19,10 @@ namespace WebAPI.Queries
 
         public async Task<IPagedList<Village>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
         {
-            var villageQueryable = _unitOfRepository.VillageRepository.GetQueryable(request.Parameters);
-            var totalVillage = await villageQueryable.CountAsync(cancellationToken);
-
-            var rawVillages = await villageQueryable
-                .Select(x => new
-                {
-                    x.PlayerId,
-                    x.VillageId,
-                    VillageName = x.Name,
-                    x.X,
-                    x.Y,
-                    x.Population,
-                    x.IsCapital,
-                    x.Tribe
-                })
+            var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
                 .OrderByDescending(x => x.Population)
-                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize, totalVillage);
+                .ThenBy(x => x.Distance)
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
             var players = await _unitOfRepository.PlayerRepository.GetRecords([.. rawVillages.Select(x => x.PlayerId)], cancellationToken);
             var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Values.Select(x => x.AllianceId)], cancellationToken);

@@ -1,6 +1,6 @@
 ﻿namespace Core.Models
 {
-    public class Server
+    public class ServerEntity
     {
         public int Id { get; set; }
         public string Url { get; set; }

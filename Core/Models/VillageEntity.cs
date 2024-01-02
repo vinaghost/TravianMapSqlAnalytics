@@ -2,7 +2,7 @@
 
 namespace Core.Models
 {
-    public class Village
+    public class VillageEntity
     {
         // primary key
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
-using PlayerEntity = Core.Models.Player;
+using PlayerEntity = Core.Models.PlayerEntity;
 
 namespace WebAPI.Repositories
 {

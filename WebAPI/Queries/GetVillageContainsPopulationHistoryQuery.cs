@@ -6,51 +6,22 @@ using X.PagedList;
 
 namespace WebAPI.Queries
 {
-    public record GetChangePopulationVillagesQuery(VillageContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<VillageHasChangePopulation>>
+    public record GetChangePopulationVillagesQuery(VillageContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<VillageContainPopulationHistory>>
     {
         public string CacheKey => $"{nameof(GetChangePopulationVillagesQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangePopulationVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationVillagesQuery, IPagedList<VillageHasChangePopulation>>
+    public class GetChangePopulationVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationVillagesQuery, IPagedList<VillageContainPopulationHistory>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<VillageHasChangePopulation>> Handle(GetChangePopulationVillagesQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageContainPopulationHistory>> Handle(GetChangePopulationVillagesQuery request, CancellationToken cancellationToken)
         {
-            var rawVillageQueryable = _unitOfRepository.VillageRepository.GetQueryable(request.Parameters);
-
-            var date = request.Parameters.Date.ToDateTime(TimeOnly.MinValue);
-
-            var rawVillages = await rawVillageQueryable
-                .Select(x => new
-                {
-                    x.PlayerId,
-                    x.VillageId,
-                    x.Name,
-                    x.X,
-                    x.Y,
-                    x.IsCapital,
-                    x.Tribe,
-                    Populations = x.Populations.OrderByDescending(x => x.Date).Where(x => x.Date >= date),
-                })
-                .AsEnumerable()
-                .Select(x => new
-                {
-                    x.PlayerId,
-                    x.VillageId,
-                    VillageName = x.Name,
-                    x.X,
-                    x.Y,
-                    x.IsCapital,
-                    x.Tribe,
-                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))
-                })
-                .Where(x => x.ChangePopulation >= request.Parameters.MinChangePopulation)
-                .Where(x => x.ChangePopulation <= request.Parameters.MaxChangePopulation)
+            var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
                 .OrderByDescending(x => x.ChangePopulation)
+                .ThenBy(x => x.Distance)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
             var players = await _unitOfRepository.PlayerRepository.GetRecords([.. rawVillages.Select(x => x.PlayerId)], cancellationToken);
@@ -61,7 +32,7 @@ namespace WebAPI.Queries
                 {
                     var player = players[x.PlayerId];
                     var alliance = alliances[player.AllianceId];
-                    return new VillageHasChangePopulation(
+                    return new VillageContainPopulationHistoryDetail(
                         player.AllianceId,
                         alliance.Name,
                         x.PlayerId,
@@ -72,6 +43,7 @@ namespace WebAPI.Queries
                         x.Y,
                         x.IsCapital,
                         x.Tribe,
+                        x.Distance,
                         x.ChangePopulation,
                         x.Populations);
                 });

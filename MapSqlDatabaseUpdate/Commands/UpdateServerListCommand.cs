@@ -7,9 +7,9 @@ namespace MapSqlDatabaseUpdate.Commands
 {
     public class UpdateServerListCommand : IRequest
     {
-        public List<Server> Servers { get; }
+        public List<ServerEntity> Servers { get; }
 
-        public UpdateServerListCommand(List<Server> servers)
+        public UpdateServerListCommand(List<ServerEntity> servers)
         {
             Servers = servers;
         }

@@ -25,7 +25,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("population_history")]
-        [ProducesResponseType(typeof(IPagedList<VillageHasChangePopulation>), 200)]
+        [ProducesResponseType(typeof(IPagedList<VillageContainPopulationHistory>), 200)]
         public async Task<IActionResult> Get([FromBody] VillageContainsPopulationHistoryParameters villageParameters)
         {
             var villages = await _mediator.Send(new GetChangePopulationVillagesQuery(villageParameters));

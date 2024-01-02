@@ -9,6 +9,11 @@
         public List<int> Alliances { get; set; } = [];
         public List<int> Players { get; set; } = [];
         public List<int> Villages { get; set; } = [];
-        public virtual string Key => $"{PageNumber}_{PageSize}_{MinPopulation}_{MaxPopulation}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{string.Join(',', Villages)}";
+        public virtual string Key => $"{PageNumber}_{PageSize}_{MinPopulation}_{TargetX}_{TargetY}_{MinDistance}_{MaxDistance}_{MaxPopulation}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{string.Join(',', Villages)}";
+
+        public int TargetX { get; set; } = DefaultParameters.TargetX;
+        public int TargetY { get; set; } = DefaultParameters.TargetY;
+        public int MinDistance { get; set; } = DefaultParameters.MinDistance;
+        public int MaxDistance { get; set; } = DefaultParameters.MaxDistance;
     }
 }

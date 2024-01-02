@@ -4,7 +4,7 @@ using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 using X.PagedList;
 
-using AllianceEnitty = Core.Models.Alliance;
+using AllianceEnitty = Core.Models.AllianceEntity;
 
 namespace WebAPI.Controllers
 {

@@ -2,16 +2,20 @@
 
 namespace Core.Models
 {
-    public class Alliance
+    public class PlayerEntity
     {
         // primary key
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int AllianceId { get; set; }
+        public int PlayerId { get; set; }
 
         // foreign key
-        public List<Player> Players { get; set; } = new();
+        public ICollection<VillageEntity> Villages { get; set; }
+
+        public ICollection<PlayerAlliance> Alliances { get; set; }
 
         // properties
+        public int AllianceId { get; set; }
+
         public string Name { get; set; } = "";
     }
 }

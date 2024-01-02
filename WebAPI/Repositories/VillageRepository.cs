@@ -1,6 +1,7 @@
 ﻿using Core;
+using Core.Models;
+using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
-using VillageEntity = Core.Models.Village;
 
 namespace WebAPI.Repositories
 {
@@ -8,11 +9,73 @@ namespace WebAPI.Repositories
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public IQueryable<VillageEntity> GetQueryable(IVillageFilterParameter parameters)
+        public IEnumerable<VillageContainsDistance> GetVillages(VillageParameters parameters)
         {
+            var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
             return GetBaseQueryable(parameters)
                 .Where(x => x.Population >= parameters.MinPopulation)
-                .Where(x => x.Population <= parameters.MaxPopulation);
+                .Where(x => x.Population <= parameters.MaxPopulation)
+                .AsEnumerable()
+                .Select(x => new VillageContainsDistance(
+                    x.PlayerId,
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.Population,
+                    x.IsCapital,
+                    x.Tribe,
+                    centerCoordinate.Distance(new Coordinates(x.X, x.Y))))
+                .Where(x => x.Distance >= parameters.MinDistance)
+                .Where(x => x.Distance <= parameters.MaxDistance);
+        }
+
+        public IEnumerable<VillageContainPopulationHistory> GetVillages(VillageContainsPopulationHistoryParameters parameters)
+        {
+            var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
+            var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
+            return GetBaseQueryable(parameters)
+                .Where(x => x.Population >= parameters.MinPopulation)
+                .Where(x => x.Population <= parameters.MaxPopulation)
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    x.Tribe,
+                    Populations = x.Populations.OrderByDescending(x => x.Date).Where(x => x.Date >= date),
+                })
+                .AsEnumerable()
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    x.Tribe,
+                    x.Populations,
+                    Distance = centerCoordinate.Distance(new Coordinates(x.X, x.Y))
+                })
+                .Where(x => x.Distance >= parameters.MinDistance)
+                .Where(x => x.Distance <= parameters.MaxDistance)
+                .Select(x => new VillageContainPopulationHistory(
+                    x.PlayerId,
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    x.Tribe,
+                    x.Distance,
+                    x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))))
+                .Where(x => x.ChangePopulation >= parameters.MinChangePopulation)
+                .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
         }
 
         private IQueryable<VillageEntity> GetBaseQueryable(IVillageFilterParameter parameters)

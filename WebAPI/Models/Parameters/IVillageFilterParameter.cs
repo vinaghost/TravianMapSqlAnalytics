@@ -1,6 +1,6 @@
 ﻿namespace WebAPI.Models.Parameters
 {
-    public interface IVillageFilterParameter : IPopulationFilterParameter
+    public interface IVillageFilterParameter : IPopulationFilterParameter, IDistanceFilterParameter
     {
         List<int> Alliances { get; }
         List<int> Players { get; }

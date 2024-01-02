@@ -1,10 +1,12 @@
-﻿using Core.Models;
+﻿using WebAPI.Models.Output;
 using WebAPI.Models.Parameters;
 
 namespace WebAPI.Repositories
 {
     public interface IVillageRepository
     {
-        IQueryable<Village> GetQueryable(IVillageFilterParameter parameters);
+        IEnumerable<VillageContainsDistance> GetVillages(VillageParameters parameters);
+
+        IEnumerable<VillageContainPopulationHistory> GetVillages(VillageContainsPopulationHistoryParameters parameters);
     }
 }
