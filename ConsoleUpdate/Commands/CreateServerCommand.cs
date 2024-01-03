@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Configuration;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class CreateServerCommand : ServerCommand, IRequest
     {

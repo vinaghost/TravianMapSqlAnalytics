@@ -1,9 +1,9 @@
-﻿using MapSqlDatabaseUpdate.Extensions;
-using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Extensions;
+using ConsoleUpdate.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class GetMapSqlCommand : IRequest<List<VillageRaw>>
     {
@@ -45,6 +45,7 @@ namespace MapSqlDatabaseUpdate.Commands
             while (!reader.EndOfStream)
             {
                 var line = reader.ReadLine();
+                if (line is null) continue;
                 var village = GetVillage(line);
                 if (village is null) continue;
                 villages.Add(village);
@@ -52,7 +53,7 @@ namespace MapSqlDatabaseUpdate.Commands
             return villages;
         }
 
-        private static VillageRaw GetVillage(string line)
+        private static VillageRaw? GetVillage(string line)
         {
             if (string.IsNullOrEmpty(line)) return null;
             var villageLine = line.Remove(0, 30);

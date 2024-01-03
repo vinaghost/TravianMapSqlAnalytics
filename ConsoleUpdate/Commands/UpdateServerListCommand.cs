@@ -3,7 +3,7 @@ using Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class UpdateServerListCommand : IRequest
     {

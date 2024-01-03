@@ -1,7 +1,7 @@
-﻿using Core.Entities;
-using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Models;
+using Core.Entities;
 
-namespace MapSqlDatabaseUpdate.Extensions
+namespace ConsoleUpdate.Extensions
 {
     public static class VillageRawExtension
     {

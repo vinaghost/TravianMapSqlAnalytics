@@ -1,10 +1,16 @@
-﻿namespace MapSqlDatabaseUpdate.Extensions
+﻿namespace ConsoleUpdate.Extensions
 {
+#pragma warning disable CS8603 // Possible null reference return.
+
     public static class MapSqlParserExtensions
     {
-        private static string Peek(this string source, int peek) => (source == null || peek < 0) ? null : source.Substring(0, source.Length < peek ? source.Length : peek);
+        private static string Peek(this string source, int peek) => source == null || peek < 0 ? null : source.Substring(0, source.Length < peek ? source.Length : peek);
 
-        private static (string, string) Pop(this string source, int pop) => (source == null || pop < 0) ? (null, source) : (source.Substring(0, source.Length < pop ? source.Length : pop), source.Length < pop ? String.Empty : source.Substring(pop));
+#pragma warning disable CS8619 // Nullability of reference types in value doesn't match target type.
+
+        private static (string, string) Pop(this string source, int pop) => source == null || pop < 0 ? (null, source) : (source.Substring(0, source.Length < pop ? source.Length : pop), source.Length < pop ? string.Empty : source.Substring(pop));
+
+#pragma warning restore CS8619 // Nullability of reference types in value doesn't match target type.
 
         public static string[] ParseLine(this string line)
         {
@@ -77,4 +83,6 @@
             return (field, tail);
         }
     }
+
+#pragma warning restore CS8603 // Possible null reference return.
 }

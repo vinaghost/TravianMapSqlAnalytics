@@ -1,6 +1,6 @@
-﻿using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Models;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class VillageCommand : ServerCommand
     {

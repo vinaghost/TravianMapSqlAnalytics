@@ -1,4 +1,4 @@
-﻿namespace MapSqlDatabaseUpdate.Commands
+﻿namespace ConsoleUpdate.Commands
 {
     public class ServerCommand
     {

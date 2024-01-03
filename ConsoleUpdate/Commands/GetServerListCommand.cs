@@ -1,9 +1,9 @@
-﻿using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Models;
 using MediatR;
 using Microsoft.Extensions.Logging;
 using System.Net.Http.Json;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class GetServerListCommand : IRequest<List<ServerRaw>>
     {
@@ -24,7 +24,7 @@ namespace MapSqlDatabaseUpdate.Commands
         public async Task<List<ServerRaw>> Handle(GetServerListCommand request, CancellationToken cancellationToken)
         {
             var responseMessage = await _httpClient.GetFromJsonAsync<ResponseMessage>(_url, cancellationToken: cancellationToken);
-            var servers = responseMessage.Rows;
+            var servers = responseMessage?.Rows ?? [];
             _logger.LogInformation("Found {count} servers", servers.Count);
             return servers;
         }
@@ -32,7 +32,7 @@ namespace MapSqlDatabaseUpdate.Commands
         private class ResponseMessage
         {
             public int Count { get; set; }
-            public List<ServerRaw> Rows { get; set; }
+            public List<ServerRaw>? Rows { get; set; }
         }
     }
 }

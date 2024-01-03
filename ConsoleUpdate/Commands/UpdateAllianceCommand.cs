@@ -1,11 +1,11 @@
-﻿using Core;
-using MapSqlDatabaseUpdate.Extensions;
-using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Extensions;
+using ConsoleUpdate.Models;
+using Core;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace MapSqlDatabaseUpdate.Commands
+namespace ConsoleUpdate.Commands
 {
     public class UpdateAllianceCommand : VillageCommand, IRequest<int>
     {

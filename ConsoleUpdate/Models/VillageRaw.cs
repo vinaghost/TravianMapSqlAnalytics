@@ -1,4 +1,4 @@
-﻿namespace MapSqlDatabaseUpdate.Models
+﻿namespace ConsoleUpdate.Models
 {
     public class VillageRaw
     {

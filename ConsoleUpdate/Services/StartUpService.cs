@@ -1,12 +1,12 @@
-﻿using Core.Entities;
-using MapSqlDatabaseUpdate.Commands;
-using MapSqlDatabaseUpdate.Models;
+﻿using ConsoleUpdate.Commands;
+using ConsoleUpdate.Models;
+using Core.Entities;
 using MediatR;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 
-namespace MapSqlDatabaseUpdate
+namespace ConsoleUpdate.Services
 {
     public class StartUpService : IHostedService
     {
@@ -65,7 +65,7 @@ namespace MapSqlDatabaseUpdate
             await _mediator.Send(new DeleteServerCommand(url));
         }
 
-        public async Task<Server> HandleUpdate(ServerRaw serverRaw)
+        public async Task<Server?> HandleUpdate(ServerRaw serverRaw)
         {
             var villages = await _mediator.Send(new GetMapSqlCommand(serverRaw.Url));
             if (villages.Count == 0) return null;
