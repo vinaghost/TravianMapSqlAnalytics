@@ -18,6 +18,10 @@ namespace Core
         {
         }
 
+        public ServerDbContext(string connectionString, ServerVersion version) : base(new DbContextOptionsBuilder().GettOptionsBuilder(connectionString, version).Options)
+        {
+        }
+
         public ServerDbContext(IConfiguration configuration, string worldUrl) : base(new DbContextOptionsBuilder().GettOptionsBuilder(configuration, worldUrl).Options)
         {
         }
@@ -74,6 +78,14 @@ namespace Core
                 .EnableDetailedErrors()
 #endif
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+
+            return optionsBuilder;
+        }
+
+        public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, string connectionString, ServerVersion version)
+        {
+            optionsBuilder
+                .UseMySql(connectionString, version);
 
             return optionsBuilder;
         }
