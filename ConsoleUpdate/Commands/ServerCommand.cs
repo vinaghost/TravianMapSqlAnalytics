@@ -1,12 +1,4 @@
 ﻿namespace ConsoleUpdate.Commands
 {
-    public class ServerCommand
-    {
-        public ServerCommand(string serverUrl)
-        {
-            ServerUrl = serverUrl;
-        }
-
-        public string ServerUrl { get; }
-    }
+    public record ServerCommand(string ServerUrl);
 }

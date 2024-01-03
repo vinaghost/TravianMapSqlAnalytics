@@ -4,12 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ConsoleUpdate.Commands
 {
-    public class DeleteServerCommand : ServerCommand, IRequest
-    {
-        public DeleteServerCommand(string serverUrl) : base(serverUrl)
-        {
-        }
-    }
+    public record DeleteServerCommand(string ServerUrl) : ServerCommand(ServerUrl), IRequest;
 
     public class DeleteServerCommandHandler : IRequestHandler<DeleteServerCommand>
     {

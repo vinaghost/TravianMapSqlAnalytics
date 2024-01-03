@@ -5,9 +5,7 @@ using System.Net.Http.Json;
 
 namespace ConsoleUpdate.Commands
 {
-    public class GetServerListCommand : IRequest<List<ServerRaw>>
-    {
-    }
+    public record GetServerListCommand : IRequest<List<ServerRaw>>;
 
     public class GetServerListCommandHandler : IRequestHandler<GetServerListCommand, List<ServerRaw>>
     {

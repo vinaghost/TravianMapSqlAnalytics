@@ -5,15 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace ConsoleUpdate.Commands
 {
-    public class GetMapSqlCommand : IRequest<List<VillageRaw>>
-    {
-        public string Url { get; }
-
-        public GetMapSqlCommand(string url)
-        {
-            Url = url;
-        }
-    }
+    public record GetMapSqlCommand(string Url) : IRequest<List<VillageRaw>>;
 
     public class GetMapSqlCommandHandler : IRequestHandler<GetMapSqlCommand, List<VillageRaw>>
     {

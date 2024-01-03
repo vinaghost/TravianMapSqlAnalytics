@@ -1,35 +1,19 @@
 ﻿using Core;
 using Core.Entities;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace ConsoleUpdate.Commands
 {
-    public class UpdateServerListCommand : IRequest
+    public record UpdateServerListCommand(List<Server> Servers) : IRequest;
+
+    public class UpdateServerListCommandHandler(ServerListDbContext dbContext) : IRequestHandler<UpdateServerListCommand>
     {
-        public List<Server> Servers { get; }
-
-        public UpdateServerListCommand(List<Server> servers)
-        {
-            Servers = servers;
-        }
-    }
-
-    public class UpdateServerListCommandHandler : IRequestHandler<UpdateServerListCommand>
-    {
-        private readonly IDbContextFactory<ServerListDbContext> _contextFactory;
-
-        public UpdateServerListCommandHandler(IDbContextFactory<ServerListDbContext> contextFactory)
-        {
-            _contextFactory = contextFactory;
-        }
+        private readonly ServerListDbContext _dbContext = dbContext;
 
         public async Task Handle(UpdateServerListCommand request, CancellationToken cancellationToken)
         {
-            using var context = await _contextFactory.CreateDbContextAsync(cancellationToken);
-            await context.Database.EnsureCreatedAsync(cancellationToken);
-
-            await context.BulkSynchronizeAsync(request.Servers, options => options.SynchronizeKeepidentity = true);
+            await _dbContext.Database.EnsureCreatedAsync(cancellationToken);
+            await _dbContext.BulkSynchronizeAsync(request.Servers, options => options.SynchronizeKeepidentity = true);
         }
     }
 }

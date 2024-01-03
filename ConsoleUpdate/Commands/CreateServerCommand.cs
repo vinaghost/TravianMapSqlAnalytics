@@ -4,12 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ConsoleUpdate.Commands
 {
-    public class CreateServerCommand : ServerCommand, IRequest
-    {
-        public CreateServerCommand(string serverUrl) : base(serverUrl)
-        {
-        }
-    }
+    public record CreateServerCommand(string ServerUrl) : ServerCommand(ServerUrl), IRequest;
 
     public class CreateServerCommandHandler : IRequestHandler<CreateServerCommand>
     {

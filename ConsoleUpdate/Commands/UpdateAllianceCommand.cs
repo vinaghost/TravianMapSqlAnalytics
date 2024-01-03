@@ -7,12 +7,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace ConsoleUpdate.Commands
 {
-    public class UpdateAllianceCommand : VillageCommand, IRequest<int>
-    {
-        public UpdateAllianceCommand(string serverUrl, List<VillageRaw> villageRaws) : base(serverUrl, villageRaws)
-        {
-        }
-    }
+    public record UpdateAllianceCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
 
     public class UpdateAllianceCommandHandler : IRequestHandler<UpdateAllianceCommand, int>
     {
