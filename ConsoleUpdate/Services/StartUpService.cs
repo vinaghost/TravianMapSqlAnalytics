@@ -25,6 +25,7 @@ namespace ConsoleUpdate.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var servers = await _mediator.Send(new GetServerListCommand(), cancellationToken);
+            _logger.LogInformation("Found {count} servers", servers.Count);
 
             var serverVaild = servers.Where(x => !(x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now)).ToList();
             var serverInvaild = servers.Where(x => x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now).ToList();
@@ -41,13 +42,14 @@ namespace ConsoleUpdate.Services
             });
 
             serverInvaild.AddRange(serverFailed);
+            _logger.LogInformation("{count} servers are dead. Deleting their database to free space ...", serverInvaild.Count);
+            await Parallel.ForEachAsync(serverInvaild, async (server, token) => await HandleDelete(server.Url));
 
             foreach (var server in serverFailed)
             {
                 serverVaild.Remove(server);
             }
-
-            await Parallel.ForEachAsync(serverInvaild, async (server, token) => await HandleDelete(server.Url));
+            _logger.LogInformation("{count} servers are alive. Updating...", serverVaild.Count);
 
             var serversInfo = new ConcurrentQueue<Server>();
             await Parallel.ForEachAsync(serverVaild, async (server, token) =>
@@ -60,7 +62,6 @@ namespace ConsoleUpdate.Services
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
 
             var data = serversInfo.OrderByDescending(x => x.PlayerCount).ToList();
-            _logger.LogInformation("Server: {count}", data.Count);
             data.ForEach(x => _logger.LogInformation("{output}", x));
             _hostApplicationLifetime.StopApplication();
         }
