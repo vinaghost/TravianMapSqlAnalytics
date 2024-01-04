@@ -1,4 +1,5 @@
-﻿using ConsoleUpdate.Commands;
+﻿using ConsoleTables;
+using ConsoleUpdate.Commands;
 using ConsoleUpdate.Models;
 using Core.Entities;
 using MediatR;
@@ -62,7 +63,10 @@ namespace ConsoleUpdate.Services
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
 
             var data = serversInfo.OrderByDescending(x => x.PlayerCount).ToList();
-            data.ForEach(x => _logger.LogInformation("{output}", x));
+            ConsoleTable
+                .From(data)
+                .Configure(o => o.NumberAlignment = Alignment.Right)
+                .Write(Format.Alternative);
             _hostApplicationLifetime.StopApplication();
         }
 
