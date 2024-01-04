@@ -9,7 +9,7 @@ using Microsoft.Extensions.Options;
 
 namespace Core.Extensions
 {
-    public static class ServiceCollectionExtenson
+    public static class ServiceCollectionExtension
     {
         public static IServiceCollection AddCore(this IServiceCollection serviceCollection)
         {
@@ -17,7 +17,7 @@ namespace Core.Extensions
 
             serviceCollection.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtenson).Assembly);
+                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtension).Assembly);
 
                 cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
             });
@@ -32,9 +32,9 @@ namespace Core.Extensions
         {
             serviceCollection.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
             {
-                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
+                var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
 
-                var connectionString = $"{GetDatabaseInfo(option)};Database={ServerListDbContext.DATABASE_NAME}";
+                var connectionString = $"{option.Value};Database={ServerListDbContext.DATABASE_NAME}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
@@ -46,10 +46,10 @@ namespace Core.Extensions
 
             serviceCollection.AddDbContext<ServerDbContext>((serviceProvider, options) =>
             {
-                var option = serviceProvider.GetRequiredService<IOptions<DatabaseOption>>();
+                var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
                 var dataService = serviceProvider.GetRequiredService<DataService>();
 
-                var connectionString = $"{GetDatabaseInfo(option)};Database={dataService.Server}";
+                var connectionString = $"{option.Value};Database={dataService.Server}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
@@ -80,7 +80,7 @@ namespace Core.Extensions
             return serviceCollection;
         }
 
-        private static string GetDatabaseInfo(IOptions<DatabaseOption> options)
+        private static string GetDatabaseInfo(IOptions<ConnectionStringOption> options)
         {
             var value = options.Value;
             return $"Server={value.Host};Port={value.Port};Uid={value.Username};Pwd={value.Password};";

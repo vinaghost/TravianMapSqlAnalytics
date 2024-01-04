@@ -1,18 +1,19 @@
 ﻿using Core;
+using Core.Config;
 using MediatR;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record DeleteServerCommand(string ServerUrl) : ServerCommand(ServerUrl), IRequest;
+    public record DeleteServerCommand(string ServerUrl) : IRequest;
 
-    public class DeleteServerCommandHandler(IConfiguration configuration) : IRequestHandler<DeleteServerCommand>
+    public class DeleteServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<DeleteServerCommand>
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly string _connectionString = connectionStringOption.Value.Value;
 
         public async Task Handle(DeleteServerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
+            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
             await context.Database.EnsureDeletedAsync(cancellationToken);
         }
     }

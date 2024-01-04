@@ -1,4 +1,3 @@
-using Core.Config;
 using Core.Extensions;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebAPI.Extensions;
@@ -12,7 +11,7 @@ namespace WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            BindConfiguration(builder);
+            builder.BindConfiguration();
             // Add services to the container.
             ConfigureServices(builder.Services);
 
@@ -52,12 +51,6 @@ namespace WebAPI
             services.AddMiddleware();
 
             services.AddCore();
-        }
-
-        private static void BindConfiguration(WebApplicationBuilder builder)
-        {
-            builder.Services.Configure<DatabaseOption>(
-                builder.Configuration.GetSection(DatabaseOption.Position));
         }
     }
 }

@@ -1,21 +1,22 @@
 ﻿using ConsoleUpdate.Extensions;
 using ConsoleUpdate.Models;
 using Core;
+using Core.Config;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record UpdateVillageCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
+    public record UpdateVillageCommand(string ServerUrl, List<VillageRaw> VillageRaws) : IRequest<int>;
 
-    public class UpdateVillageCommandHandler(IConfiguration configuration) : IRequestHandler<UpdateVillageCommand, int>
+    public class UpdateVillageCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdateVillageCommand, int>
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly string _connectionString = connectionStringOption.Value.Value;
 
         public async Task<int> Handle(UpdateVillageCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
+            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
             var villages = request.VillageRaws
                 .Select(x => x.GetVillage());
             await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);

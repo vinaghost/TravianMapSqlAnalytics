@@ -1,18 +1,19 @@
 ﻿using Core;
+using Core.Config;
 using MediatR;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record CreateServerCommand(string ServerUrl) : ServerCommand(ServerUrl), IRequest;
+    public record CreateServerCommand(string ServerUrl) : IRequest;
 
-    public class CreateServerCommandHandler(IConfiguration configuration) : IRequestHandler<CreateServerCommand>
+    public class CreateServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<CreateServerCommand>
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly string _connectionString = connectionStringOption.Value.Value;
 
         public async Task Handle(CreateServerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
+            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
             await context.Database.EnsureCreatedAsync(cancellationToken);
         }
     }

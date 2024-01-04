@@ -1,21 +1,22 @@
 ﻿using ConsoleUpdate.Extensions;
 using ConsoleUpdate.Models;
 using Core;
+using Core.Config;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record UpdateAllianceCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
+    public record UpdateAllianceCommand(string ServerUrl, List<VillageRaw> VillageRaws) : IRequest<int>;
 
-    public class UpdateAllianceCommandHandler(IConfiguration configuration) : IRequestHandler<UpdateAllianceCommand, int>
+    public class UpdateAllianceCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdateAllianceCommand, int>
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly string _connectionString = connectionStringOption.Value.Value;
 
         public async Task<int> Handle(UpdateAllianceCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
+            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
             var alliances = request.VillageRaws
                 .DistinctBy(x => x.AllianceId)
                 .Select(x => x.GetAlliace());

@@ -1,21 +1,22 @@
 ﻿using ConsoleUpdate.Extensions;
 using ConsoleUpdate.Models;
 using Core;
+using Core.Config;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record UpdatePlayerCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
+    public record UpdatePlayerCommand(string ServerUrl, List<VillageRaw> VillageRaws) : IRequest<int>;
 
-    public class UpdatePlayerCommandHandler(IConfiguration configuration) : IRequestHandler<UpdatePlayerCommand, int>
+    public class UpdatePlayerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdatePlayerCommand, int>
     {
-        private readonly IConfiguration _configuration = configuration;
+        private readonly string _connectionString = connectionStringOption.Value.Value;
 
         public async Task<int> Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
+            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
             var players = request.VillageRaws
                .DistinctBy(x => x.PlayerId)
                .Select(x => x.GetPlayer());
