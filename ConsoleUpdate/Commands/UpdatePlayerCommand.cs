@@ -9,18 +9,13 @@ namespace ConsoleUpdate.Commands
 {
     public record UpdatePlayerCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
 
-    public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand, int>
+    public class UpdatePlayerCommandHandler(IConfiguration configuration) : IRequestHandler<UpdatePlayerCommand, int>
     {
-        private readonly IConfiguration _configuration;
-
-        public UpdatePlayerCommandHandler(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<int> Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration, request.ServerUrl);
+            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
             var players = request.VillageRaws
                .DistinctBy(x => x.PlayerId)
                .Select(x => x.GetPlayer());

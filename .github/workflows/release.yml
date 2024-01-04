@@ -29,12 +29,12 @@ jobs:
           dotnet-version: 8.0.x
         
       - name: Publish 
-        run: dotnet publish MapSqlDatabaseUpdate -c Release -p:PublishSingleFile=true -o bin/MapSqlDatabaseUpdate
+        run: dotnet publish ConsoleUpdate -c Release -p:PublishSingleFile=true -o bin/ConsoleUpdate
       
       - name: Build and push update image
         uses: docker/build-push-action@v4
         with:
-          file: ./MapSqlDatabaseUpdate/Dockerfile
+          file: ./ConsoleUpdate/Dockerfile
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest 

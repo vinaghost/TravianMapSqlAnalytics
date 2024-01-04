@@ -1,5 +1,4 @@
-﻿using ConsoleUpdate.Commands;
-using ConsoleUpdate.Services;
+﻿using ConsoleUpdate.Services;
 using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,9 +12,7 @@ await Host.CreateDefaultBuilder(args)
         {
             cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
         });
-        services.AddHttpClient<GetServerListCommandHandler>();
-        services.AddHttpClient<GetMapSqlCommandHandler>();
-
+        services.AddHttpClient();
         services.AddHostedService<StartUpService>();
     })
     .RunConsoleAsync();

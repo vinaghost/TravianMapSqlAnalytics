@@ -1,9 +1,8 @@
-using Core;
+using Core.Extensions;
 using MapSqlAspNetCoreMVC.Extension;
 using MapSqlAspNetCoreMVC.Middlewares;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.EntityFrameworkCore;
 
 namespace MapSqlAspNetCoreMVC
 {
@@ -59,26 +58,7 @@ namespace MapSqlAspNetCoreMVC
 
             services.AddAuthentication();
             services.AddHttpContextAccessor();
-            services.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
-            {
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var connectionString = ServerListDbContext.GetConnectionString(configuration);
-                options
-                    .GettOptionsBuilder(configuration)
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-
-            services.AddDbContext<ServerDbContext>((serviceProvider, options) =>
-            {
-                var configuration = serviceProvider.GetService<IConfiguration>();
-                var httpContextAccessor = serviceProvider.GetService<IHttpContextAccessor>();
-
-                var server = httpContextAccessor.HttpContext.Items["server"] as string;
-                options
-                    .GettOptionsBuilder(configuration, server)
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
-            });
-
+            services.AddCore();
             services.AddMediatR(cfg =>
             {
                 cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);

@@ -1,4 +1,4 @@
-﻿using Benchmark.Queries;
+﻿using Benchmark.Http;
 using BenchmarkDotNet.Running;
 
-BenchmarkRunner.Run<AsParallelBenchmark>();
+BenchmarkRunner.Run<GetOrHeadBenchmark>();

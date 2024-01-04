@@ -1,6 +1,5 @@
 ﻿using Core.Entities;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core
@@ -18,30 +17,12 @@ namespace Core
         {
         }
 
+        public ServerDbContext(string connectionStringWithoutDatabase, string database) : base(new DbContextOptionsBuilder().GettOptionsBuilder(connectionStringWithoutDatabase, database).Options)
+        {
+        }
+
         public ServerDbContext(string connectionString, ServerVersion version) : base(new DbContextOptionsBuilder().GettOptionsBuilder(connectionString, version).Options)
         {
-        }
-
-        public ServerDbContext(IConfiguration configuration, string worldUrl) : base(new DbContextOptionsBuilder().GettOptionsBuilder(configuration, worldUrl).Options)
-        {
-        }
-
-        public static string GetConnectionString(IConfiguration configuration, string worldUrl)
-        {
-            var connectionString = $"{GetHost(configuration)};Database={worldUrl}";
-            return connectionString;
-        }
-
-        public static string GetHost(IConfiguration configuration)
-        {
-            if (!string.IsNullOrEmpty(configuration["Host"]))
-            {
-                return $"Server={configuration["Host"]};Port={configuration["Port"]};Uid={configuration["Username"]};Pwd={configuration["Password"]};";
-            }
-            else
-            {
-                return $"Server={configuration["Database:Host"]};Port={configuration["Database:Port"]};Uid={configuration["Database:Username"]};Pwd={configuration["Database:Password"]};";
-            }
         }
 
         public List<DateTime> GetDateBefore(int days)
@@ -68,24 +49,19 @@ namespace Core
 
     public static class ServerDbContextExtension
     {
-        public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, IConfiguration configuration, string worldUrl)
-        {
-            var connectionString = ServerDbContext.GetConnectionString(configuration, worldUrl);
-
-            optionsBuilder
-#if DEBUG
-                .EnableSensitiveDataLogging()
-                .EnableDetailedErrors()
-#endif
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
-
-            return optionsBuilder;
-        }
-
         public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, string connectionString, ServerVersion version)
         {
             optionsBuilder
                 .UseMySql(connectionString, version);
+
+            return optionsBuilder;
+        }
+
+        public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, string connectionStringWithoutDatabase, string database)
+        {
+            var connectionString = $"{connectionStringWithoutDatabase};Database={database}";
+            optionsBuilder
+                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 
             return optionsBuilder;
         }

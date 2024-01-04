@@ -9,18 +9,13 @@ namespace ConsoleUpdate.Commands
 {
     public record UpdateVillageCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
 
-    public class UpdateVillageCommandHandler : IRequestHandler<UpdateVillageCommand, int>
+    public class UpdateVillageCommandHandler(IConfiguration configuration) : IRequestHandler<UpdateVillageCommand, int>
     {
-        private readonly IConfiguration _configuration;
-
-        public UpdateVillageCommandHandler(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<int> Handle(UpdateVillageCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration, request.ServerUrl);
+            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
             var villages = request.VillageRaws
                 .Select(x => x.GetVillage());
             await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);

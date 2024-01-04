@@ -21,15 +21,6 @@ namespace ConsoleUpdate.Commands
         public async Task<List<VillageRaw>> Handle(GetMapSqlCommand request, CancellationToken cancellationToken)
         {
             var url = $"https://{request.Url}";
-            try
-            {
-                var response = await _httpClient.GetAsync(url, cancellationToken);
-                if (!response.IsSuccessStatusCode) return [];
-            }
-            catch
-            {
-                return [];
-            }
 
             using var responseStream = await _httpClient.GetStreamAsync($"{url}/map.sql", cancellationToken);
             using var reader = new StreamReader(responseStream);

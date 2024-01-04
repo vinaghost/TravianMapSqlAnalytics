@@ -26,5 +26,5 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Run update database
-        run: docker run ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest Host=${{ secrets.MYSQL_HOST }} Port=${{ secrets.MYSQL_PORT }} Username=${{ secrets.MYSQL_USERNAME }} Password=${{ secrets.MYSQL_PASSWORD }}
+        run: docker run ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest connectionStringWithoutDatabase=Server=${{ secrets.MYSQL_HOST }};Port=${{ secrets.MYSQL_PORT }};Uid=${{ secrets.MYSQL_USERNAME }};Pwd=${{ secrets.MYSQL_PASSWORD }}
       

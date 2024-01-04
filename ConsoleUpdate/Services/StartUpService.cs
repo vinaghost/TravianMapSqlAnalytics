@@ -29,32 +29,37 @@ namespace ConsoleUpdate.Services
             var serverVaild = servers.Where(x => !(x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now)).ToList();
             var serverInvaild = servers.Where(x => x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now).ToList();
 
-            var dataOutput = new ConcurrentQueue<Server>();
             var serverFailed = new ConcurrentQueue<ServerRaw>();
 
             await Parallel.ForEachAsync(serverVaild, async (server, token) =>
             {
-                var output = await HandleUpdate(server);
-                if (output is null)
+                var isValid = await _mediator.Send(new ValidateServerCommand(server.Url), token);
+                if (!isValid)
                 {
                     serverFailed.Enqueue(server);
-                }
-                else
-                {
-                    dataOutput.Enqueue(output);
                 }
             });
 
             serverInvaild.AddRange(serverFailed);
+
             foreach (var server in serverFailed)
             {
                 serverVaild.Remove(server);
             }
+
             await Parallel.ForEachAsync(serverInvaild, async (server, token) => await HandleDelete(server.Url));
 
-            await _mediator.Send(new UpdateServerListCommand([.. dataOutput]), cancellationToken);
+            var serversInfo = new ConcurrentQueue<Server>();
+            await Parallel.ForEachAsync(serverVaild, async (server, token) =>
+            {
+                var serverInfo = await HandleUpdate(server);
+                if (serverInfo is null) return;
+                serversInfo.Enqueue(serverInfo);
+            });
 
-            var data = dataOutput.OrderByDescending(x => x.PlayerCount).ToList();
+            await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
+
+            var data = serversInfo.OrderByDescending(x => x.PlayerCount).ToList();
             _logger.LogInformation("Server: {count}", data.Count);
             data.ForEach(x => _logger.LogInformation("{output}", x));
             _hostApplicationLifetime.StopApplication();

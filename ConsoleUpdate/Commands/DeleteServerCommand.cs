@@ -6,18 +6,13 @@ namespace ConsoleUpdate.Commands
 {
     public record DeleteServerCommand(string ServerUrl) : ServerCommand(ServerUrl), IRequest;
 
-    public class DeleteServerCommandHandler : IRequestHandler<DeleteServerCommand>
+    public class DeleteServerCommandHandler(IConfiguration configuration) : IRequestHandler<DeleteServerCommand>
     {
-        private readonly IConfiguration _configuration;
-
-        public DeleteServerCommandHandler(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task Handle(DeleteServerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration, request.ServerUrl);
+            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
             await context.Database.EnsureDeletedAsync(cancellationToken);
         }
     }

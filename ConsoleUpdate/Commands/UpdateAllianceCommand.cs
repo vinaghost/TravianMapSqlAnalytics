@@ -9,18 +9,13 @@ namespace ConsoleUpdate.Commands
 {
     public record UpdateAllianceCommand(string ServerUrl, List<VillageRaw> VillageRaws) : VillageCommand(ServerUrl, VillageRaws), IRequest<int>;
 
-    public class UpdateAllianceCommandHandler : IRequestHandler<UpdateAllianceCommand, int>
+    public class UpdateAllianceCommandHandler(IConfiguration configuration) : IRequestHandler<UpdateAllianceCommand, int>
     {
-        private readonly IConfiguration _configuration;
-
-        public UpdateAllianceCommandHandler(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
+        private readonly IConfiguration _configuration = configuration;
 
         public async Task<int> Handle(UpdateAllianceCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_configuration, request.ServerUrl);
+            using var context = new ServerDbContext(_configuration["connectionStringWithoutDatabase"], request.ServerUrl);
             var alliances = request.VillageRaws
                 .DistinctBy(x => x.AllianceId)
                 .Select(x => x.GetAlliace());
