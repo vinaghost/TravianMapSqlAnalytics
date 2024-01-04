@@ -34,7 +34,7 @@ namespace Core.Extensions
             {
                 var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
 
-                var connectionString = $"{option.Value};Database={ServerListDbContext.DATABASE_NAME}";
+                var connectionString = $"{option.Value.Value};Database={ServerListDbContext.DATABASE_NAME}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
@@ -49,7 +49,7 @@ namespace Core.Extensions
                 var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
                 var dataService = serviceProvider.GetRequiredService<DataService>();
 
-                var connectionString = $"{option.Value};Database={dataService.Server}";
+                var connectionString = $"{option.Value.Value};Database={dataService.Server}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
@@ -78,12 +78,6 @@ namespace Core.Extensions
             serviceCollection.TryAddSingleton<ICacheService, CacheService>();
             serviceCollection.TryAddScoped<DataService>();
             return serviceCollection;
-        }
-
-        private static string GetDatabaseInfo(IOptions<ConnectionStringOption> options)
-        {
-            var value = options.Value;
-            return $"Server={value.Host};Port={value.Port};Uid={value.Username};Pwd={value.Password};";
         }
     }
 }

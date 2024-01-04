@@ -3,16 +3,18 @@ using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-await Host.CreateDefaultBuilder(args)
-    .ConfigureServices((hostContext, services) =>
-    {
-        services.AddCore();
+var builder = Host.CreateApplicationBuilder(args);
 
-        services.AddMediatR(cfg =>
-        {
-            cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
-        });
-        services.AddHttpClient();
-        services.AddHostedService<StartUpService>();
-    })
-    .RunConsoleAsync();
+builder.BindConfiguration();
+
+builder.Services.AddCore();
+
+builder.Services.AddMediatR(cfg =>
+{
+    cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
+});
+builder.Services.AddHttpClient();
+builder.Services.AddHostedService<StartUpService>();
+
+var host = builder.Build();
+await host.RunAsync();
