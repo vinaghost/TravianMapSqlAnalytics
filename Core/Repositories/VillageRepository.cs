@@ -1,6 +1,4 @@
-﻿using Core;
-using Core.Entities;
-using Core.Models;
+﻿using Core.Models;
 using Core.Parameters;
 
 namespace Core.Repositories

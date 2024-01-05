@@ -1,0 +1,87 @@
+﻿@using Core.Models
+@using Core.Parameters
+@using Core.Queries
+@using MediatR
+@using WebMVC.Models.ViewModel
+@using X.PagedList.Mvc.Bootstrap4.Core
+@using X.PagedList.Mvc.Core
+@inject IMediator mediator
+@model ServerParameters
+@{
+    ViewData["Title"] = "Servers";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
+</div>
+
+@{
+    var servers = await mediator.Send(new GetServerQuery(Model));
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ~
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Server servers) => servers.Url)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Server servers) => servers.StartDate)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Server servers) => servers.PlayerCount)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Server servers) => servers.AllianceCount)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Server servers) => servers.VillageCount)
+            </th>            
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (value, i) in servers.Select( (value, i) => (value, i)))
+        {
+            <tr>
+                <td>
+                    @(i+1)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Url)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.StartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.PlayerCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.AllianceCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.VillageCount)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="container" class="text-center">
+    <div>
+        Page @(servers.PageCount < servers.PageNumber ? 0 : servers.PageNumber) / @servers.PageCount
+    </div>
+    <br/>
+    <div class="pagination" style="display:grid; place-items:center;" >        
+        <div>
+            @Html.PagedListPager(servers, page =>
+            {
+                Model.PageNumber = page;
+                            return Url.Action("", new {Model.PageNumber, Model.PageSize});
+            }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    </div>
+</div>

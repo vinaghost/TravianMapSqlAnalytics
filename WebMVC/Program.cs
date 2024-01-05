@@ -1,3 +1,5 @@
+using Core.Extensions;
+
 namespace WebMVC
 {
     public class Program
@@ -8,6 +10,8 @@ namespace WebMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            builder.BindConfiguration();
+            builder.Services.AddCore();
 
             var app = builder.Build();
 

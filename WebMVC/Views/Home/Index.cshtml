@@ -1,8 +1,13 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Core.Queries
+@using MediatR
+@inject IMediator mediator
+@{
+    ViewData["Title"] = "Home";
 }
+
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
+
 </div>

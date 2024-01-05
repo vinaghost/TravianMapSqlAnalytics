@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUpdate", "ConsoleUpdate\ConsoleUpdate.csproj", "{B0FAAE1E-59B0-47CB-995C-D4FC5100F84A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMVC", "WebMVC\WebMVC.csproj", "{603801D4-9E2D-4E5D-961C-DCC32BD12560}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebMVC", "WebMVC\WebMVC.csproj", "{603801D4-9E2D-4E5D-961C-DCC32BD12560}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,5 +1,4 @@
-﻿using Core;
-using Core.Models;
+﻿using Core.Models;
 using Core.Parameters;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -10,14 +9,7 @@ namespace Core.Repositories
     {
         private readonly ServerListDbContext _dbContext = dbContext;
 
-        public async Task<bool> Validate(string serverUrl, CancellationToken cancellationToken)
-        {
-            return await _dbContext.Servers
-                .Where(x => x.Url == serverUrl)
-                .AnyAsync(cancellationToken);
-        }
-
-        public async Task<List<ServerRecord>> GetServerRecords(CancellationToken cancellationToken)
+        public async Task<IEnumerable<ServerRecord>> GetServerRecords(CancellationToken cancellationToken)
         {
             return await _dbContext.Servers
                 .Select(x => new ServerRecord(x.Url))

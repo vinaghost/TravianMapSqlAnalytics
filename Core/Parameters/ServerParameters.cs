@@ -2,9 +2,9 @@
 {
     public class ServerParameters : IPaginationParameters
     {
-        public int PageNumber => DefaultParameters.PageNumber;
+        public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
-        public int PageSize => DefaultParameters.PageSize;
+        public int PageSize { get; set; } = DefaultParameters.PageSize;
 
         public string Key => $"{PageNumber}_{PageSize}";
     }

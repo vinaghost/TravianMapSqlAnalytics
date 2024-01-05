@@ -1,24 +1,26 @@
-﻿using Core.Repositories;
-using MediatR;
+﻿using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace Core.Queries
 {
     public record ValidateServerQuery(string Server) : ICachedQuery<bool>
     {
-        public string CacheKey => $"Validate_{Server}";
+        public string CacheKey => $"{nameof(ValidateServerQuery)}_{Server}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => false;
     }
 
-    public class ValidateServerQueryHandler(IServerRepository serverRepository) : IRequestHandler<ValidateServerQuery, bool>
+    public class ValidateServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<ValidateServerQuery, bool>
     {
-        private readonly IServerRepository _serverRepository = serverRepository;
+        private readonly ServerListDbContext _dbContext = dbContext;
 
         public async Task<bool> Handle(ValidateServerQuery request, CancellationToken cancellationToken)
         {
-            return await _serverRepository.Validate(request.Server, cancellationToken);
+            return await _dbContext.Servers
+                .Where(x => x.Url == request.Server)
+                .AnyAsync(cancellationToken);
         }
     }
 }
