@@ -1,4 +1,5 @@
 using Core.Extensions;
+using WebMVC.Middleware;
 
 namespace WebMVC
 {
@@ -10,8 +11,9 @@ namespace WebMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            AddService(builder.Services);
+
             builder.BindConfiguration();
-            builder.Services.AddCore();
 
             var app = builder.Build();
 
@@ -30,7 +32,20 @@ namespace WebMVC
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
+            UseMiddleware(app);
+
             app.Run();
+        }
+
+        private static void AddService(IServiceCollection services)
+        {
+            services.AddCore();
+            services.AddScoped<ValidateServerMiddleware>();
+        }
+
+        private static void UseMiddleware(IApplicationBuilder app)
+        {
+            app.UseMiddleware<ValidateServerMiddleware>();
         }
     }
 }
