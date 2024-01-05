@@ -3,6 +3,7 @@
 @using Core.Queries
 @using Core.Services
 @using MediatR
+@using WebMVC.Controllers
 @using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
 
@@ -14,14 +15,38 @@
     ViewData["Title"] = "Players";
 }
 
+
+@using (Html.BeginForm(nameof(PlayersController.Index), "Players", FormMethod.Post))
+{ 
+    <table>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
+            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /></td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Players)</td>
+            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /></td>
+        </tr>
+        <tr>
+            <td>@Html.HiddenFor(m => m.Alliances)</td>
+            <td>@Html.HiddenFor(m => m.Players)</td>
+            <td>@Html.HiddenFor(m => m.PageNumber)</td>
+            <td>@Html.HiddenFor(m => m.PageSize)</td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" id="Check" value="Check" /></td>
+        </tr>
+    </table>
+}
+
 @{
     var players = await mediator.Send(new GetPlayersQuery(Model));
 }
-
 <div class="text-center">
     <p>Your current server is @dataService.Server</p>
-    <p>We found @players.TotalItemCount players fit your request</p>
+    <p>We found <b>@players.TotalItemCount players</b> fit your request</p>
 </div>
+
 
 <table class="table">
     <thead>
@@ -51,10 +76,10 @@
                     @(i + 1)
                 </td>
                 <td>
-                    @Html.DisplayFor(m => value.PlayerName)
+                    <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
                 </td>
                 <td>
-                    @Html.DisplayFor(m => value.AllianceName)
+                        <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(m => value.VillageCount)
@@ -77,8 +102,33 @@
             @Html.PagedListPager(players, page =>
             {
                 Model.PageNumber = page;
-                return Url.Action("", new { Model.PageNumber, Model.PageSize });
+                return $"{Model.PageNumber}_{Model.PageSize}";
             }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     </div>
 </div>
+
+<script>
+$(function() {
+    $('#container a').click(function(event) {
+        event.preventDefault();
+        // get the url of the page link
+        var url = this.href;
+        var url = url.split('/')[3]
+        var str = url.split('_')
+        
+        // update a hidden field inside the search form with this value
+        $('#PageNumber').val(parseInt(str[0]));
+        $('#PageSize').val(parseInt(str[1]));
+        // trigger the search
+        $('#Check').click();
+    });
+
+    $('#Check').click(function(event) {
+       var alliances = $('#AllianceInput').val().toString().split(',');
+       var players = $('#PlayerInput').val().toString().split(',');
+       $('#Alliances').val(alliances);
+       $('#Players').val(players);
+    });
+});
+</script>
