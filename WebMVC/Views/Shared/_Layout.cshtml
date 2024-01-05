@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using Core.Queries
+@using Core.Services
+@using MediatR
+@inject IMediator mediator
+@inject DataService dataService
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -24,6 +29,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Servers" asp-action="Index">Servers</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="Index">Players</a>
                         </li>
                     </ul>
                 </div>

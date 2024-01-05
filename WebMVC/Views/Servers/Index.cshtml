@@ -5,15 +5,18 @@
 @using WebMVC.Models.ViewModel
 @using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Core.Services
+
 @inject IMediator mediator
+@inject DataService dataService
 @model ServerParameters
 @{
     ViewData["Title"] = "Servers";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
     <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
+    <p> Your current server is @dataService.Server</p>
 </div>
 
 @{

@@ -1,0 +1,84 @@
+﻿@using Core.Models
+@using Core.Parameters
+@using Core.Queries
+@using Core.Services
+@using MediatR
+@using X.PagedList.Mvc.Bootstrap4.Core
+@using X.PagedList.Mvc.Core
+
+@inject IMediator mediator
+@inject DataService dataService
+
+@model PlayerParameters
+@{
+    ViewData["Title"] = "Players";
+}
+
+@{
+    var players = await mediator.Send(new GetPlayersQuery(Model));
+}
+
+<div class="text-center">
+    <p>Your current server is @dataService.Server</p>
+    <p>We found @players.TotalItemCount players fit your request</p>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ~
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.VillageCount)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.Population)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (value, i) in players.Select((value, i) => (value, i)))
+        {
+            <tr>
+                <td>
+                    @(i + 1)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.PlayerName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.AllianceName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.VillageCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Population)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div id="container" class="text-center">
+    <div>
+        Page @(players.PageCount < players.PageNumber ? 0 : players.PageNumber) / @players.PageCount
+    </div>
+    <br />
+    <div class="pagination" style="display:grid; place-items:center;">
+        <div>
+            @Html.PagedListPager(players, page =>
+            {
+                Model.PageNumber = page;
+                return Url.Action("", new { Model.PageNumber, Model.PageSize });
+            }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    </div>
+</div>
