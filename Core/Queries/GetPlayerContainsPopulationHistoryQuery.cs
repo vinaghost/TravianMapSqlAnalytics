@@ -6,53 +6,20 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetPlayerContainsPopulationHistoryQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistory>>
+    public record GetPlayerContainsPopulationHistoryQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistoryDetail>>
     {
         public string CacheKey => $"{nameof(GetPlayerContainsPopulationHistoryQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetPlayerContainsPopulationHistoryQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationHistoryQuery, IPagedList<PlayerContainsPopulationHistory>>
+    public class GetPlayerContainsPopulationHistoryQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationHistoryQuery, IPagedList<PlayerContainsPopulationHistoryDetail>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerContainsPopulationHistory>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsPopulationHistoryDetail>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
         {
-            var date = request.Parameters.Date.ToDateTime(TimeOnly.MinValue);
-            var playerQueryable = _unitOfRepository.PlayerRepository.GetQueryable(request.Parameters);
-
-            var rawPlayers = await playerQueryable
-                .Select(x => new
-                {
-                    x.AllianceId,
-                    x.PlayerId,
-                    PlayerName = x.Name,
-                    Populations = x.Villages
-                        .SelectMany(x => x.Populations
-                                        .Where(x => x.Date >= date))
-                        .GroupBy(x => x.Date)
-                        .OrderByDescending(x => x.Key)
-                        .Select(x => new
-                        {
-                            Date = x.Key,
-                            Population = x
-                                    .OrderBy(x => x.Date)
-                                    .Select(x => x.Population)
-                                    .Sum(),
-                        })
-                })
-                .AsEnumerable()
-                .Select(x => new
-                {
-                    x.AllianceId,
-                    x.PlayerId,
-                    x.PlayerName,
-                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))
-                })
-                .Where(x => x.ChangePopulation >= request.Parameters.MinChangePopulation)
-                .Where(x => x.ChangePopulation <= request.Parameters.MaxChangePopulation)
+            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
@@ -62,7 +29,7 @@ namespace Core.Queries
                .Select(x =>
                {
                    var alliance = alliances[x.AllianceId];
-                   return new PlayerContainsPopulationHistory(
+                   return new PlayerContainsPopulationHistoryDetail(
                        x.AllianceId,
                        alliance.Name,
                        x.PlayerId,

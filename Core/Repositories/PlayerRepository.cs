@@ -1,7 +1,6 @@
 ﻿using Core.Models;
 using Core.Parameters;
 using Microsoft.EntityFrameworkCore;
-using Player = Core.Entities.Player;
 
 namespace Core.Repositories
 {
@@ -17,16 +16,90 @@ namespace Core.Repositories
                 .ToDictionaryAsync(x => x.PlayerId, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken: cancellationToken);
         }
 
-        public IQueryable<Player> GetQueryable(IPlayerFilterParameter parameters)
+        public IEnumerable<Player> GetPlayers(PlayerParameters parameters)
         {
-            return GetBaseQueryable(parameters);
+            return GetBaseQueryable(parameters)
+                .Select(x => new Player(
+                     x.AllianceId,
+                     "",
+                     x.PlayerId,
+                     x.Name,
+                     x.Villages.Count(),
+                     x.Villages.Sum(x => x.Population)
+                 ));
         }
 
-        private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameter parameters)
+        public IEnumerable<PlayerContainsAllianceHistory> GetPlayers(PlayerContainsAllianceHistoryParameters parameters)
+        {
+            var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
+            return GetBaseQueryable(parameters)
+                .Select(x => new
+                {
+                    x.AllianceId,
+                    x.PlayerId,
+                    PlayerName = x.Name,
+                    Alliances = x.Alliances
+                        .Where(x => x.Date >= date)
+                        .Select(x => new
+                        {
+                            x.Date,
+                            x.AllianceId,
+                        })
+                })
+                .AsEnumerable()
+                .Select(x => new PlayerContainsAllianceHistory(
+
+                    x.AllianceId,
+                    x.PlayerId,
+                    x.PlayerName,
+                    x.Alliances.DistinctBy(x => x.AllianceId).Count(),
+                    x.Alliances.Select(x => new AllianceHistoryRecord(x.AllianceId, "", x.Date)).ToList()
+                ))
+                .Where(x => x.ChangeAlliance >= parameters.MinChangeAlliance)
+                .Where(x => x.ChangeAlliance <= parameters.MaxChangeAlliance);
+        }
+
+        public IEnumerable<PlayerContainsPopulationHistory> GetPlayers(PlayerContainsPopulationHistoryParameters parameters)
+        {
+            var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
+
+            return GetBaseQueryable(parameters)
+                .Select(x => new
+                {
+                    x.AllianceId,
+                    x.PlayerId,
+                    PlayerName = x.Name,
+                    Populations = x.Villages
+                        .SelectMany(x => x.Populations
+                                        .Where(x => x.Date >= date))
+                        .GroupBy(x => x.Date)
+                        .OrderByDescending(x => x.Key)
+                        .Select(x => new
+                        {
+                            Date = x.Key,
+                            Population = x
+                                    .OrderBy(x => x.Date)
+                                    .Select(x => x.Population)
+                                    .Sum(),
+                        })
+                })
+                .AsEnumerable()
+                .Select(x => new PlayerContainsPopulationHistory(
+                    x.AllianceId,
+                    x.PlayerId,
+                    x.PlayerName,
+                    x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date)).ToList()
+                ))
+                .Where(x => x.ChangePopulation >= parameters.MinChangePopulation)
+                .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
+        }
+
+        private IQueryable<Entities.Player> GetBaseQueryable(IPlayerFilterParameter parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0) return _dbContext.Players.AsQueryable();
 
-            IQueryable<Player> query = null;
+            IQueryable<Entities.Player> query = null;
 
             query = GetAlliancesFilterQueryable(query, parameters.Alliances);
             query = GetPlayersFilterQueryable(query, parameters.Players);
@@ -34,7 +107,7 @@ namespace Core.Repositories
             return query;
         }
 
-        private IQueryable<Player> GetAlliancesFilterQueryable(IQueryable<Player> query, List<int> Alliances)
+        private IQueryable<Entities.Player> GetAlliancesFilterQueryable(IQueryable<Entities.Player> query, List<int> Alliances)
         {
             if (Alliances.Count == 0) return query;
             var allianceQuery = _dbContext.Alliances
@@ -45,7 +118,7 @@ namespace Core.Repositories
                 .Union(allianceQuery);
         }
 
-        private IQueryable<Player> GetPlayersFilterQueryable(IQueryable<Player> query, List<int> Players)
+        private IQueryable<Entities.Player> GetPlayersFilterQueryable(IQueryable<Entities.Player> query, List<int> Players)
         {
             if (Players.Count == 0) return query;
             var playerQuery = _dbContext.Players

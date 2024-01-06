@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IPagedList<PlayerContainsAllianceHistory>), 200)]
         public async Task<IActionResult> Get([FromBody] PlayerContainsAllianceHistoryParameters playerParameters)
         {
-            var players = await _mediator.Send(new GetChangeAlliancePlayersQuery(playerParameters));
+            var players = await _mediator.Send(new PlayerContainsAllianceHistoryQuery(playerParameters));
 
             Response.Headers.Append("X-Pagination", players.ToJson());
 

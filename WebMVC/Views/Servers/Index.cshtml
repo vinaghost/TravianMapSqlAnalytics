@@ -14,16 +14,16 @@
     ViewData["Title"] = "Servers";
 }
 
-<div class="text-center">
-    <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
-    <p> Your current server is @dataService.Server</p>
-</div>
-
 @{
     var servers = await mediator.Send(new GetServerQuery(Model));
 }
+<div class="text-center">
+    <p> We have <b>@servers.TotalItemCount servers</b> in our database</p>
+    <p> Your current server is <div id="currentServer" style="font-weight:bold">@dataService.Server</div></p>
+</div>
 
-<table class="table">
+
+<table id="servers" class="table">
     <thead>
         <tr>
             <th>
@@ -43,7 +43,10 @@
             </th>
             <th>
                 @Html.DisplayNameForInnerType((Server servers) => servers.VillageCount)
-            </th>            
+            </th>
+            <th>
+                ~
+            </th>
         </tr>
     </thead>
     <tbody>
@@ -68,6 +71,9 @@
                 <td>
                     @Html.DisplayFor(m => value.VillageCount)
                 </td>
+                <td>
+                    <button id="@value.Url">Change</button>
+                </td>
             </tr>
         }
     </tbody>
@@ -83,8 +89,22 @@
             @Html.PagedListPager(servers, page =>
             {
                 Model.PageNumber = page;
-                            return Url.Action("", new {Model.PageNumber, Model.PageSize});
+                return Url.Action("", new {Model.PageNumber, Model.PageSize});
             }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
         </div>
     </div>
 </div>
+
+<script>
+$(function() {
+    $('#servers button').click( async function(event) {
+        console.log(this.id)
+        const rawResponse = await fetch("servers/change?server="+this.id,
+        {
+            method: "Get",
+        });
+        $("#currentServer").text(this.id);
+        alert("Changed your current server to "+this.id)
+    })
+})
+</script>

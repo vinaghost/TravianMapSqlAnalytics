@@ -1,4 +1,5 @@
 using Core.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using WebMVC.Middleware;
 
 namespace WebMVC
@@ -46,6 +47,11 @@ namespace WebMVC
         private static void UseMiddleware(IApplicationBuilder app)
         {
             app.UseMiddleware<ValidateServerMiddleware>();
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
         }
     }
 }

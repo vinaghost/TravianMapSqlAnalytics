@@ -6,47 +6,20 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetChangeAlliancePlayersQuery(PlayerContainsAllianceHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsAllianceHistory>>
+    public record PlayerContainsAllianceHistoryQuery(PlayerContainsAllianceHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsAllianceHistoryDetail>>
     {
-        public string CacheKey => $"{nameof(GetChangeAlliancePlayersQuery)}_{Parameters.Key}";
+        public string CacheKey => $"{nameof(PlayerContainsAllianceHistoryQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangeAlliancePlayersQuery, IPagedList<PlayerContainsAllianceHistory>>
+    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<PlayerContainsAllianceHistoryQuery, IPagedList<PlayerContainsAllianceHistoryDetail>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerContainsAllianceHistory>> Handle(GetChangeAlliancePlayersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsAllianceHistoryDetail>> Handle(PlayerContainsAllianceHistoryQuery request, CancellationToken cancellationToken)
         {
-            var date = request.Parameters.Date.ToDateTime(TimeOnly.MinValue);
-            var playerQueryable = _unitOfRepository.PlayerRepository.GetQueryable(request.Parameters);
-
-            var rawPlayers = await playerQueryable
-                .Select(x => new
-                {
-                    x.AllianceId,
-                    x.PlayerId,
-                    PlayerName = x.Name,
-                    Alliances = x.Alliances
-                        .Where(x => x.Date >= date)
-                        .Select(x => new
-                        {
-                            x.Date,
-                            x.AllianceId,
-                        })
-                })
-                .AsEnumerable()
-                .Select(x => new
-                {
-                    x.AllianceId,
-                    x.PlayerId,
-                    x.PlayerName,
-                    ChangeAlliance = x.Alliances.DistinctBy(x => x.AllianceId).Count(),
-                    x.Alliances
-                })
-                .Where(x => x.ChangeAlliance >= request.Parameters.MinChangeAlliance)
-                .Where(x => x.ChangeAlliance <= request.Parameters.MaxChangeAlliance)
+            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                 .OrderByDescending(x => x.ChangeAlliance)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
@@ -59,7 +32,7 @@ namespace Core.Queries
                 {
                     var alliance = alliances[x.AllianceId];
 
-                    return new PlayerContainsAllianceHistory(
+                    return new PlayerContainsAllianceHistoryDetail(
                             x.AllianceId,
                             alliance.Name,
                             x.PlayerId,

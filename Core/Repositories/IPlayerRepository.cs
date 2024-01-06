@@ -1,12 +1,13 @@
-﻿using Core.Entities;
-using Core.Models;
+﻿using Core.Models;
 using Core.Parameters;
 
 namespace Core.Repositories
 {
     public interface IPlayerRepository
     {
-        IQueryable<Entities.Player> GetQueryable(IPlayerFilterParameter parameters);
+        IEnumerable<PlayerContainsPopulationHistory> GetPlayers(PlayerContainsPopulationHistoryParameters parameters);
+        IEnumerable<PlayerContainsAllianceHistory> GetPlayers(PlayerContainsAllianceHistoryParameters parameters);
+        IEnumerable<Player> GetPlayers(PlayerParameters parameters);
         Task<Dictionary<int, PlayerRecord>> GetRecords(List<int> PlayersId, CancellationToken cancellationToken);
     }
 }

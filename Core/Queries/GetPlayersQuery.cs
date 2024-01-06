@@ -2,7 +2,6 @@
 using Core.Parameters;
 using Core.Repositories;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 
 namespace Core.Queries
@@ -20,20 +19,9 @@ namespace Core.Queries
 
         public async Task<IPagedList<Player>> Handle(GetPlayersQuery request, CancellationToken cancellationToken)
         {
-            var playerQueryable = _unitOfRepository.PlayerRepository.GetQueryable(request.Parameters);
-            var totalPlayer = await playerQueryable.CountAsync(cancellationToken);
-
-            var rawPlayers = await playerQueryable
-                            .Select(x => new
-                            {
-                                x.AllianceId,
-                                x.PlayerId,
-                                PlayerName = x.Name,
-                                VillageCount = x.Villages.Count(),
-                                Population = x.Villages.Sum(x => x.Population),
-                            })
+            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                             .OrderByDescending(x => x.VillageCount)
-                            .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize, totalPlayer);
+                            .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
             var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. rawPlayers.Select(x => x.AllianceId)], cancellationToken);
 
             var players = rawPlayers
