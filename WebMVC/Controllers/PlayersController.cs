@@ -10,9 +10,9 @@ namespace WebMVC.Controllers
             return View(parameters);
         }
 
-        public IActionResult PopulationHistory()
+        public IActionResult PopulationHistory(PlayerContainsPopulationHistoryParameters parameters)
         {
-            return View();
+            return View(parameters);
         }
     }
 }

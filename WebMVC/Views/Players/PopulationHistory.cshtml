@@ -10,15 +10,26 @@
 @inject IMediator mediator
 @inject DataService dataService
 
-@model PlayerParameters
+@model PlayerContainsPopulationHistoryParameters
 @{
-    ViewData["Title"] = "Players";
+    ViewData["Title"] = "Players with population history";
 }
 
-
-@using (Html.BeginForm(nameof(PlayersController.Index), "Players", FormMethod.Post))
+@using (Html.BeginForm(nameof(PlayersController.PopulationHistory), "Players", FormMethod.Post))
 { 
     <table>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MinChangePopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MinChangePopulation, new { @type = "number"})</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MaxChangePopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MaxChangePopulation, new { @type = "number"})</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Date)</td>
+                <td>@Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date" })</td>
+        </tr>
         <tr>
             <td>@Html.DisplayNameFor(m => m.Alliances)</td>
             <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
@@ -28,6 +39,7 @@
             <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
         </tr>
         <tr>
+            <td>@Html.HiddenFor(m => m.Date)</td>
             <td>@Html.HiddenFor(m => m.Alliances)</td>
             <td>@Html.HiddenFor(m => m.Players)</td>
             <td>@Html.HiddenFor(m => m.PageNumber)</td>
@@ -40,7 +52,8 @@
 }
 
 @{
-    var players = await mediator.Send(new GetPlayersQuery(Model));
+    var players = await mediator.Send(new GetPlayerContainsPopulationHistoryQuery(Model));
+    var dates = players.First().Populations.Select(x => x.Date).ToList();
 }
 <div class="text-center">
     <p>Your current server is @dataService.Server</p>
@@ -55,17 +68,20 @@
                 ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.PlayerName)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistory player) => player.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.AllianceName)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistory player) => player.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.VillageCount)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((Player player) => player.Population)
-            </th>
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistory player) => player.ChangePopulation)
+            </th>            
+            @for (var i = 0; i < dates.Count ; i++)
+            {
+                <th>
+                    @dates[i].ToString("dd/MM/yyyy")
+                </th>
+            }
         </tr>
     </thead>
     <tbody>
@@ -82,11 +98,25 @@
                         <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
                 </td>
                 <td>
-                    @Html.DisplayFor(m => value.VillageCount)
+                    @Html.DisplayFor(m => value.ChangePopulation)
                 </td>
-                <td>
-                    @Html.DisplayFor(m => value.Population)
-                </td>
+                @for (var pos = 0; pos < dates.Count; pos++)
+                {
+                    <td>
+                        @if (pos >= value.Populations.Count){
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => value.Populations[pos].Amount)
+
+                                @if (pos == value.Populations.Count - 1) continue;
+                                [ @(value.Populations[pos].Amount - value.Populations[pos + 1].Amount) ]
+                            </p>
+                        }
+                    </td>
+                }
             </tr>
         }
     </tbody>

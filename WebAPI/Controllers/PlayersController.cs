@@ -29,7 +29,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IPagedList<PlayerContainsPopulationHistory>), 200)]
         public async Task<IActionResult> Get([FromBody] PlayerContainsPopulationHistoryParameters playerParameters)
         {
-            var players = await _mediator.Send(new GetChangePopulationPlayersQuery(playerParameters));
+            var players = await _mediator.Send(new GetPlayerContainsPopulationHistoryQuery(playerParameters));
             Response.Headers.Append("X-Pagination", players.ToJson());
             return Ok(players);
         }

@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetChangePopulationPlayersQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistory>>
+    public record GetPlayerContainsPopulationHistoryQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistory>>
     {
-        public string CacheKey => $"{nameof(GetChangePopulationPlayersQuery)}_{Parameters.Key}";
+        public string CacheKey => $"{nameof(GetPlayerContainsPopulationHistoryQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangePopulationPlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetChangePopulationPlayersQuery, IPagedList<PlayerContainsPopulationHistory>>
+    public class GetPlayerContainsPopulationHistoryQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationHistoryQuery, IPagedList<PlayerContainsPopulationHistory>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerContainsPopulationHistory>> Handle(GetChangePopulationPlayersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsPopulationHistory>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
         {
             var date = request.Parameters.Date.ToDateTime(TimeOnly.MinValue);
             var playerQueryable = _unitOfRepository.PlayerRepository.GetQueryable(request.Parameters);
@@ -68,7 +68,7 @@ namespace Core.Queries
                        x.PlayerId,
                        x.PlayerName,
                        x.ChangePopulation,
-                       x.Populations);
+                       x.Populations.ToList());
                });
             return players;
         }

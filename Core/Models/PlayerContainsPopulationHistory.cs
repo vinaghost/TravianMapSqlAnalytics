@@ -6,5 +6,5 @@
         int PlayerId,
         string PlayerName,
         int ChangePopulation,
-        IEnumerable<PopulationHistoryRecord> Populations);
+        IList<PopulationHistoryRecord> Populations);
 }
