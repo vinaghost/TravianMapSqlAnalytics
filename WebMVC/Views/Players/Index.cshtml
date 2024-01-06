@@ -21,11 +21,11 @@
     <table>
         <tr>
             <td>@Html.DisplayNameFor(m => m.Alliances)</td>
-            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /></td>
+            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(m => m.Players)</td>
-            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /></td>
+            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
         </tr>
         <tr>
             <td>@Html.HiddenFor(m => m.Alliances)</td>
