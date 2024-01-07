@@ -1,0 +1,17 @@
+﻿@using X.PagedList
+@using X.PagedList.Mvc.Bootstrap4.Core
+@using X.PagedList.Mvc.Core
+
+@model IPagedList
+
+<div id="pagination" class="text-center">
+    <div>
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+    </div>
+    <br />
+    <div class="pagination" style="display:grid; place-items:center;">
+        <div>
+            @Html.PagedListPager(Model, page => $"{page}_{Model.PageSize}", Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+        </div>
+    </div>
+</div>

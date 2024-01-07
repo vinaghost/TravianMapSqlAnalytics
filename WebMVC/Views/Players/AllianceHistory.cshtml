@@ -1,11 +1,11 @@
 ﻿@using Core.Models
 @using Core.Parameters
 @using Core.Queries
-@using Core.Services
 @using MediatR
 @using WebMVC.Controllers
 @using X.PagedList.Mvc.Bootstrap4.Core
 @using X.PagedList.Mvc.Core
+@using Core.Services
 
 @inject IMediator mediator
 @inject DataService dataService
@@ -59,88 +59,13 @@
     <p>We found <b>@players.TotalItemCount players</b> fit your request</p>
 </div>
 
-@if (players.Count > 0)
-{       
-    var dates = players.First().Alliances.Select(x => x.Date).ToList(); 
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    ~
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.PlayerName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.AllianceName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.ChangePopulation)
-                </th>            
-                @for (var i = 0; i < dates.Count; i++)
-                {
-                    <th>
-                        @dates[i].ToString("dd/MM/yyyy")
-                    </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var (value, i) in players.Select((value, i) => (value, i)))
-            {
-                <tr>
-                    <td>
-                        @(players.PageSize*(players.PageNumber - 1) + i + 1)
-                    </td>
-                    <td>
-                        <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
-                    </td>
-                    <td>
-                        <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => value.ChangeAlliance)
-                    </td>
-                    @for (var pos = 0; pos < dates.Count; pos++)
-                    {
-                        <td>
-                            @if (pos >= value.Alliances.Count)
-                            {
-                                <p>~</p>
-                            }
-                            else
-                            {
-                                <p>                                    
-                                    <a href="https://@dataService.Server/alliance/@value.Alliances[pos].AllianceId" target="_blank">@Html.DisplayFor(m => value.Alliances[pos].AllianceName)</a>
-                                </p>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-    
-
-    <div id="container" class="text-center">
-        <div>
-            Page @(players.PageCount < players.PageNumber ? 0 : players.PageNumber) / @players.PageCount
-        </div>
-        <br />
-        <div class="pagination" style="display:grid; place-items:center;">
-            <div>
-                @Html.PagedListPager(players, page =>
-                {
-                    Model.PageNumber = page;
-                    return $"{Model.PageNumber}_{Model.PageSize}";
-                }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
-            </div>
-        </div>
-    </div>
+@if (players.Count > 0) {
+    @Html.DisplayFor(_ => players, nameof(PlayerContainsAllianceHistoryDetail))
+    @await Html.PartialAsync("_PaginationPartial", players)
 }
 
+
 @section Scripts {
-        <script src="~/js/pagination.js"></script>
-        <script src="~/js/string_to_list_submit.js"></script>
+    <script src="~/js/pagination.js"></script>
+    <script src="~/js/string_to_list_submit.js"></script>
 }

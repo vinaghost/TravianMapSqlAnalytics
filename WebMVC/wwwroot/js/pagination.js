@@ -1,5 +1,5 @@
-$(function() {
-    $('#container a').click(function(event) {
+$(function () {
+    $('#pagination a').click(function (event) {
         event.preventDefault();
         // get the url of the page link
         var url = this.href;
