@@ -142,28 +142,7 @@
         </div>
     </div>
 }
-
-<script>
-$(function() {
-    $('#container a').click(function(event) {
-        event.preventDefault();
-        // get the url of the page link
-        var url = this.href;
-        var url = url.split('/')
-        var url = url.slice(-1)[0];
-        var str = url.split('_');
-        // update a hidden field inside the search form with this value
-        $('#PageNumber').val(parseInt(str[0]));
-        $('#PageSize').val(parseInt(str[1]));
-        // trigger the search
-        $('#Check').click();
-    });
-
-    $('#Check').click(function(event) {
-       var alliances = $('#AllianceInput').val().toString().split(',');
-       var players = $('#PlayerInput').val().toString().split(',');
-       $('#Alliances').val(alliances);
-       $('#Players').val(players);
-    });
-});
-</script>
+@section Scripts {
+    <script src="~/js/pagination.js"></script>
+    <script src="~/js/string_to_list_submit.js"></script>
+}
