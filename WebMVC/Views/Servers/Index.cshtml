@@ -72,7 +72,7 @@
                     @Html.DisplayFor(m => value.VillageCount)
                 </td>
                 <td>
-                    <button id="@value.Url">Change</button>
+                    <button type="button" class="btn btn-primary" id="@value.Url">Change</button>
                 </td>
             </tr>
         }
@@ -98,13 +98,14 @@
 <script>
 $(function() {
     $('#servers button').click( async function(event) {
-        console.log(this.id)
         const rawResponse = await fetch("servers/change?server="+this.id,
         {
             method: "Get",
         });
-        $("#currentServer").text(this.id);
-        alert("Changed your current server to "+this.id)
+        if (rawResponse.ok) {
+            $("#currentServer").text(this.id);
+            alert("Changed your current server to "+this.id)
+        }
     })
 })
 </script>
