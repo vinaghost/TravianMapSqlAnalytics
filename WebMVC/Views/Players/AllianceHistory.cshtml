@@ -15,41 +15,7 @@
     ViewData["Title"] = "Players with alliance history";
 }
 
-@using (Html.BeginForm(nameof(PlayersController.AllianceHistory), "Players", FormMethod.Post))
-{ 
-    <table>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MinChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MinChangeAlliance, new { @type = "number"})</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MaxChangeAlliance, new { @type = "number"})</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Date)</td>
-                <td>@Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
-            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Players)</td>
-            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.HiddenFor(m => m.Date)</td>
-            <td>@Html.HiddenFor(m => m.Alliances)</td>
-            <td>@Html.HiddenFor(m => m.Players)</td>
-            <td>@Html.HiddenFor(m => m.PageNumber)</td>
-            <td>@Html.HiddenFor(m => m.PageSize)</td>
-        </tr>
-            <tr><td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
-            
-        </tr>
-    </table>
-}
+@Html.EditorForModel(nameof(PlayerContainsAllianceHistoryParameters))
 
 @{
     var players = await mediator.Send(new GetPlayerContainsAllianceHistoryQuery(Model));
