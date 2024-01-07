@@ -21,7 +21,7 @@ namespace WebMVC.Middleware
 
             context.Response
                    .Cookies
-                   .Append("server", server);
+                   .Append("server", server, new CookieOptions() { Expires = new DateTimeOffset(DateTime.Now.AddYears(1)) });
 
             await next(context);
         }
