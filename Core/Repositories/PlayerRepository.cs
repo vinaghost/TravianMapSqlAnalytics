@@ -40,6 +40,7 @@ namespace Core.Repositories
                     PlayerName = x.Name,
                     Alliances = x.Alliances
                         .Where(x => x.Date >= date)
+                        .OrderByDescending(x => x.Date)
                         .Select(x => new
                         {
                             x.Date,
@@ -52,8 +53,8 @@ namespace Core.Repositories
                     x.AllianceId,
                     x.PlayerId,
                     x.PlayerName,
-                    x.Alliances.DistinctBy(x => x.AllianceId).Count(),
-                    x.Alliances.Select(x => new AllianceHistoryRecord(x.AllianceId, "", x.Date)).ToList()
+                    x.Alliances.DistinctBy(y => y.AllianceId).Count() - 1,
+                    x.Alliances.Select(y => new AllianceHistoryRecord(y.AllianceId, "", y.Date)).ToList()
                 ))
                 .Where(x => x.ChangeAlliance >= parameters.MinChangeAlliance)
                 .Where(x => x.ChangeAlliance <= parameters.MaxChangeAlliance);

@@ -39,10 +39,14 @@ namespace Core.Queries
                             x.PlayerName,
                             x.ChangeAlliance,
                             x.Alliances
-                                .Select(ally => new AllianceHistoryRecord(
-                                    ally.AllianceId,
-                                    alliance.Name,
-                                    ally.Date))
+                                .Select(ally =>
+                                {
+                                    var allianceHistory = alliances[ally.AllianceId];
+                                    return new AllianceHistoryRecord(
+                                        ally.AllianceId,
+                                        allianceHistory.Name,
+                                        ally.Date);
+                                })
                                 .ToList());
                 });
             return players;

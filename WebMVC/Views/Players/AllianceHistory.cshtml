@@ -111,8 +111,8 @@
                             }
                             else
                             {
-                                <p>
-                                    @Html.DisplayFor(m => value.Alliances[pos].AllianceName)
+                                <p>                                    
+                                    <a href="https://@dataService.Server/alliance/@value.Alliances[pos].AllianceId" target="_blank">@Html.DisplayFor(m => value.Alliances[pos].AllianceName)</a>
                                 </p>
                             }
                         </td>
