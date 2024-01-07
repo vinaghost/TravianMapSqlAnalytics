@@ -22,8 +22,9 @@ namespace WebMVC.Controllers
             if (isValid)
             {
                 _dataService.Server = server;
-                Response.Cookies.Append("server", server);
-                return Ok();
+
+                var options = new CookieOptions() { Expires = new DateTimeOffset(DateTime.Now.AddYears(1)) };
+                Response.Cookies.Append("server", server, options); return Ok();
             }
             return NotFound();
         }

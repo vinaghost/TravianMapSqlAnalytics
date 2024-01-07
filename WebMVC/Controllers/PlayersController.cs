@@ -14,5 +14,10 @@ namespace WebMVC.Controllers
         {
             return View(parameters);
         }
+
+        public IActionResult AllianceHistory(PlayerContainsAllianceHistoryParameters parameters)
+        {
+            return View(parameters);
+        }
     }
 }

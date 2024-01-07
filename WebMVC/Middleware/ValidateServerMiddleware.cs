@@ -19,9 +19,8 @@ namespace WebMVC.Middleware
 
             _dataService.Server = server;
 
-            context.Response
-                   .Cookies
-                   .Append("server", server, new CookieOptions() { Expires = new DateTimeOffset(DateTime.Now.AddYears(1)) });
+            var options = new CookieOptions() { Expires = new DateTimeOffset(DateTime.Now.AddYears(1)) };
+            context.Response.Cookies.Append("server", server, options);
 
             await next(context);
         }

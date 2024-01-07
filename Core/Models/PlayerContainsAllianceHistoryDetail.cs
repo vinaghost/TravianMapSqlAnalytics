@@ -6,5 +6,5 @@
         int PlayerId,
         string PlayerName,
         int ChangeAlliance,
-        IEnumerable<AllianceHistoryRecord> Alliances);
+        IList<AllianceHistoryRecord> Alliances);
 }

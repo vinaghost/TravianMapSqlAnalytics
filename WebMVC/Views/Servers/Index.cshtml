@@ -54,7 +54,7 @@
         {
             <tr>
                 <td>
-                    @(i+1)
+                    @(servers.PageSize*(servers.PageNumber - 1) + i + 1)
                 </td>
                 <td>
                     @Html.DisplayFor(m => value.Url)
