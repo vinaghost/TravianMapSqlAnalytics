@@ -1,0 +1,24 @@
+﻿@using WebMVC.Controllers
+
+@{
+    var dict = new List<(string, string, string)>()
+    {
+        ("Home", nameof(HomeController.Index), "Home"),
+        ("Servers", nameof(ServersController.Index), "Servers"),
+        ("Players", nameof(PlayersController.Index), "Players"),
+        ("Players", nameof(PlayersController.PopulationHistory), "Players with population history"),
+        ("Players", nameof(PlayersController.AllianceHistory), "Players with population alliance"),
+
+    };
+
+}
+<div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+    <ul class="navbar-nav flex-grow-1">
+        @foreach (var (controller, action, title) in dict)
+        {
+            <li class="nav-item">
+                <a class="nav-link text-dark" asp-area="" asp-controller="@controller" asp-action="@action">@title</a>
+            </li>
+        }
+    </ul>
+</div>

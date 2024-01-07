@@ -1,5 +1,4 @@
-﻿@using WebMVC.Controllers
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -19,30 +18,12 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="@nameof(HomeController.Index)">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Servers" asp-action="@nameof(ServersController.Index)">Servers</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="@nameof(PlayersController.Index)">Players</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="@nameof(PlayersController.PopulationHistory)">Players with population history</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Players" asp-action="@nameof(PlayersController.AllianceHistory)">Players with population alliance</a>
-                        </li>
-                    </ul>
-                </div>
+                @await Html.PartialAsync("_NavbarPartial")
+                
             </div>
         </nav>
     </header>    
     @await Html.PartialAsync("_BusyIndicatorPartial")
-    @* <partial name="_BusyIndicatorPartial" /> *@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
