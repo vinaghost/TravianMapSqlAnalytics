@@ -41,7 +41,8 @@
             </div>
         </nav>
     </header>    
-    <partial name="_BusyIndicatorPartial" />
+    @await Html.PartialAsync("_BusyIndicatorPartial")
+    @* <partial name="_BusyIndicatorPartial" /> *@
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
