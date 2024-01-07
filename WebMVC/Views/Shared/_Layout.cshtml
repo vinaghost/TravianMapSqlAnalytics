@@ -1,9 +1,4 @@
-﻿@using Core.Queries
-@using Core.Services
-@using MediatR
-@using WebMVC.Controllers
-@inject IMediator mediator
-@inject DataService dataService
+﻿@using WebMVC.Controllers
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,11 +7,8 @@
     <title>@ViewData["Title"] - Travian MapSql Analytics</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/spinner.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebMVC.styles.css" asp-append-version="true" />
-
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
 <body>
     <header>
@@ -48,7 +40,8 @@
                 </div>
             </div>
         </nav>
-    </header>
+    </header>    
+    <partial name="_BusyIndicatorPartial" />
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -59,7 +52,11 @@
         <div class="container">
             &copy; 2024 - Travian MapSql Analytics
         </div>
-    </footer>
+    </footer>   
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
