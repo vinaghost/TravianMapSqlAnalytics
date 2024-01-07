@@ -18,12 +18,12 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                @await Html.PartialAsync("_NavbarPartial")
+                @await Html.PartialAsync("_Layout.Navbar")
                 
             </div>
         </nav>
     </header>    
-    @await Html.PartialAsync("_BusyIndicatorPartial")
+    @await Html.PartialAsync("_Layout.BusyIndicator")
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
