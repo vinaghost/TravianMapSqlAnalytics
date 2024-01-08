@@ -1,0 +1,51 @@
+﻿@using Core.Models
+@using Core.Services
+@using X.PagedList
+@inject DataService dataService
+@model IPagedList<Player>
+@{
+    var page = Model.PageSize * (Model.PageNumber - 1);
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ~
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.VillageCount)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((Player player) => player.Population)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (value, i) in Model.Select((value, i) => (value, i)))
+        {
+            <tr>
+                <td>
+                    @(page + i + 1)
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.VillageCount)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Population)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

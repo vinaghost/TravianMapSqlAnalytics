@@ -1,18 +1,18 @@
 ﻿@using Core.Parameters
 @using WebMVC.Controllers
 
-@model PlayerContainsAllianceHistoryParameters
+@model PlayerContainsPopulationHistoryParameters
 
-@using (Html.BeginForm(nameof(PlayersController.AllianceHistory), "Players", FormMethod.Post))
+@using (Html.BeginForm(nameof(PlayersController.PopulationHistory), "Players", FormMethod.Post))
 {
     <table>
         <tr>
-            <td>@Html.DisplayNameFor(m => m.MinChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MinChangeAlliance, new { @type = "number" })</td>
+            <td>@Html.DisplayNameFor(m => m.MinChangePopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MinChangePopulation, new { @type = "number" })</td>
         </tr>
         <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MaxChangeAlliance, new { @type = "number" })</td>
+            <td>@Html.DisplayNameFor(m => m.MaxChangePopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MaxChangePopulation, new { @type = "number" })</td>
         </tr>
         <tr>
             <td>@Html.DisplayNameFor(m => m.Date)</td>
@@ -35,6 +35,7 @@
         </tr>
         <tr>
             <td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
+
         </tr>
     </table>
 }

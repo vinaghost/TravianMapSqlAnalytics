@@ -15,4 +15,12 @@
     <ProjectReference Include="..\Core\Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Players\EditorTemplates\PlayerParameters.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Players\EditorTemplates\PlayerParameters.cshtml" />
+  </ItemGroup>
+
 </Project>

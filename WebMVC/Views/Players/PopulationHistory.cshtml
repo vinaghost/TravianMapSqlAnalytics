@@ -15,133 +15,24 @@
     ViewData["Title"] = "Players with population history";
 }
 
-@using (Html.BeginForm(nameof(PlayersController.PopulationHistory), "Players", FormMethod.Post))
-{ 
-    <table>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MinChangePopulation)</td>
-            <td>@Html.TextBoxFor(m => m.MinChangePopulation, new { @type = "number"})</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxChangePopulation)</td>
-            <td>@Html.TextBoxFor(m => m.MaxChangePopulation, new { @type = "number"})</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Date)</td>
-                <td>@Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
-            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Players)</td>
-            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.HiddenFor(m => m.Date)</td>
-            <td>@Html.HiddenFor(m => m.Alliances)</td>
-            <td>@Html.HiddenFor(m => m.Players)</td>
-            <td>@Html.HiddenFor(m => m.PageNumber)</td>
-            <td>@Html.HiddenFor(m => m.PageSize)</td>
-        </tr>
-            <tr><td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
-            
-        </tr>
-    </table>
-}
+@Html.EditorForModel(nameof(PlayerContainsPopulationHistoryParameters))
+
 
 @{
     var players = await mediator.Send(new GetPlayerContainsPopulationHistoryQuery(Model));
 }
+
 <div class="text-center">
     <p>Your current server is @dataService.Server</p>
     <p>We found <b>@players.TotalItemCount players</b> fit your request</p>
 </div>
 
 @if (players.Count > 0)
-{       
-    var dates = players.First().Populations.Select(x => x.Date).ToList(); 
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    ~
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.PlayerName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.AllianceName)
-                </th>
-                <th>
-                    @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.ChangePopulation)
-                </th>            
-                @for (var i = 0; i < dates.Count; i++)
-                {
-                    <th>
-                        @dates[i].ToString("dd/MM/yyyy")
-                    </th>
-                }
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var (value, i) in players.Select((value, i) => (value, i)))
-            {
-                <tr>
-                    <td>
-                        @(players.PageSize*(players.PageNumber - 1) + i + 1)
-                    </td>
-                    <td>
-                        <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
-                    </td>
-                    <td>
-                        <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => value.ChangePopulation)
-                    </td>
-                    @for (var pos = 0; pos < dates.Count; pos++)
-                    {
-                        <td>
-                            @if (pos >= value.Populations.Count)
-                            {
-                                <p>~</p>
-                            }
-                            else
-                            {
-                                <p>
-                                    @Html.DisplayFor(m => value.Populations[pos].Amount)
-
-                                    @if (pos == value.Populations.Count - 1) continue;
-                                    [ @(value.Populations[pos].Amount - value.Populations[pos + 1].Amount) ]
-                                </p>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    </table>
-    
-
-    <div id="container" class="text-center">
-        <div>
-            Page @(players.PageCount < players.PageNumber ? 0 : players.PageNumber) / @players.PageCount
-        </div>
-        <br />
-        <div class="pagination" style="display:grid; place-items:center;">
-            <div>
-                @Html.PagedListPager(players, page =>
-                {
-                    Model.PageNumber = page;
-                    return $"{Model.PageNumber}_{Model.PageSize}";
-                }, Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
-            </div>
-        </div>
-    </div>
+{
+    @Html.DisplayFor(_ => players, nameof(PlayerContainsPopulationHistoryDetail))
+    @await Html.PartialAsync("_PaginationPartial", players)
 }
+
 @section Scripts {
     <script src="~/js/pagination.js"></script>
     <script src="~/js/string_to_list_submit.js"></script>
