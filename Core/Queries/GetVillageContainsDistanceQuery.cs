@@ -1,4 +1,4 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
 using Core.Parameters;
 using Core.Repositories;
 using MediatR;
@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetVillagesQuery(VillageParameters Parameters) : ICachedQuery<IPagedList<Village>>
+    public record GetVillageContainsDistanceQuery(VillageContainsDistanceParameters Parameters) : ICachedQuery<IPagedList<VillageContainsDistanceDto>>
     {
-        public string CacheKey => $"{nameof(GetVillagesQuery)}_{Parameters.Key}";
+        public string CacheKey => $"{nameof(GetVillageContainsDistanceQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetVillagesQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetVillagesQuery, IPagedList<Village>>
+    public class GetVillageContainsDistanceQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetVillageContainsDistanceQuery, IPagedList<VillageContainsDistanceDto>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<Village>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageContainsDistanceDto>> Handle(GetVillageContainsDistanceQuery request, CancellationToken cancellationToken)
         {
             var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
                 .OrderByDescending(x => x.Population)
@@ -32,7 +32,7 @@ namespace Core.Queries
                 {
                     var player = players[x.PlayerId];
                     var alliance = alliances[player.AllianceId];
-                    return new Village(
+                    return new VillageContainsDistanceDto(
                         player.AllianceId,
                         alliance.Name,
                         x.PlayerId,
@@ -43,7 +43,8 @@ namespace Core.Queries
                         x.Y,
                         x.Population,
                         x.IsCapital,
-                        x.Tribe);
+                        x.Tribe,
+                        x.Distance);
                 });
 
             return villages;

@@ -1,6 +1,8 @@
-﻿namespace Core.Models
+﻿using Core.Models;
+
+namespace Core.Dtos
 {
-    public record PlayerContainsPopulationHistoryDetail(
+    public record PlayerContainsPopulationHistoryDto(
         int AllianceId,
         string AllianceName,
         int PlayerId,

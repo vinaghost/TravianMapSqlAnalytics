@@ -1,6 +1,6 @@
 ﻿namespace Core.Parameters
 {
-    public record VillageContainsPopulationHistoryParameters : VillageParameters, IPopulationHistoryFilterParameter
+    public record VillageContainsPopulationHistoryParameters : VillageContainsDistanceParameters, IPopulationHistoryFilterParameter
     {
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;

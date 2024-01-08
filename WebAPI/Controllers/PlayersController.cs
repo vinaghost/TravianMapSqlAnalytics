@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Core.Parameters;
 using Core.Queries;
 using MediatR;
@@ -17,10 +18,10 @@ namespace WebAPI.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IPagedList<Player>), 200)]
-        public async Task<IActionResult> Get([FromBody] PlayerParameters playerParameters)
+        [ProducesResponseType(typeof(IPagedList<PlayerContainsPopulationDto>), 200)]
+        public async Task<IActionResult> Get([FromBody] PlayerContainsPopulationParameters playerParameters)
         {
-            var players = await _mediator.Send(new GetPlayersQuery(playerParameters));
+            var players = await _mediator.Send(new GetPlayerContainsPopulationQuery(playerParameters));
             Response.Headers.Append("X-Pagination", players.ToJson());
             return Ok(players);
         }

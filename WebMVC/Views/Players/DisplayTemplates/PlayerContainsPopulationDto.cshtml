@@ -1,8 +1,9 @@
-﻿@using Core.Models
+﻿@using Core.Dtos
 @using Core.Services
 @using X.PagedList
+
 @inject DataService dataService
-@model IPagedList<Player>
+@model IPagedList<PlayerContainsPopulationDto>
 @{
     var page = Model.PageSize * (Model.PageNumber - 1);
 }
@@ -13,16 +14,16 @@
                 ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.PlayerName)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.AllianceName)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.VillageCount)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.VillageCount)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((Player player) => player.Population)
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.Population)
             </th>
         </tr>
     </thead>

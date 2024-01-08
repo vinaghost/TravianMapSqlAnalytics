@@ -1,8 +1,9 @@
-﻿@using Core.Models
+﻿@using Core.Dtos
+@using Core.Models
 @using Core.Services
 @using X.PagedList
 @inject DataService dataService
-@model IPagedList<PlayerContainsPopulationHistoryDetail>
+@model IPagedList<VillageContainsPopulationHistoryDto>
 
 @{
     var dates = Model.First().Populations.Select(x => x.Date).ToList();
@@ -16,13 +17,25 @@
                 ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.PlayerName)
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.AllianceName)
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDetail player) => player.ChangePopulation)
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.VillageName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.X) | @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.Y)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.Tribe)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.IsCapital)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.ChangePopulation)
             </th>
             @for (var i = 0; i < dates.Count; i++)
             {
@@ -44,6 +57,18 @@
                 </td>
                 <td>
                     <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.VillageName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.X) | @Html.DisplayFor(m => value.Y)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Tribe)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.IsCapital)
                 </td>
                 <td>
                     @Html.DisplayFor(m => value.ChangePopulation)
@@ -70,3 +95,4 @@
         }
     </tbody>
 </table>
+

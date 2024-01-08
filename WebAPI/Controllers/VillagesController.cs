@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Core.Parameters;
 using Core.Queries;
 using MediatR;
@@ -17,10 +18,10 @@ namespace WebAPI.Controllers
         private readonly IMediator _mediator = mediator;
 
         [HttpGet]
-        [ProducesResponseType(typeof(IPagedList<Village>), 200)]
-        public async Task<IActionResult> Get([FromBody] VillageParameters villageParameters)
+        [ProducesResponseType(typeof(IPagedList<VillageContainsDistanceDto>), 200)]
+        public async Task<IActionResult> Get([FromBody] VillageContainsDistanceParameters villageParameters)
         {
-            var villages = await _mediator.Send(new GetVillagesQuery(villageParameters));
+            var villages = await _mediator.Send(new GetVillageContainsDistanceQuery(villageParameters));
             Response.Headers.Append("X-Pagination", villages.ToJson());
             return Ok(villages);
         }
@@ -29,7 +30,7 @@ namespace WebAPI.Controllers
         [ProducesResponseType(typeof(IPagedList<VillageContainPopulationHistory>), 200)]
         public async Task<IActionResult> Get([FromBody] VillageContainsPopulationHistoryParameters villageParameters)
         {
-            var villages = await _mediator.Send(new GetChangePopulationVillagesQuery(villageParameters));
+            var villages = await _mediator.Send(new GetVillageContainsPopulationHistoryQuery(villageParameters));
             Response.Headers.Append("X-Pagination", villages.ToJson());
             return Ok(villages);
         }

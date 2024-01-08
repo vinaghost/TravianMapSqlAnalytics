@@ -1,6 +1,6 @@
-﻿namespace Core.Models
+﻿namespace Core.Dtos
 {
-    public record Village(
+    public record VillageContainsDistanceDto(
         int AllianceId,
         string AllianceName,
         int PlayerId,
@@ -11,5 +11,6 @@
         int Y,
         int Population,
         bool IsCapital,
-        int Tribe);
+        int Tribe,
+        double Distance);
 }

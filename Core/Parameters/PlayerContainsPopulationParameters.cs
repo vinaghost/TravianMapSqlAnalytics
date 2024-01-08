@@ -1,6 +1,6 @@
 ﻿namespace Core.Parameters
 {
-    public class PlayerParameters : IPaginationParameters, IPlayerFilterParameter
+    public class PlayerContainsPopulationParameters : IPaginationParameters, IPlayerFilterParameter
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;

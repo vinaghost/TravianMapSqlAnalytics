@@ -1,0 +1,56 @@
+﻿@using Core.Parameters
+@using WebMVC.Controllers
+
+@model VillageContainsDistanceParameters
+
+@using (Html.BeginForm(nameof(VillagesController.Index), "Villages", FormMethod.Post))
+{
+    <table>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
+            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Players)</td>
+            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.Villages)</td>
+            <td><input id="VillageInput" type="text" value="@string.Join(',', Model.Villages)" /> (Id of villages, separated with ",")</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MinPopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MinPopulation, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MaxPopulation)</td>
+            <td>@Html.TextBoxFor(m => m.MaxPopulation, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.TargetX)</td>
+            <td>@Html.TextBoxFor(m => m.TargetX, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.TargetY)</td>
+            <td>@Html.TextBoxFor(m => m.TargetY, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MinDistance)</td>
+            <td>@Html.TextBoxFor(m => m.MinDistance, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.DisplayNameFor(m => m.MaxDistance)</td>
+            <td>@Html.TextBoxFor(m => m.MaxDistance, new { @type = "number" })</td>
+        </tr>
+        <tr>
+            <td>@Html.HiddenFor(m => m.Alliances)</td>
+            <td>@Html.HiddenFor(m => m.Players)</td>
+            <td>@Html.HiddenFor(m => m.Villages)</td>
+            <td>@Html.HiddenFor(m => m.PageNumber)</td>
+            <td>@Html.HiddenFor(m => m.PageSize)</td>
+        </tr>
+        <tr>
+            <td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
+        </tr>
+    </table>
+}

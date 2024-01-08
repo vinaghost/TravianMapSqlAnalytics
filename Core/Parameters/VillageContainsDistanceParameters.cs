@@ -1,6 +1,6 @@
 ﻿namespace Core.Parameters
 {
-    public record VillageParameters : IPaginationParameters, IVillageFilterParameter
+    public record VillageContainsDistanceParameters : IPaginationParameters, IVillageFilterParameter
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;

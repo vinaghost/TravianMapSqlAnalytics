@@ -1,0 +1,76 @@
+﻿@using Core.Dtos
+@using Core.Services
+@using X.PagedList
+
+@inject DataService dataService
+@model IPagedList<VillageContainsDistanceDto>
+@{
+    var page = Model.PageSize * (Model.PageNumber - 1);
+}
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ~
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.VillageName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.X) | @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.Y)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.Tribe)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.IsCapital)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.Population)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((VillageContainsDistanceDto village) => village.Distance)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (value, i) in Model.Select((value, i) => (value, i)))
+        {
+            <tr>
+                <td>
+                    @(page + i + 1)
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.VillageName)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.X) | @Html.DisplayFor(m => value.Y)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Tribe)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.IsCapital)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Population)
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.Distance)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

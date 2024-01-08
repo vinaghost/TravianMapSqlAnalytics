@@ -1,6 +1,6 @@
 ﻿namespace Core.Parameters
 {
-    public class PlayerContainsPopulationHistoryParameters : PlayerParameters, IPopulationHistoryFilterParameter
+    public class PlayerContainsPopulationHistoryParameters : PlayerContainsPopulationParameters, IPopulationHistoryFilterParameter
     {
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;

@@ -1,8 +1,7 @@
 ﻿namespace Core.Models
 {
-    public record Player(
+    public record PlayerContainsPopulation(
         int AllianceId,
-        string AllianceName,
         int PlayerId,
         string PlayerName,
         int VillageCount,

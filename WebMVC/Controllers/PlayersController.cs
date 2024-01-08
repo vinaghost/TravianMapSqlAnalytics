@@ -5,7 +5,7 @@ namespace WebMVC.Controllers
 {
     public class PlayersController : Controller
     {
-        public IActionResult Index(PlayerParameters parameters)
+        public IActionResult Index(PlayerContainsPopulationParameters parameters)
         {
             return View(parameters);
         }

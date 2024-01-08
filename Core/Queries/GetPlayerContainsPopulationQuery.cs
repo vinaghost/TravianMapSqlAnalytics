@@ -1,4 +1,4 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
 using Core.Parameters;
 using Core.Repositories;
 using MediatR;
@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetPlayersQuery(PlayerParameters Parameters) : ICachedQuery<IPagedList<Player>>
+    public record GetPlayerContainsPopulationQuery(PlayerContainsPopulationParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationDto>>
     {
-        public string CacheKey => $"{nameof(GetPlayersQuery)}_{Parameters.Key}";
+        public string CacheKey => $"{nameof(GetPlayerContainsPopulationQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetPlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayersQuery, IPagedList<Player>>
+    public class GetPlayerContainsPopulationQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationQuery, IPagedList<PlayerContainsPopulationDto>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<Player>> Handle(GetPlayersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsPopulationDto>> Handle(GetPlayerContainsPopulationQuery request, CancellationToken cancellationToken)
         {
             var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                             .OrderByDescending(x => x.VillageCount)
@@ -28,7 +28,7 @@ namespace Core.Queries
                 .Select(x =>
                 {
                     var alliance = alliances[x.AllianceId];
-                    return new Player(
+                    return new PlayerContainsPopulationDto(
                         x.AllianceId,
                         alliance.Name,
                         x.PlayerId,

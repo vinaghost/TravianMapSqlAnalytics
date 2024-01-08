@@ -5,7 +5,7 @@ namespace Core.Repositories
 {
     public interface IVillageRepository
     {
-        IEnumerable<VillageContainsDistance> GetVillages(VillageParameters parameters);
+        IEnumerable<VillageContainsDistance> GetVillages(VillageContainsDistanceParameters parameters);
 
         IEnumerable<VillageContainPopulationHistory> GetVillages(VillageContainsPopulationHistoryParameters parameters);
     }

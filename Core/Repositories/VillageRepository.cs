@@ -7,7 +7,7 @@ namespace Core.Repositories
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public IEnumerable<VillageContainsDistance> GetVillages(VillageParameters parameters)
+        public IEnumerable<VillageContainsDistance> GetVillages(VillageContainsDistanceParameters parameters)
         {
             var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
             return GetBaseQueryable(parameters)

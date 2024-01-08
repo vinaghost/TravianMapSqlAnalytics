@@ -1,4 +1,4 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
 using Core.Parameters;
 using Core.Repositories;
 using MediatR;
@@ -6,18 +6,18 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetPlayerContainsPopulationHistoryQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistoryDetail>>
+    public record GetPlayerContainsPopulationHistoryQuery(PlayerContainsPopulationHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsPopulationHistoryDto>>
     {
         public string CacheKey => $"{nameof(GetPlayerContainsPopulationHistoryQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetPlayerContainsPopulationHistoryQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationHistoryQuery, IPagedList<PlayerContainsPopulationHistoryDetail>>
+    public class GetPlayerContainsPopulationHistoryQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationHistoryQuery, IPagedList<PlayerContainsPopulationHistoryDto>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerContainsPopulationHistoryDetail>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsPopulationHistoryDto>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
         {
             var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                 .OrderByDescending(x => x.ChangePopulation)
@@ -29,7 +29,7 @@ namespace Core.Queries
                .Select(x =>
                {
                    var alliance = alliances[x.AllianceId];
-                   return new PlayerContainsPopulationHistoryDetail(
+                   return new PlayerContainsPopulationHistoryDto(
                        x.AllianceId,
                        alliance.Name,
                        x.PlayerId,

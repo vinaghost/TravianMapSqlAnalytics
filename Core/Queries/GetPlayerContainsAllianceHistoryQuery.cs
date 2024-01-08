@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Dtos;
+using Core.Models;
 using Core.Parameters;
 using Core.Repositories;
 using MediatR;
@@ -6,18 +7,18 @@ using X.PagedList;
 
 namespace Core.Queries
 {
-    public record GetPlayerContainsAllianceHistoryQuery(PlayerContainsAllianceHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsAllianceHistoryDetail>>
+    public record GetPlayerContainsAllianceHistoryQuery(PlayerContainsAllianceHistoryParameters Parameters) : ICachedQuery<IPagedList<PlayerContainsAllianceHistoryDto>>
     {
         public string CacheKey => $"{nameof(GetPlayerContainsAllianceHistoryQuery)}_{Parameters.Key}";
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsAllianceHistoryQuery, IPagedList<PlayerContainsAllianceHistoryDetail>>
+    public class GetChangeAlliancePlayersQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsAllianceHistoryQuery, IPagedList<PlayerContainsAllianceHistoryDto>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
 
-        public async Task<IPagedList<PlayerContainsAllianceHistoryDetail>> Handle(GetPlayerContainsAllianceHistoryQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerContainsAllianceHistoryDto>> Handle(GetPlayerContainsAllianceHistoryQuery request, CancellationToken cancellationToken)
         {
             var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
                 .OrderByDescending(x => x.ChangeAlliance)
@@ -32,7 +33,7 @@ namespace Core.Queries
                 {
                     var alliance = alliances[x.AllianceId];
 
-                    return new PlayerContainsAllianceHistoryDetail(
+                    return new PlayerContainsAllianceHistoryDto(
                             x.AllianceId,
                             alliance.Name,
                             x.PlayerId,

@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Entities;
+using Core.Models;
 using Core.Parameters;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +17,11 @@ namespace Core.Repositories
                 .ToDictionaryAsync(x => x.PlayerId, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken: cancellationToken);
         }
 
-        public IEnumerable<Player> GetPlayers(PlayerParameters parameters)
+        public IEnumerable<PlayerContainsPopulation> GetPlayers(PlayerContainsPopulationParameters parameters)
         {
             return GetBaseQueryable(parameters)
-                .Select(x => new Player(
+                .Select(x => new PlayerContainsPopulation(
                      x.AllianceId,
-                     "",
                      x.PlayerId,
                      x.Name,
                      x.Villages.Count(),
@@ -96,11 +96,11 @@ namespace Core.Repositories
                 .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
         }
 
-        private IQueryable<Entities.Player> GetBaseQueryable(IPlayerFilterParameter parameters)
+        private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameter parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0) return _dbContext.Players.AsQueryable();
 
-            IQueryable<Entities.Player> query = null;
+            IQueryable<Player> query = null;
 
             query = GetAlliancesFilterQueryable(query, parameters.Alliances);
             query = GetPlayersFilterQueryable(query, parameters.Players);
@@ -108,7 +108,7 @@ namespace Core.Repositories
             return query;
         }
 
-        private IQueryable<Entities.Player> GetAlliancesFilterQueryable(IQueryable<Entities.Player> query, List<int> Alliances)
+        private IQueryable<Player> GetAlliancesFilterQueryable(IQueryable<Player> query, List<int> Alliances)
         {
             if (Alliances.Count == 0) return query;
             var allianceQuery = _dbContext.Alliances
@@ -119,7 +119,7 @@ namespace Core.Repositories
                 .Union(allianceQuery);
         }
 
-        private IQueryable<Entities.Player> GetPlayersFilterQueryable(IQueryable<Entities.Player> query, List<int> Players)
+        private IQueryable<Player> GetPlayersFilterQueryable(IQueryable<Player> query, List<int> Players)
         {
             if (Players.Count == 0) return query;
             var playerQuery = _dbContext.Players

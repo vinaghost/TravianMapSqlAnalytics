@@ -1,0 +1,73 @@
+﻿@using Core.Dtos
+@using Core.Models
+@using Core.Services
+@using X.PagedList
+@inject DataService dataService
+@model IPagedList<PlayerContainsAllianceHistoryDto>
+
+@{
+    var dates = Model.First().Alliances.Select(x => x.Date).ToList();
+    var page = Model.PageSize * (Model.PageNumber - 1);
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ~
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.PlayerName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.AllianceName)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.ChangePopulation)
+            </th>
+            @for (var i = 0; i < dates.Count; i++)
+            {
+                <th>
+                    @dates[i].ToString("dd/MM/yyyy")
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var (value, i) in Model.Select((value, i) => (value, i)))
+        {
+            <tr>
+                <td>
+                    @(page + i + 1)
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/profile/@value.PlayerId" target="_blank">@Html.DisplayFor(m => value.PlayerName)</a>
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(m => value.ChangeAlliance)
+                </td>
+                @for (var pos = 0; pos < dates.Count; pos++)
+                {
+                    <td>
+                        @if (pos >= value.Alliances.Count)
+                        {
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                <a href="https://@dataService.Server/alliance/@value.Alliances[pos].AllianceId" target="_blank">
+                                    @Html.DisplayFor(m => value.Alliances[pos].AllianceName)
+                                </a>
+                            </p>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+

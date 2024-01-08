@@ -1,6 +1,6 @@
 ﻿namespace Core.Parameters
 {
-    public class PlayerContainsAllianceHistoryParameters : PlayerParameters, IAllianceHistoryFilterParameter
+    public class PlayerContainsAllianceHistoryParameters : PlayerContainsPopulationParameters, IAllianceHistoryFilterParameter
     {
         public DateOnly Date { get; set; } = DefaultParameters.Date;
         public int MinChangeAlliance { get; set; } = DefaultParameters.MinChangeAlliance;
