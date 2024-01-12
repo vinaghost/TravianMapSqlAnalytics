@@ -91,14 +91,14 @@ namespace Benchmark.Queries
                 .Select(x => new
                 {
                     VillageId = x.Key,
-                    Populations = x.OrderByDescending(x => x.Date)
+                    Populations = x.OrderByDescending(x => x.Date).Select(x => new PopulationHistoryRecord(x.Population, x.Date))
                 })
                 .AsEnumerable()
                 .Select(x => new
                 {
                     x.VillageId,
-                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))
+                    ChangePopulation = x.Populations.Select(x => x.Amount).FirstOrDefault() - x.Populations.Select(x => x.Amount).LastOrDefault(),
+                    x.Populations
                 })
                 .ToDictionary(x => x.VillageId, x => new { x.ChangePopulation, x.Populations });
 
