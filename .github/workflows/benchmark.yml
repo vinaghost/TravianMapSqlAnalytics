@@ -15,4 +15,4 @@ jobs:
           dotnet-version: 8.0.x
         
       - name: Build 
-        run: dotnet run Benchmark -c Release
+        run: dotnet run --project Benchmark -c Release
