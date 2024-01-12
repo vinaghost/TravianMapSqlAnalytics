@@ -38,7 +38,7 @@ namespace Benchmark.Queries
             await _container.ExecScriptAsync(sql);
         }
 
-        [GlobalSetup(Target = nameof(WithIndex))]
+        [GlobalSetup(Targets = [nameof(WithIndex), nameof(WithIndexAndGroup)])]
         public async Task SetupWithIndex()
         {
             var sql = await File.ReadAllTextAsync("Queries/data.sql");
