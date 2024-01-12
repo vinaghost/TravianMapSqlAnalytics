@@ -5,35 +5,37 @@
 
 @using (Html.BeginForm(nameof(PlayersController.AllianceHistory), "Players", FormMethod.Post))
 {
-    <table>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MinChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MinChangeAlliance, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxChangeAlliance)</td>
-            <td>@Html.TextBoxFor(m => m.MaxChangeAlliance, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Date)</td>
-            <td>@Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
-            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Players)</td>
-            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.HiddenFor(m => m.Alliances)</td>
-            <td>@Html.HiddenFor(m => m.Players)</td>
-            <td>@Html.HiddenFor(m => m.PageNumber)</td>
-            <td>@Html.HiddenFor(m => m.PageSize)</td>
-        </tr>
-        <tr>
-            <td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
-        </tr>
-    </table>
+
+    <div class="form-group">
+        <label for="Date">@Html.DisplayNameFor(m => m.Date)</label>
+        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="MinChangeAlliance">@Html.DisplayNameFor(m => m.MinChangeAlliance)</label>
+        @Html.TextBoxFor(m => m.MinChangeAlliance, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="MaxChangeAlliance">@Html.DisplayNameFor(m => m.MaxChangeAlliance)</label>
+        @Html.TextBoxFor(m => m.MaxChangeAlliance, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="AllianceInput">@Html.DisplayNameFor(m => m.Alliances)</label>
+        <small id="AllianceInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
+        <input id="AllianceInput" class="form-control" type="text" value="@string.Join(',', Model.Alliances)" />
+    </div>
+    <div class="form-group">
+        <label for="PlayerInput">@Html.DisplayNameFor(m => m.Players)</label>
+        <small id="PlayerInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
+        <input id="PlayerInput" class="form-control" type="text" value="@string.Join(',', Model.Players)" />
+    </div>
+    <div>
+        @Html.HiddenFor(m => m.Alliances)
+        @Html.HiddenFor(m => m.Players)
+        @Html.HiddenFor(m => m.PageNumber)
+        @Html.HiddenFor(m => m.PageSize)
+    </div>
+    <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />
 }

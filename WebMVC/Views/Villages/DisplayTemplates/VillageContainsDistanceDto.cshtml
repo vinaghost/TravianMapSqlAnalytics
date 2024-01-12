@@ -53,7 +53,8 @@
                     <a href="https://@dataService.Server/alliance/@value.AllianceId" target="_blank">@Html.DisplayFor(m => value.AllianceName)</a>
                 </td>
                 <td>
-                    @Html.DisplayFor(m => value.VillageName)
+                    @* <a href="https://@dataService.Server/karte.php?x=@value.X&y=@value.Y" target="_blank">@Html.DisplayFor(m => value.VillageName)</a> *@
+                    <a href="https://@dataService.Server/karte.php?d=@value.VillageId" target="_blank">@Html.DisplayFor(m => value.VillageName)</a>
                 </td>
                 <td>
                     @Html.DisplayFor(m => value.X) | @Html.DisplayFor(m => value.Y)

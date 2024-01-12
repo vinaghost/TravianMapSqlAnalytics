@@ -20,8 +20,8 @@ namespace Core.Queries
         public async Task<IPagedList<VillageContainsPopulationHistoryDto>> Handle(GetVillageContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
         {
             var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
-                .OrderByDescending(x => x.ChangePopulation)
-                .ThenBy(x => x.Distance)
+                .OrderBy(x => x.Distance)
+                .ThenByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
             var players = await _unitOfRepository.PlayerRepository.GetRecords([.. rawVillages.Select(x => x.PlayerId)], cancellationToken);

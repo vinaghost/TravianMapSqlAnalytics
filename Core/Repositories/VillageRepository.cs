@@ -1,4 +1,5 @@
-﻿using Core.Models;
+﻿using Core.Entities;
+using Core.Models;
 using Core.Parameters;
 
 namespace Core.Repositories
@@ -16,7 +17,7 @@ namespace Core.Repositories
                 .AsEnumerable()
                 .Select(x => new VillageContainsDistance(
                     x.PlayerId,
-                    x.VillageId,
+                    x.MapId,
                     x.Name,
                     x.X,
                     x.Y,
@@ -38,7 +39,7 @@ namespace Core.Repositories
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    VillageId = x.MapId,
                     x.Name,
                     x.X,
                     x.Y,
@@ -76,11 +77,11 @@ namespace Core.Repositories
                 .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
         }
 
-        private IQueryable<Entities.Village> GetBaseQueryable(IVillageFilterParameter parameters)
+        private IQueryable<Village> GetBaseQueryable(IVillageFilterParameter parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0 && parameters.Villages.Count == 0) return _dbContext.Villages.AsQueryable();
 
-            IQueryable<Entities.Village> query = null;
+            IQueryable<Village> query = null;
 
             query = GetAlliancesFilterQueryable(query, parameters.Alliances);
             query = GetPlayersFilterQueryable(query, parameters.Players);
@@ -90,7 +91,7 @@ namespace Core.Repositories
             return query;
         }
 
-        private IQueryable<Entities.Village> GetAlliancesFilterQueryable(IQueryable<Entities.Village> query, List<int> Alliances)
+        private IQueryable<Village> GetAlliancesFilterQueryable(IQueryable<Village> query, List<int> Alliances)
         {
             if (Alliances.Count == 0) return query;
             var allianceQuery = _dbContext.Alliances
@@ -102,7 +103,7 @@ namespace Core.Repositories
                 .Union(allianceQuery);
         }
 
-        private IQueryable<Entities.Village> GetPlayersFilterQueryable(IQueryable<Entities.Village> query, List<int> Players)
+        private IQueryable<Village> GetPlayersFilterQueryable(IQueryable<Village> query, List<int> Players)
         {
             if (Players.Count == 0) return query;
             var playerQuery = _dbContext.Players
@@ -113,7 +114,7 @@ namespace Core.Repositories
                 .Union(playerQuery);
         }
 
-        private IQueryable<Entities.Village> GetVillagesFilterQueryable(IQueryable<Entities.Village> query, List<int> Villages)
+        private IQueryable<Village> GetVillagesFilterQueryable(IQueryable<Village> query, List<int> Villages)
         {
             if (Villages.Count == 0) return query;
             var villageQuery = _dbContext.Villages

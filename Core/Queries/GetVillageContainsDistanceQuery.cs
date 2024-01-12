@@ -20,8 +20,8 @@ namespace Core.Queries
         public async Task<IPagedList<VillageContainsDistanceDto>> Handle(GetVillageContainsDistanceQuery request, CancellationToken cancellationToken)
         {
             var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
-                .OrderByDescending(x => x.Population)
-                .ThenBy(x => x.Distance)
+                .OrderBy(x => x.Distance)
+                .ThenByDescending(x => x.Population)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
             var players = await _unitOfRepository.PlayerRepository.GetRecords([.. rawVillages.Select(x => x.PlayerId)], cancellationToken);

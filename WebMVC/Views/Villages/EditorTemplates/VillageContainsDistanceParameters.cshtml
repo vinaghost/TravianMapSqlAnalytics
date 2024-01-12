@@ -5,52 +5,56 @@
 
 @using (Html.BeginForm(nameof(VillagesController.Index), "Villages", FormMethod.Post))
 {
-    <table>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Alliances)</td>
-            <td><input id="AllianceInput" type="text" value="@string.Join(',', Model.Alliances)" /> (Id of alliances, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Players)</td>
-            <td><input id="PlayerInput" type="text" value="@string.Join(',', Model.Players)" /> (Id of players, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.Villages)</td>
-            <td><input id="VillageInput" type="text" value="@string.Join(',', Model.Villages)" /> (Id of villages, separated with ",")</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MinPopulation)</td>
-            <td>@Html.TextBoxFor(m => m.MinPopulation, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxPopulation)</td>
-            <td>@Html.TextBoxFor(m => m.MaxPopulation, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.TargetX)</td>
-            <td>@Html.TextBoxFor(m => m.TargetX, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.TargetY)</td>
-            <td>@Html.TextBoxFor(m => m.TargetY, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MinDistance)</td>
-            <td>@Html.TextBoxFor(m => m.MinDistance, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.DisplayNameFor(m => m.MaxDistance)</td>
-            <td>@Html.TextBoxFor(m => m.MaxDistance, new { @type = "number" })</td>
-        </tr>
-        <tr>
-            <td>@Html.HiddenFor(m => m.Alliances)</td>
-            <td>@Html.HiddenFor(m => m.Players)</td>
-            <td>@Html.HiddenFor(m => m.Villages)</td>
-            <td>@Html.HiddenFor(m => m.PageNumber)</td>
-            <td>@Html.HiddenFor(m => m.PageSize)</td>
-        </tr>
-        <tr>
-            <td colspan="2"><input type="submit" id="Check" class="btn btn-primary" value="Check" /></td>
-        </tr>
-    </table>
+    <div class="form-group">
+        <label for="MinPopulation">@Html.DisplayNameFor(m => m.MinPopulation)</label>
+        @Html.TextBoxFor(m => m.MinPopulation, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="MaxPopulation">@Html.DisplayNameFor(m => m.MaxPopulation)</label>
+        @Html.TextBoxFor(m => m.MaxPopulation, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="TargetX">@Html.DisplayNameFor(m => m.TargetX)</label>
+        @Html.TextBoxFor(m => m.TargetX, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="TargetY">@Html.DisplayNameFor(m => m.TargetY)</label>
+        @Html.TextBoxFor(m => m.TargetY, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="MinDistance">@Html.DisplayNameFor(m => m.MinDistance)</label>
+        @Html.TextBoxFor(m => m.MinDistance, new { @type = "number", @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        <label for="MaxDistance">@Html.DisplayNameFor(m => m.MaxDistance)</label>
+        @Html.TextBoxFor(m => m.MaxDistance, new { @type = "number", @class = "form-control" })
+    </div>
+    <div class="form-group">
+        <label for="AllianceInput">@Html.DisplayNameFor(m => m.Alliances)</label>
+        <small id="AllianceInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
+        <input id="AllianceInput" class="form-control" type="text" value="@string.Join(',', Model.Alliances)" />
+    </div>
+    <div class="form-group">
+        <label for="PlayerInput">@Html.DisplayNameFor(m => m.Players)</label>
+        <small id="PlayerInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
+        <input id="PlayerInput" class="form-control" type="text" value="@string.Join(',', Model.Players)" />
+    </div>
+    <div class="form-group">
+        <label for="VillageInput">@Html.DisplayNameFor(m => m.Villages)</label>
+        <small id="VillageInputHelp" class="form-text text-muted">Id of villages, separated with ","</small>
+        <input id="VillageInput" class="form-control" type="text" value="@string.Join(',', Model.Villages)" />
+    </div>
+    <div>
+        @Html.HiddenFor(m => m.Alliances)
+        @Html.HiddenFor(m => m.Players)
+        @Html.HiddenFor(m => m.Villages)
+        @Html.HiddenFor(m => m.PageNumber)
+        @Html.HiddenFor(m => m.PageSize)
+    </div>
+    <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />
 }
