@@ -9,6 +9,8 @@ namespace Benchmark.Queries
     /// <summary>
     /// AsParallel does not help much
     /// </summary>
+    ///
+    [ShortRunJob]
     public class AsParallelBenchmark
     {
         private readonly string _connectionString = SecretAppsettingReader.GetConnectionString("ServerDb");

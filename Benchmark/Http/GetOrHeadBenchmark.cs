@@ -5,6 +5,8 @@ namespace Benchmark.Http
     /// <summary>
     /// Same
     /// </summary>
+    ///
+    [ShortRunJob]
     public class GetOrHeadBenchmark
     {
         private readonly HttpClient _httpClient = new();

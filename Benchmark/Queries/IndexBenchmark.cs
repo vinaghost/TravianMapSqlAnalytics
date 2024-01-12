@@ -8,6 +8,7 @@ using Testcontainers.MySql;
 
 namespace Benchmark.Queries
 {
+    [ShortRunJob]
     public class IndexBenchmark
     {
         private const string DATABASE_NAME = "mapsql";
