@@ -51,7 +51,7 @@ namespace Benchmark.Queries
             await _container.ExecScriptAsync(sql);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public List<VillageContainPopulationHistory> WithoutIndex()
         {
             using var context = new ServerDbContext(_container.GetConnectionString(), DATABASE_NAME);
@@ -63,6 +63,74 @@ namespace Benchmark.Queries
         {
             using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
             return Get(context);
+        }
+
+        [Benchmark]
+        public List<VillageContainPopulationHistory> WithIndexAndGroup()
+        {
+            using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
+            var distanceVillages = context.Villages
+                .Select(x => new
+                {
+                    x.VillageId,
+                    x.X,
+                    x.Y,
+                })
+                .AsEnumerable()
+                .Select(x => new
+                {
+                    x.VillageId,
+                    Distance = _centerCoordinate.Distance(new Coordinates(x.X, x.Y))
+                })
+                .Select(x => x.VillageId);
+
+            var populationVillage = context.VillagesPopulations
+                .Where(x => distanceVillages.Contains(x.VillageId))
+                .Where(x => x.Date >= Date)
+                .GroupBy(x => x.VillageId)
+                .Select(x => new
+                {
+                    VillageId = x.Key,
+                    Populations = x.OrderByDescending(x => x.Date)
+                })
+                .AsEnumerable()
+                .Select(x => new
+                {
+                    x.VillageId,
+                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))
+                })
+                .ToDictionary(x => x.VillageId, x => new { x.ChangePopulation, x.Populations });
+
+            return context.Villages
+                .Where(x => populationVillage.Keys.Contains(x.VillageId))
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.VillageId,
+                    x.Name,
+                    x.X,
+                    x.Y,
+                    x.IsCapital,
+                    x.Tribe,
+                })
+                .AsEnumerable()
+                .Select(x =>
+                {
+                    var population = populationVillage[x.VillageId];
+                    return new VillageContainPopulationHistory(
+                       x.PlayerId,
+                       x.VillageId,
+                       x.Name,
+                       x.X,
+                       x.Y,
+                       x.IsCapital,
+                       x.Tribe,
+                       _centerCoordinate.Distance(new Coordinates(x.X, x.Y)),
+                       population.ChangePopulation,
+                       population.Populations);
+                })
+                .ToList();
         }
 
         public List<VillageContainPopulationHistory> Get(ServerDbContext context)
@@ -80,7 +148,6 @@ namespace Benchmark.Queries
                    Populations = x.Populations.OrderByDescending(x => x.Date).Where(x => x.Date >= Date),
                })
                .AsEnumerable()
-               .AsParallel()
                .Select(x => new
                {
                    x.PlayerId,
