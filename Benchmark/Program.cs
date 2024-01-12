@@ -1,4 +1,4 @@
-﻿using Benchmark.Http;
+﻿using Benchmark.Queries;
 using BenchmarkDotNet.Running;
 
-BenchmarkRunner.Run<GetOrHeadBenchmark>();
+BenchmarkRunner.Run<IndexBenchmark>();
