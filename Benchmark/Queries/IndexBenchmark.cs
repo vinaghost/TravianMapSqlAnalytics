@@ -49,12 +49,14 @@ namespace Benchmark.Queries
             await _indexContainer.ExecScriptAsync(sql);
         }
 
+        [Benchmark]
         public List<VillageContainPopulationHistory> WithoutIndex()
         {
             using var context = new ServerDbContext(_normalContainer.GetConnectionString(), DATABASE_NAME);
             return Get(context);
         }
 
+        [Benchmark]
         public List<VillageContainPopulationHistory> WithIndex()
         {
             using var context = new ServerDbWithIndexContext(_normalContainer.GetConnectionString(), DATABASE_NAME);
