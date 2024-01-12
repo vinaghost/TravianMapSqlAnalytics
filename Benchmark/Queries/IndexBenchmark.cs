@@ -13,12 +13,7 @@ namespace Benchmark.Queries
     {
         private const string DATABASE_NAME = "mapsql";
 
-        private readonly MySqlContainer _normalContainer = new MySqlBuilder()
-                                                            .WithImage("mysql:8.0")
-                                                            .WithDatabase(DATABASE_NAME)
-                                                            .Build();
-
-        private readonly MySqlContainer _indexContainer = new MySqlBuilder()
+        private readonly MySqlContainer _container = new MySqlBuilder()
                                                             .WithImage("mysql:8.0")
                                                             .WithDatabase(DATABASE_NAME)
                                                             .Build();
@@ -30,37 +25,43 @@ namespace Benchmark.Queries
 
         public DateTime Date => DateTime.Now.AddDays(-DateDiff);
 
-        [GlobalSetup]
-        public async Task Setup()
+        [GlobalSetup(Target = nameof(WithoutIndex))]
+        public async Task SetupWithoutIndex()
         {
             var sql = await File.ReadAllTextAsync("Queries/data.sql");
 
-            await _normalContainer.StartAsync();
-            using (var context = new ServerDbContext(_normalContainer.GetConnectionString(), DATABASE_NAME))
+            await _container.StartAsync();
+            using (var context = new ServerDbContext(_container.GetConnectionString(), DATABASE_NAME))
             {
                 await context.Database.EnsureCreatedAsync();
             }
-            await _normalContainer.ExecScriptAsync(sql);
+            await _container.ExecScriptAsync(sql);
+        }
 
-            await _indexContainer.StartAsync();
-            using (var context = new ServerDbWithIndexContext(_normalContainer.GetConnectionString(), DATABASE_NAME))
+        [GlobalSetup(Target = nameof(WithIndex))]
+        public async Task SetupWithIndex()
+        {
+            var sql = await File.ReadAllTextAsync("Queries/data.sql");
+
+            await _container.StartAsync();
+            using (var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME))
             {
                 await context.Database.EnsureCreatedAsync();
             }
-            await _indexContainer.ExecScriptAsync(sql);
+            await _container.ExecScriptAsync(sql);
         }
 
         [Benchmark]
         public List<VillageContainPopulationHistory> WithoutIndex()
         {
-            using var context = new ServerDbContext(_normalContainer.GetConnectionString(), DATABASE_NAME);
+            using var context = new ServerDbContext(_container.GetConnectionString(), DATABASE_NAME);
             return Get(context);
         }
 
         [Benchmark]
         public List<VillageContainPopulationHistory> WithIndex()
         {
-            using var context = new ServerDbWithIndexContext(_normalContainer.GetConnectionString(), DATABASE_NAME);
+            using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
             return Get(context);
         }
 
