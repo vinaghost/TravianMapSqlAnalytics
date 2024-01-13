@@ -13,30 +13,32 @@ namespace Core.Queries
         public bool IsServerBased => true;
     }
 
-    public class GetPlayerContainsPopulationQueryHandler(UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationQuery, IPagedList<PlayerContainsPopulationDto>>
+    public class GetPlayerContainsPopulationQueryHandler(ServerDbContext dbContext, UnitOfRepository unitOfRepository) : IRequestHandler<GetPlayerContainsPopulationQuery, IPagedList<PlayerContainsPopulationDto>>
     {
         private readonly UnitOfRepository _unitOfRepository = unitOfRepository;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<IPagedList<PlayerContainsPopulationDto>> Handle(GetPlayerContainsPopulationQuery request, CancellationToken cancellationToken)
         {
-            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
-                            .OrderByDescending(x => x.VillageCount)
-                            .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
-            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. rawPlayers.Select(x => x.AllianceId)], cancellationToken);
+            var playerIds = await _unitOfRepository.PlayerRepository.GetPlayerIds(request.Parameters, cancellationToken);
+            var players = await _unitOfRepository.PlayerRepository.GetPlayerInfo(playerIds, cancellationToken);
+            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Keys], cancellationToken);
 
-            var players = rawPlayers
+            return await _unitOfRepository.PlayerRepository.GetPlayers([.. players.Keys])
                 .Select(x =>
                 {
                     var alliance = alliances[x.AllianceId];
+                    var player = players[x.PlayerId];
                     return new PlayerContainsPopulationDto(
                         x.AllianceId,
                         alliance.Name,
                         x.PlayerId,
                         x.PlayerName,
-                        x.VillageCount,
-                        x.Population);
-                });
-            return players;
+                        player.VillageCount,
+                        player.Population);
+                })
+                .OrderByDescending(x => x.VillageCount)
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }
 }

@@ -20,26 +20,22 @@ namespace Core.Queries
 
         public async Task<IPagedList<PlayerContainsAllianceHistoryDto>> Handle(GetPlayerContainsAllianceHistoryQuery request, CancellationToken cancellationToken)
         {
-            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
-                .OrderByDescending(x => x.ChangeAlliance)
-                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
+            var playerIds = await _unitOfRepository.PlayerRepository.GetPlayerIds(request.Parameters, cancellationToken);
+            var players = await _unitOfRepository.PlayerRepository.GetPlayerAllianceHistory(playerIds, request.Parameters, cancellationToken);
+            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Keys], request.Parameters.Date, cancellationToken);
 
-            var oldAllianceId = rawPlayers.SelectMany(x => x.Alliances).DistinctBy(x => x.AllianceId).Select(x => x.AllianceId);
-            var currentAllianceId = rawPlayers.Select(x => x.AllianceId);
-            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. currentAllianceId.Concat(oldAllianceId)], cancellationToken);
-
-            var players = rawPlayers
+            return await _unitOfRepository.PlayerRepository.GetPlayers([.. players.Keys])
                 .Select(x =>
                 {
                     var alliance = alliances[x.AllianceId];
-
+                    var player = players[x.PlayerId];
                     return new PlayerContainsAllianceHistoryDto(
                             x.AllianceId,
                             alliance.Name,
                             x.PlayerId,
                             x.PlayerName,
-                            x.ChangeAlliance,
-                            x.Alliances
+                            player.ChangeAlliance,
+                            player.Alliances
                                 .Select(ally =>
                                 {
                                     var allianceHistory = alliances[ally.AllianceId];
@@ -49,8 +45,9 @@ namespace Core.Queries
                                         ally.Date);
                                 })
                                 .ToList());
-                });
-            return players;
+                })
+                .OrderBy(x => x.ChangeAlliance)
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }
 }

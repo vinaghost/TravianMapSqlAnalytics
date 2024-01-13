@@ -19,25 +19,25 @@ namespace Core.Queries
 
         public async Task<IPagedList<PlayerContainsPopulationHistoryDto>> Handle(GetPlayerContainsPopulationHistoryQuery request, CancellationToken cancellationToken)
         {
-            var rawPlayers = await _unitOfRepository.PlayerRepository.GetPlayers(request.Parameters)
+            var playerIds = await _unitOfRepository.PlayerRepository.GetPlayerIds(request.Parameters, cancellationToken);
+            var players = await _unitOfRepository.PlayerRepository.GetPlayerPopulationHistory(playerIds, request.Parameters, cancellationToken);
+            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Keys], cancellationToken);
+
+            return await _unitOfRepository.PlayerRepository.GetPlayers([.. players.Keys])
+                .Select(x =>
+                {
+                    var alliance = alliances[x.AllianceId];
+                    var player = players[x.PlayerId];
+                    return new PlayerContainsPopulationHistoryDto(
+                        x.AllianceId,
+                        alliance.Name,
+                        x.PlayerId,
+                        x.PlayerName,
+                        player.ChangePopulation,
+                        player.Populations);
+                })
                 .OrderByDescending(x => x.ChangePopulation)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
-
-            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. rawPlayers.Select(x => x.AllianceId)], cancellationToken);
-
-            var players = rawPlayers
-               .Select(x =>
-               {
-                   var alliance = alliances[x.AllianceId];
-                   return new PlayerContainsPopulationHistoryDto(
-                       x.AllianceId,
-                       alliance.Name,
-                       x.PlayerId,
-                       x.PlayerName,
-                       x.ChangePopulation,
-                       x.Populations.ToList());
-               });
-            return players;
         }
     }
 }

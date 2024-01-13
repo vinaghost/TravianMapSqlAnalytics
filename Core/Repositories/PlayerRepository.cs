@@ -1,4 +1,5 @@
-﻿using Core.Entities;
+﻿using Core.Dtos;
+using Core.Entities;
 using Core.Models;
 using Core.Parameters;
 using Microsoft.EntityFrameworkCore;
@@ -9,7 +10,7 @@ namespace Core.Repositories
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public async Task<Dictionary<int, PlayerRecord>> GetRecords(List<int> playersId, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, PlayerRecord>> GetRecords(IList<int> playersId, CancellationToken cancellationToken)
         {
             var ids = playersId.Distinct().Order().ToList();
             return await _dbContext.Players
@@ -17,22 +18,34 @@ namespace Core.Repositories
                 .ToDictionaryAsync(x => x.PlayerId, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken: cancellationToken);
         }
 
-        public IEnumerable<PlayerContainsPopulation> GetPlayers(PlayerContainsPopulationParameters parameters)
+        public async Task<List<int>> GetPlayerIds(IPlayerFilterParameter parameters, CancellationToken cancellationToken)
         {
-            return GetBaseQueryable(parameters)
-                .Select(x => new PlayerContainsPopulation(
-                     x.AllianceId,
-                     x.PlayerId,
-                     x.Name,
-                     x.Villages.Count(),
-                     x.Villages.Sum(x => x.Population)
-                 ));
+            return await GetBaseQueryable(parameters)
+                .Select(x => x.PlayerId)
+                .Distinct()
+                .Order()
+                .ToListAsync(cancellationToken);
         }
 
-        public IEnumerable<PlayerContainsAllianceHistory> GetPlayers(PlayerContainsAllianceHistoryParameters parameters)
+        public IEnumerable<PlayerDto> GetPlayers(IList<int> playerIds)
         {
+            var ids = playerIds.Distinct().Order().ToList();
+            return _dbContext.Players
+                .Where(x => ids.Contains(x.PlayerId))
+                .Select(x => new PlayerDto(
+                    x.PlayerId,
+                    x.Name,
+                    x.AllianceId
+                    ))
+                .AsEnumerable();
+        }
+
+        public async Task<Dictionary<int, PlayerAllianceHistory>> GetPlayerAllianceHistory(IList<int> playerIds, PlayerContainsAllianceHistoryParameters parameters, CancellationToken cancellationToken)
+        {
+            var ids = playerIds.Distinct().Order().ToList();
             var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
-            return GetBaseQueryable(parameters)
+            return await _dbContext.Players
+                .Where(x => ids.Contains(x.PlayerId))
                 .Select(x => new
                 {
                     x.AllianceId,
@@ -47,7 +60,7 @@ namespace Core.Repositories
                             x.AllianceId,
                         })
                 })
-                .AsEnumerable()
+                .AsAsyncEnumerable()
                 .Select(x => new PlayerContainsAllianceHistory(
 
                     x.AllianceId,
@@ -57,19 +70,19 @@ namespace Core.Repositories
                     x.Alliances.Select(y => new AllianceHistoryRecord(y.AllianceId, "", y.Date)).ToList()
                 ))
                 .Where(x => x.ChangeAlliance >= parameters.MinChangeAlliance)
-                .Where(x => x.ChangeAlliance <= parameters.MaxChangeAlliance);
+                .Where(x => x.ChangeAlliance <= parameters.MaxChangeAlliance)
+                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerAllianceHistory(x.ChangeAlliance, x.Alliances), cancellationToken);
         }
 
-        public IEnumerable<PlayerContainsPopulationHistory> GetPlayers(PlayerContainsPopulationHistoryParameters parameters)
+        public async Task<Dictionary<int, PlayerPopulationHistory>> GetPlayerPopulationHistory(IList<int> playerIds, PlayerContainsPopulationHistoryParameters parameters, CancellationToken cancellationToken)
         {
+            var ids = playerIds.Distinct().Order().ToList();
             var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
-
-            return GetBaseQueryable(parameters)
+            return await _dbContext.Players
+                .Where(x => ids.Contains(x.PlayerId))
                 .Select(x => new
                 {
-                    x.AllianceId,
                     x.PlayerId,
-                    PlayerName = x.Name,
                     Populations = x.Villages
                         .SelectMany(x => x.Populations
                                         .Where(x => x.Date >= date))
@@ -84,16 +97,30 @@ namespace Core.Repositories
                                     .Sum(),
                         })
                 })
-                .AsEnumerable()
-                .Select(x => new PlayerContainsPopulationHistory(
-                    x.AllianceId,
+                .AsAsyncEnumerable()
+                .Select(x => new
+                {
                     x.PlayerId,
-                    x.PlayerName,
-                    x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
-                    x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date)).ToList()
-                ))
+                    ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
+                    Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date)).ToList()
+                })
                 .Where(x => x.ChangePopulation >= parameters.MinChangePopulation)
-                .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
+                .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation)
+                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerPopulationHistory(x.ChangePopulation, x.Populations), cancellationToken);
+        }
+
+        public async Task<Dictionary<int, PlayerInfo>> GetPlayerInfo(IList<int> playerIds, CancellationToken cancellationToken)
+        {
+            var ids = playerIds.Distinct().Order().ToList();
+            return await _dbContext.Players
+                .Where(x => ids.Contains(x.PlayerId))
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    VillageCount = x.Villages.Count(),
+                    Population = x.Villages.Select(x => x.Population).Sum()
+                })
+                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerInfo(x.VillageCount, x.Population), cancellationToken);
         }
 
         private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameter parameters)

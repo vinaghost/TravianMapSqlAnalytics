@@ -77,7 +77,7 @@ namespace Core.Repositories
                 .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation);
         }
 
-        private IQueryable<Village> GetBaseQueryable(IVillageFilterParameter parameters)
+        public IQueryable<Village> GetBaseQueryable(IVillageFilterParameter parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0 && parameters.Villages.Count == 0) return _dbContext.Villages.AsQueryable();
 
