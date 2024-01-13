@@ -31,7 +31,9 @@ namespace Benchmark.Queries
     //| WithoutIndex      | 14       | 4,203.7 ms |    872.5 ms |  47.83 ms |  1.00 |    0.00 |
     //| WithIndex         | 14       | 4,139.1 ms |    820.3 ms |  44.96 ms |  0.98 |    0.02 |
     //| WithIndexAndGroup | 14       | 4,868.8 ms |  6,359.7 ms | 348.60 ms |  1.16 |    0.08 |
+    //
     // but if you limit, in my case is distance < 40, it suprises me
+    //
     //| Method            | DateDiff | Mean       | Error        | StdDev      | Ratio | RatioSD |
     //|------------------ |--------- |-----------:|-------------:|------------:|------:|--------:|
     //| WithoutIndex      | 1        |   469.6 ms |     59.34 ms |     3.25 ms |  1.00 |    0.00 |
@@ -53,7 +55,30 @@ namespace Benchmark.Queries
     //| WithoutIndex      | 14       | 4,859.1 ms | 19,725.81 ms | 1,081.24 ms |  1.00 |    0.00 |
     //| WithIndex         | 14       | 5,017.6 ms |  1,874.32 ms |   102.74 ms |  1.07 |    0.26 |
     //| WithIndexAndGroup | 14       |   821.3 ms |    656.69 ms |    36.00 ms |  0.18 |    0.04 |
-
+    //
+    // apply ipagedlist, more date make the new method works better than old one
+    //
+    //| Method            | DateDiff | Mean       | Error       | StdDev    | Ratio | RatioSD |
+    //|------------------ |--------- |-----------:|------------:|----------:|------:|--------:|
+    //| WithoutIndex      | 1        |   626.4 ms |    100.4 ms |   5.50 ms |  1.00 |    0.00 |
+    //| WithIndex         | 1        | 3,885.1 ms |    887.3 ms |  48.63 ms |  6.20 |    0.07 |
+    //| WithIndexAndGroup | 1        | 2,166.8 ms |    192.5 ms |  10.55 ms |  3.46 |    0.02 |
+    //|                   |          |            |             |           |       |         |
+    //| WithoutIndex      | 3        | 1,473.0 ms |    111.7 ms |   6.12 ms |  1.00 |    0.00 |
+    //| WithIndex         | 3        | 4,491.2 ms |  2,905.5 ms | 159.26 ms |  3.05 |    0.10 |
+    //| WithIndexAndGroup | 3        | 3,100.6 ms | 15,629.6 ms | 856.71 ms |  2.10 |    0.57 |
+    //|                   |          |            |             |           |       |         |
+    //| WithoutIndex      | 5        | 2,848.5 ms | 14,693.3 ms | 805.39 ms |  1.00 |    0.00 |
+    //| WithIndex         | 5        | 5,086.0 ms |  2,382.0 ms | 130.56 ms |  1.86 |    0.42 |
+    //| WithIndexAndGroup | 5        | 3,267.1 ms | 16,762.4 ms | 918.81 ms |  1.15 |    0.01 |
+    //|                   |          |            |             |           |       |         |
+    //| WithoutIndex      | 7        | 5,436.5 ms | 12,353.2 ms | 677.12 ms |  1.00 |    0.00 |
+    //| WithIndex         | 7        | 5,825.8 ms |    210.0 ms |  11.51 ms |  1.08 |    0.14 |
+    //| WithIndexAndGroup | 7        | 3,926.8 ms | 15,360.1 ms | 841.94 ms |  0.72 |    0.07 |
+    //|                   |          |            |             |           |       |         |
+    //| WithoutIndex      | 14       | 7,847.2 ms |  1,363.8 ms |  74.75 ms |  1.00 |    0.00 |
+    //| WithIndex         | 14       | 7,727.8 ms |    530.8 ms |  29.10 ms |  0.98 |    0.01 |
+    //| WithIndexAndGroup | 14       | 4,656.4 ms |    815.9 ms |  44.72 ms |  0.59 |    0.00 |
     /// </summary>
     [ShortRunJob]
     public class IndexBenchmark
@@ -72,7 +97,7 @@ namespace Benchmark.Queries
 
         public DateTime Date => DateTime.Now.AddDays(-DateDiff);
 
-        [GlobalSetup(Target = nameof(WithoutIndex))]
+        [GlobalSetup(Targets = [nameof(WithoutIndex), nameof(WithoutIndexAndGroup)])]
         public async Task SetupWithoutIndex()
         {
             var sql = await File.ReadAllTextAsync("Queries/data.sql");
@@ -113,9 +138,21 @@ namespace Benchmark.Queries
         }
 
         [Benchmark]
+        public async Task<IPagedList<VillageContainPopulationHistory>> WithoutIndexAndGroup()
+        {
+            using var context = new ServerDbContext(_container.GetConnectionString(), DATABASE_NAME);
+            return await GetGroup(context);
+        }
+
+        [Benchmark]
         public async Task<IPagedList<VillageContainPopulationHistory>> WithIndexAndGroup()
         {
             using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
+            return await GetGroup(context);
+        }
+
+        public async Task<IPagedList<VillageContainPopulationHistory>> GetGroup(ServerDbContext context)
+        {
             var distanceVillages = context.Villages
                 .Select(x => new
                 {
@@ -222,7 +259,7 @@ namespace Benchmark.Queries
         }
     }
 
-    public class ServerDbWithIndexContext : ServerDbContext
+    internal class ServerDbWithIndexContext : ServerDbContext
     {
         [ActivatorUtilitiesConstructor]
         public ServerDbWithIndexContext(DbContextOptions<ServerDbContext> options) : base(options)
