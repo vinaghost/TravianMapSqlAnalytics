@@ -5,6 +5,7 @@ using Core.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.MySql;
+using X.PagedList;
 
 namespace Benchmark.Queries
 {
@@ -30,6 +31,29 @@ namespace Benchmark.Queries
     //| WithoutIndex      | 14       | 4,203.7 ms |    872.5 ms |  47.83 ms |  1.00 |    0.00 |
     //| WithIndex         | 14       | 4,139.1 ms |    820.3 ms |  44.96 ms |  0.98 |    0.02 |
     //| WithIndexAndGroup | 14       | 4,868.8 ms |  6,359.7 ms | 348.60 ms |  1.16 |    0.08 |
+    // but if you limit, in my case is distance < 40, it suprises me
+    //| Method            | DateDiff | Mean       | Error        | StdDev      | Ratio | RatioSD |
+    //|------------------ |--------- |-----------:|-------------:|------------:|------:|--------:|
+    //| WithoutIndex      | 1        |   469.6 ms |     59.34 ms |     3.25 ms |  1.00 |    0.00 |
+    //| WithIndex         | 1        | 1,986.8 ms |    763.06 ms |    41.83 ms |  4.23 |    0.09 |
+    //| WithIndexAndGroup | 1        |   162.4 ms |    180.39 ms |     9.89 ms |  0.35 |    0.02 |
+    //|                   |          |            |              |             |       |         |
+    //| WithoutIndex      | 3        | 1,033.3 ms |    403.08 ms |    22.09 ms |  1.00 |    0.00 |
+    //| WithIndex         | 3        | 2,656.3 ms |  4,186.91 ms |   229.50 ms |  2.57 |    0.20 |
+    //| WithIndexAndGroup | 3        |   253.3 ms |    137.26 ms |     7.52 ms |  0.25 |    0.00 |
+    //|                   |          |            |              |             |       |         |
+    //| WithoutIndex      | 5        | 1,516.2 ms |    419.25 ms |    22.98 ms |  1.00 |    0.00 |
+    //| WithIndex         | 5        | 3,367.0 ms |  2,234.07 ms |   122.46 ms |  2.22 |    0.05 |
+    //| WithIndexAndGroup | 5        |   327.8 ms |     99.44 ms |     5.45 ms |  0.22 |    0.01 |
+    //|                   |          |            |              |             |       |         |
+    //| WithoutIndex      | 7        | 2,070.2 ms |    651.73 ms |    35.72 ms |  1.00 |    0.00 |
+    //| WithIndex         | 7        | 3,823.3 ms |  1,538.58 ms |    84.33 ms |  1.85 |    0.03 |
+    //| WithIndexAndGroup | 7        |   397.9 ms |    547.79 ms |    30.03 ms |  0.19 |    0.01 |
+    //|                   |          |            |              |             |       |         |
+    //| WithoutIndex      | 14       | 4,859.1 ms | 19,725.81 ms | 1,081.24 ms |  1.00 |    0.00 |
+    //| WithIndex         | 14       | 5,017.6 ms |  1,874.32 ms |   102.74 ms |  1.07 |    0.26 |
+    //| WithIndexAndGroup | 14       |   821.3 ms |    656.69 ms |    36.00 ms |  0.18 |    0.04 |
+
     /// </summary>
     [ShortRunJob]
     public class IndexBenchmark
@@ -75,21 +99,21 @@ namespace Benchmark.Queries
         }
 
         [Benchmark(Baseline = true)]
-        public List<VillageContainPopulationHistory> WithoutIndex()
+        public async Task<IPagedList<VillageContainPopulationHistory>> WithoutIndex()
         {
             using var context = new ServerDbContext(_container.GetConnectionString(), DATABASE_NAME);
-            return Get(context);
+            return await Get(context);
         }
 
         [Benchmark]
-        public List<VillageContainPopulationHistory> WithIndex()
+        public async Task<IPagedList<VillageContainPopulationHistory>> WithIndex()
         {
             using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
-            return Get(context);
+            return await Get(context);
         }
 
         [Benchmark]
-        public List<VillageContainPopulationHistory> WithIndexAndGroup()
+        public async Task<IPagedList<VillageContainPopulationHistory>> WithIndexAndGroup()
         {
             using var context = new ServerDbWithIndexContext(_container.GetConnectionString(), DATABASE_NAME);
             var distanceVillages = context.Villages
@@ -105,7 +129,6 @@ namespace Benchmark.Queries
                     x.VillageId,
                     Distance = _centerCoordinate.Distance(new Coordinates(x.X, x.Y))
                 })
-                .Where(x => x.Distance < 40)
                 .Select(x => x.VillageId);
 
             var populationVillage = context.VillagesPopulations
@@ -126,7 +149,7 @@ namespace Benchmark.Queries
                 })
                 .ToDictionary(x => x.VillageId, x => new { x.ChangePopulation, x.Populations });
 
-            return context.Villages
+            return await context.Villages
                 .Where(x => populationVillage.Keys.Contains(x.VillageId))
                 .Select(x => new
                 {
@@ -154,12 +177,12 @@ namespace Benchmark.Queries
                        population.ChangePopulation,
                        population.Populations);
                 })
-                .ToList();
+                .ToPagedListAsync(1, 20);
         }
 
-        public List<VillageContainPopulationHistory> Get(ServerDbContext context)
+        public async Task<IPagedList<VillageContainPopulationHistory>> Get(ServerDbContext context)
         {
-            return context.Villages
+            return await context.Villages
                .Select(x => new
                {
                    x.PlayerId,
@@ -184,7 +207,6 @@ namespace Benchmark.Queries
                    x.Populations,
                    Distance = _centerCoordinate.Distance(new Coordinates(x.X, x.Y))
                })
-               .Where(x => x.Distance < 40)
                .Select(x => new VillageContainPopulationHistory(
                    x.PlayerId,
                    x.VillageId,
@@ -196,7 +218,7 @@ namespace Benchmark.Queries
                    x.Distance,
                    x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
                    x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date))))
-               .ToList();
+               .ToPagedListAsync(1, 20);
         }
     }
 
