@@ -16,6 +16,6 @@ namespace Core.Repositories
 
         IEnumerable<PlayerDto> GetPlayers(IList<int> playerIds);
 
-        Task<Dictionary<int, PlayerRecord>> GetRecords(IList<int> PlayersId, CancellationToken cancellationToken);
+        Task<Dictionary<int, PlayerRecord>> GetRecords(IList<int> villageIds, CancellationToken cancellationToken);
     }
 }

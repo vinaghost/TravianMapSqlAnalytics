@@ -19,17 +19,15 @@ namespace Core.Queries
 
         public async Task<IPagedList<VillageContainsDistanceDto>> Handle(GetVillageContainsDistanceQuery request, CancellationToken cancellationToken)
         {
-            var rawVillages = await _unitOfRepository.VillageRepository.GetVillages(request.Parameters)
-                .OrderBy(x => x.Distance)
-                .ThenByDescending(x => x.Population)
-                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
+            var villageIds = await _unitOfRepository.VillageRepository.GetVillageIds(request.Parameters, cancellationToken);
+            var villages = await _unitOfRepository.VillageRepository.GetVillages(villageIds, request.Parameters, cancellationToken);
+            var players = await _unitOfRepository.PlayerRepository.GetRecords([.. villages.Keys], cancellationToken);
+            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Keys], cancellationToken);
 
-            var players = await _unitOfRepository.PlayerRepository.GetRecords([.. rawVillages.Select(x => x.PlayerId)], cancellationToken);
-            var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Values.Select(x => x.AllianceId)], cancellationToken);
-
-            var villages = rawVillages
+            return await _unitOfRepository.VillageRepository.GetVillages([.. villages.Keys])
                 .Select(x =>
                 {
+                    var village = villages[x.VillageId];
                     var player = players[x.PlayerId];
                     var alliance = alliances[player.AllianceId];
                     return new VillageContainsDistanceDto(
@@ -44,10 +42,11 @@ namespace Core.Queries
                         x.Population,
                         x.IsCapital,
                         x.Tribe,
-                        x.Distance);
-                });
-
-            return villages;
+                        village.Distance);
+                })
+                .OrderBy(x => x.Distance)
+                .ThenByDescending(x => x.Population)
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }
 }
