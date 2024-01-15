@@ -18,7 +18,6 @@ namespace Core.Repositories
                 .Where(x => ids.Contains(x.VillageId))
                 .Select(x => x.PlayerId)
                 .Distinct()
-                .Order()
                 .ToListAsync(cancellationToken);
 
             return await _dbContext.Players
@@ -31,7 +30,6 @@ namespace Core.Repositories
             return await GetBaseQueryable(parameters)
                 .Select(x => x.PlayerId)
                 .Distinct()
-                .Order()
                 .ToListAsync(cancellationToken);
         }
 

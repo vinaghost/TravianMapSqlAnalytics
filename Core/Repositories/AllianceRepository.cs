@@ -15,7 +15,6 @@ namespace Core.Repositories
                 .Where(x => ids.Contains(x.PlayerId))
                 .Select(x => x.AllianceId)
                 .Distinct()
-                .Order()
                 .ToListAsync(cancellationToken);
 
             return await _dbContext.Alliances
@@ -40,7 +39,6 @@ namespace Core.Repositories
             var allianceIds = await allianceCurrentIds
                 .Union(allianceHistoryIds)
                 .Distinct()
-                .Order()
                 .ToListAsync(cancellationToken);
 
             return await _dbContext.Alliances

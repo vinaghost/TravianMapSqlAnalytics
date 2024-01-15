@@ -99,7 +99,6 @@ namespace Core.Repositories
                 .Where(x => x.Population <= parameters.MaxPopulation)
                 .Select(x => x.VillageId)
                 .Distinct()
-                .Order()
                 .ToListAsync(cancellationToken);
         }
 
