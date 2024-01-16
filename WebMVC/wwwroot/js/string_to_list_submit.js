@@ -1,20 +1,20 @@
 $(function () {
-    $('#Check').click(function (event) {
-        var AllianceInput = $('#AllianceInput');
-        if (AllianceInput) {
-            var alliances = $('#AllianceInput').val().toString().split(',');
-            $('#Alliances').val(alliances);
+    $('#Check').on("click", function () {
+        function getVal(element) {
+            return element.val().toString().split(',');
         }
 
-        var PlayerInput = $('#PlayerInput');
-        if (PlayerInput) {
-            var players = $('#PlayerInput').val().toString().split(',');
-            $('#Players').val(players);
-        }
-        var VillageInput = $('#VillageInput');
-        if (VillageInput) {
-            var villages = $('#VillageInput').val().toString().split(',');
-            $('#Villages').val(villages);
-        }
+        var elementsId = [
+            ["#AllianceInput", "#Alliances"],
+            ["#PlayerInput", "#Players"],
+            ["#VillageInput", "#Villages"],
+        ]
+
+        elementsId.forEach(ids => {
+            var input = $(ids[0]);
+            if (input.length != 1) return;
+            var value = getVal(input);
+            $(ids[1]).val(value);
+        });
     });
 });

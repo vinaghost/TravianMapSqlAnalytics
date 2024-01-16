@@ -1,5 +1,5 @@
 $(function () {
-    $('#pagination a').click(function (event) {
+    $('#pagination a').on("click", function (event) {
         event.preventDefault();
         // get the url of the page link
         var url = this.href;
@@ -9,6 +9,6 @@ $(function () {
         $('#PageNumber').val(parseInt(str[0]));
         $('#PageSize').val(parseInt(str[1]));
         // trigger the search
-        $('#Check').click();
+        $('#Check').trigger("click");
     });
 });
