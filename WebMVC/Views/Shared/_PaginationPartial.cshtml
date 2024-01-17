@@ -11,7 +11,24 @@
     <br />
     <div class="pagination" style="display:grid; place-items:center;">
         <div>
-            @Html.PagedListPager(Model, page => $"{page}_{Model.PageSize}", Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast)
+            @{
+                var options = Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast;
+                options.FunctionToTransformEachPageLink = (li, a) =>
+                {
+                    if (a.Attributes.ContainsKey("href"))
+                    {
+                        var page = a.Attributes["href"];
+                        a.Attributes["href"] = "#";
+                        a.Attributes.Add("data-num", page);
+
+                    } 
+
+                    li.AppendHtml(a.ToString(X.PagedList.Web.Common.TagRenderMode.Normal));
+
+                    return li;
+                };
+            }
+            @Html.PagedListPager(Model, page => $"{page}", options)
         </div>
     </div>
 </div>
