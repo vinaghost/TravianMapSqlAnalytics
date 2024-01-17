@@ -104,13 +104,12 @@ namespace Core.Repositories
 
         private IQueryable<Village> GetBaseQueryable(IVillageFilterParameter parameters)
         {
-            if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0 && parameters.Villages.Count == 0) return _dbContext.Villages.AsQueryable();
+            if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0) return _dbContext.Villages.AsQueryable();
 
             IQueryable<Village> query = null;
 
             query = GetAlliancesFilterQueryable(query, parameters.Alliances);
             query = GetPlayersFilterQueryable(query, parameters.Players);
-            query = GetVillagesFilterQueryable(query, parameters.Villages);
 
             if (query is null) return _dbContext.Villages.AsQueryable();
             return query;
@@ -137,16 +136,6 @@ namespace Core.Repositories
             if (query is null) return playerQuery;
             return query
                 .Union(playerQuery);
-        }
-
-        private IQueryable<Village> GetVillagesFilterQueryable(IQueryable<Village> query, List<int> Villages)
-        {
-            if (Villages.Count == 0) return query;
-            var villageQuery = _dbContext.Villages
-                .Where(x => Villages.Contains(x.PlayerId));
-            if (query is null) return villageQuery;
-            return query
-                .Union(villageQuery);
         }
     }
 }

@@ -7,7 +7,7 @@ $(function () {
         var elementsId = [
             ["#AllianceInput", "#Alliances"],
             ["#PlayerInput", "#Players"],
-            ["#VillageInput", "#Villages"],
+            //["#VillageInput", "#Villages"],
         ]
 
         elementsId.forEach(ids => {
