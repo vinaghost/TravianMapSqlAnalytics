@@ -48,28 +48,7 @@ namespace Core.Repositories
         public async Task<Dictionary<int, VillagePopulationHistory>> GetVillages(IList<int> villageIds, VillageContainsPopulationHistoryParameters parameters, CancellationToken cancellationToken)
         {
             var ids = villageIds.Distinct().Order().ToList();
-            var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
             var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
-
-            var distanceVillages = await _dbContext.Villages
-                .Where(x => ids.Contains(x.VillageId))
-                .Select(x => new
-                {
-                    x.VillageId,
-                    x.X,
-                    x.Y,
-                })
-                .AsAsyncEnumerable()
-                .Select(x => new
-                {
-                    x.VillageId,
-                    Distance = centerCoordinate.Distance(new Coordinates(x.X, x.Y))
-                })
-                .Where(x => x.Distance >= parameters.MinDistance)
-                .Where(x => x.Distance <= parameters.MaxDistance)
-                .ToDictionaryAsync(x => x.VillageId, x => x.Distance, cancellationToken);
-
-            ids = [.. distanceVillages.Keys];
 
             return await _dbContext.VillagesPopulations
                 .Where(x => ids.Contains(x.VillageId))
@@ -89,14 +68,31 @@ namespace Core.Repositories
                 })
                 .Where(x => x.ChangePopulation >= parameters.MinChangePopulation)
                 .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation)
-                .ToDictionaryAsync(x => x.VillageId, x => new VillagePopulationHistory(distanceVillages[x.VillageId], x.ChangePopulation, x.Populations), cancellationToken);
+                .ToDictionaryAsync(x => x.VillageId, x => new VillagePopulationHistory(x.ChangePopulation, x.Populations), cancellationToken);
         }
 
         public async Task<List<int>> GetVillageIds(IVillageFilterParameter parameters, CancellationToken cancellationToken)
         {
-            return await GetBaseQueryable(parameters)
+            var query = GetBaseQueryable(parameters)
                 .Where(x => x.Population >= parameters.MinPopulation)
-                .Where(x => x.Population <= parameters.MaxPopulation)
+                .Where(x => x.Population <= parameters.MaxPopulation);
+            if (parameters.Tribe != DefaultParameters.Tribe)
+            {
+                query = query
+                    .Where(x => x.Tribe == parameters.Tribe);
+            }
+            if (parameters.IgnoreCapital)
+            {
+                query = query
+                    .Where(x => x.IsCapital == false);
+            }
+
+            if (parameters.IgnoreNormalVillage)
+            {
+                query = query
+                    .Where(x => x.IsCapital == true);
+            }
+            return await query
                 .Select(x => x.VillageId)
                 .Distinct()
                 .ToListAsync(cancellationToken);

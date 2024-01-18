@@ -41,11 +41,10 @@ namespace Core.Queries
                         x.Y,
                         x.IsCapital,
                         x.Tribe,
-                        village.Distance,
                         village.ChangePopulation,
                         village.Populations);
                 })
-                .OrderBy(x => x.Distance)
+                .OrderBy(x => x.ChangePopulation)
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }

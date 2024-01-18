@@ -1,0 +1,6 @@
+﻿@model Boolean?
+
+<div class="form-group">
+    @Html.CheckBox("", Model.HasValue && Model.Value, new { @class = "form-check-input" })
+    @Html.LabelFor(m => m, new { @class = "form-check-label" })
+</div>

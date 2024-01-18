@@ -1,4 +1,4 @@
 ﻿namespace Core.Models
 {
-    public record VillagePopulationHistory(double Distance, int ChangePopulation, IList<PopulationHistoryRecord> Populations);
+    public record VillagePopulationHistory(int ChangePopulation, IList<PopulationHistoryRecord> Populations);
 }

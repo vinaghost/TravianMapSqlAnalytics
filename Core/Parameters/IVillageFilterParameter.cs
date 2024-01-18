@@ -1,8 +1,13 @@
 ﻿namespace Core.Parameters
 {
-    public interface IVillageFilterParameter : IPopulationFilterParameter, IDistanceFilterParameter
+    public interface IVillageFilterParameter : IPopulationFilterParameter
     {
         List<int> Alliances { get; }
         List<int> Players { get; }
+
+        int Tribe { get; }
+
+        bool IgnoreCapital { get; }
+        bool IgnoreNormalVillage { get; }
     }
 }

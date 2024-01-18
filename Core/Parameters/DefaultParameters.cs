@@ -18,5 +18,9 @@
 
         public static int MinDistance => 0;
         public static int MaxDistance => 400;
+
+        public static int Tribe => 0;
+        public static bool IgnoreCapital => false;
+        public static bool IgnoreNormalVillage => false;
     }
 }

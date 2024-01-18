@@ -3,37 +3,25 @@
 
 @model VillageContainsDistanceParameters
 
-@using (Html.BeginForm(nameof(VillagesController.Index), "Villages", FormMethod.Post))
+@using (Html.BeginForm(nameof(VillagesController.Index), "Villages", FormMethod.Post, new { @class = "form-horizontal" }))
 {
-    <div class="form-group">
-        <label for="MinPopulation">@Html.DisplayNameFor(m => m.MinPopulation)</label>
-        @Html.TextBoxFor(m => m.MinPopulation, new { @type = "number", @class = "form-control" })
-    </div>
+    @Html.EditorFor(m => m.MinPopulation)
+    @Html.EditorFor(m => m.MaxPopulation)
+
+    @Html.EditorFor(m => m.TargetX)
+    @Html.EditorFor(m => m.TargetY)
+
+    @Html.EditorFor(m => m.MinDistance)
+    @Html.EditorFor(m => m.MaxDistance)
 
     <div class="form-group">
-        <label for="MaxPopulation">@Html.DisplayNameFor(m => m.MaxPopulation)</label>
-        @Html.TextBoxFor(m => m.MaxPopulation, new { @type = "number", @class = "form-control" })
+        @Html.LabelFor(m => m.Tribe, new { @class = "control-label" })
+        @Html.DropDownListFor(m => m.Tribe, Constants.Tribes, new { @class = "form-control" })
     </div>
+    
+    @Html.EditorFor(m => m.IgnoreCapital)
+    @Html.EditorFor(m => m.IgnoreNormalVillage)
 
-    <div class="form-group">
-        <label for="TargetX">@Html.DisplayNameFor(m => m.TargetX)</label>
-        @Html.TextBoxFor(m => m.TargetX, new { @type = "number", @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        <label for="TargetY">@Html.DisplayNameFor(m => m.TargetY)</label>
-        @Html.TextBoxFor(m => m.TargetY, new { @type = "number", @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        <label for="MinDistance">@Html.DisplayNameFor(m => m.MinDistance)</label>
-        @Html.TextBoxFor(m => m.MinDistance, new { @type = "number", @class = "form-control" })
-    </div>
-
-    <div class="form-group">
-        <label for="MaxDistance">@Html.DisplayNameFor(m => m.MaxDistance)</label>
-        @Html.TextBoxFor(m => m.MaxDistance, new { @type = "number", @class = "form-control" })
-    </div>
     <div class="form-group">
         <label for="AllianceInput">@Html.DisplayNameFor(m => m.Alliances)</label>
         <small id="AllianceInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>

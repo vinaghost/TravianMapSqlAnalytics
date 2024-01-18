@@ -13,7 +13,6 @@ namespace Core.Dtos
         int Y,
         bool IsCapital,
         int Tribe,
-        double Distance,
         int ChangePopulation,
         IList<PopulationHistoryRecord> Populations);
 }
