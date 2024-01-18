@@ -35,7 +35,9 @@
                 @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.IsCapital)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.ChangePopulation)
+                <a href="#" data-sortfield="ChangePopulation" class="sort">
+                    @Html.DisplayNameForInnerType((VillageContainsPopulationHistoryDto village) => village.ChangePopulation)
+                </a>
             </th>
             @for (var i = 0; i < dates.Count; i++)
             {

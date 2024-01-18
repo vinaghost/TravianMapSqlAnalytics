@@ -22,5 +22,10 @@
         public static int Tribe => 0;
         public static bool IgnoreCapital => false;
         public static bool IgnoreNormalVillage => false;
+
+        // 0 asc / 1 desc
+        public static int SortOrder => 0;
+
+        public static string SortField => "";
     }
 }
