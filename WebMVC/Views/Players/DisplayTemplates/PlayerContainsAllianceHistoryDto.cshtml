@@ -17,13 +17,15 @@
                 ~
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.PlayerName)
+                @Html.DisplayNameForInnerType((PlayerContainsAllianceHistoryDto player) => player.PlayerName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.AllianceName)
+                @Html.DisplayNameForInnerType((PlayerContainsAllianceHistoryDto player) => player.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationHistoryDto player) => player.ChangePopulation)
+                <a href="#" data-sortfield="ChangeAlliance" class="sort">
+                    @Html.DisplayNameForInnerType((PlayerContainsAllianceHistoryDto player) => player.ChangeAlliance)
+                </a>
             </th>
             @for (var i = 0; i < dates.Count; i++)
             {

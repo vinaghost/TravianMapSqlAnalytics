@@ -15,7 +15,7 @@
         public bool IgnoreCapital { get; set; } = DefaultParameters.IgnoreCapital;
 
         public bool IgnoreNormalVillage { get; set; } = DefaultParameters.IgnoreNormalVillage;
-        public virtual string Key => $"{PageNumber}_{PageSize}_{MinPopulation}_{TargetX}_{TargetY}_{MinDistance}_{MaxDistance}_{SortOrder}_{SortField}_{MinPopulation}_{MaxPopulation}_{Tribe}_{IgnoreCapital}_{IgnoreNormalVillage}_{string.Join(',', Alliances)}_{string.Join(',', Players)}";
+        public virtual string Key => $"{PageNumber}_{PageSize}_{TargetX}_{TargetY}_{MinDistance}_{MaxDistance}_{SortOrder}_{SortField}_{MinPopulation}_{MaxPopulation}_{Tribe}_{IgnoreCapital}_{IgnoreNormalVillage}_{string.Join(',', Alliances)}_{string.Join(',', Players)}";
 
         public int TargetX { get; set; } = DefaultParameters.TargetX;
         public int TargetY { get; set; } = DefaultParameters.TargetY;

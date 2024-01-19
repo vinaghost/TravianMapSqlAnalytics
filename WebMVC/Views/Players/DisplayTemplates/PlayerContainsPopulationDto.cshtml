@@ -20,10 +20,14 @@
                 @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.AllianceName)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.VillageCount)
+                <a href="#" data-sortfield="VillageCount" class="sort">
+                    @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.VillageCount)
+                </a>
             </th>
             <th>
-                @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.Population)
+                <a href="#" data-sortfield="Population" class="sort">
+                    @Html.DisplayNameForInnerType((PlayerContainsPopulationDto player) => player.Population)
+                </a>
             </th>
         </tr>
     </thead>

@@ -24,7 +24,7 @@ namespace Core.Queries
             var players = await _unitOfRepository.PlayerRepository.GetPlayerInfo(playerIds, cancellationToken);
             var alliances = await _unitOfRepository.AllianceRepository.GetRecords([.. players.Keys], cancellationToken);
 
-            return await _unitOfRepository.PlayerRepository.GetPlayers([.. players.Keys])
+            var query = _unitOfRepository.PlayerRepository.GetPlayers([.. players.Keys])
                 .Select(x =>
                 {
                     var alliance = alliances[x.AllianceId];
@@ -36,8 +36,25 @@ namespace Core.Queries
                         x.PlayerName,
                         player.VillageCount,
                         player.Population);
-                })
-                .OrderByDescending(x => x.VillageCount)
+                });
+
+            var orderedQuery = request.Parameters.SortField.ToLower() switch
+            {
+                "villagecount" => request.Parameters.SortOrder switch
+                {
+                    1 => query.OrderByDescending(x => x.VillageCount),
+                    _ => query.OrderBy(x => x.VillageCount),
+                },
+                "population" => request.Parameters.SortOrder switch
+                {
+                    1 => query.OrderByDescending(x => x.Population),
+                    _ => query.OrderBy(x => x.Population),
+                },
+
+                _ => query.OrderByDescending(x => x.VillageCount)
+            };
+
+            return await orderedQuery
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }
