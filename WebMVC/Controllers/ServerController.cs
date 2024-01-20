@@ -1,5 +1,4 @@
-﻿using Core.Parameters;
-using Core.Queries;
+﻿using Core.Features.GetServer;
 using Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,5 @@
 ﻿using Core.Behaviors;
 using Core.Config;
-using Core.Repositories;
 using Core.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +22,6 @@ namespace Core.Extensions
             });
 
             serviceCollection.AddDbContext();
-            serviceCollection.AddRepository();
             serviceCollection.AddServices();
             return serviceCollection;
         }
@@ -59,17 +57,6 @@ namespace Core.Extensions
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
             });
 
-            return serviceCollection;
-        }
-
-        public static IServiceCollection AddRepository(this IServiceCollection serviceCollection)
-        {
-            serviceCollection.TryAddTransient<UnitOfRepository>();
-
-            serviceCollection.TryAddTransient<IServerRepository, ServerRepository>();
-            serviceCollection.TryAddTransient<IVillageRepository, VillageRepository>();
-            serviceCollection.TryAddTransient<IPlayerRepository, PlayerRepository>();
-            serviceCollection.TryAddTransient<IAllianceRepository, AllianceRepository>();
             return serviceCollection;
         }
 

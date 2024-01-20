@@ -1,4 +1,6 @@
-﻿using Core.Parameters;
+﻿using Core.Features.GetPlayerContainsAllianceHistory;
+using Core.Features.GetPlayerContainsPopulation;
+using Core.Features.GetPlayerContainsPopulationHistory;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers

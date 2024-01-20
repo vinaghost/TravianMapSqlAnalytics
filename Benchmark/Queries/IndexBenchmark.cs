@@ -1,7 +1,8 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Core;
 using Core.Entities;
-using Core.Models;
+using Core.Features.GetVillageContainsPopulationHistory;
+using Core.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.MySql;

@@ -1,7 +1,6 @@
-﻿using Core.Dtos;
-using Core.Models;
-using Core.Parameters;
-using Core.Queries;
+﻿using Core.Features.GetPlayerContainsAllianceHistory;
+using Core.Features.GetPlayerContainsPopulation;
+using Core.Features.GetPlayerContainsPopulationHistory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

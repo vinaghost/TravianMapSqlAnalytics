@@ -1,7 +1,8 @@
 ﻿using Benchmark.Setups;
 using BenchmarkDotNet.Attributes;
 using Core;
-using Core.Models;
+using Core.Features.GetVillageContainsPopulationHistory;
+using Core.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Benchmark.Queries

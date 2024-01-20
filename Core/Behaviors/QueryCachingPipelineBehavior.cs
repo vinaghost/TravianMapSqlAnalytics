@@ -1,4 +1,4 @@
-﻿using Core.Queries;
+﻿using Core.Features.Shared.Query;
 using Core.Services;
 using MediatR;
 

@@ -1,6 +1,4 @@
-﻿using Core.Models;
-using Core.Parameters;
-using Core.Queries;
+﻿using Core.Features.GetServer;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;

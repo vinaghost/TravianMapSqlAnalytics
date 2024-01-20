@@ -1,4 +1,5 @@
-﻿using Core.Parameters;
+﻿using Core.Features.GetVillageContainsDistance;
+using Core.Features.GetVillageContainsPopulationHistory;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers

@@ -1,7 +1,5 @@
-﻿using Core.Dtos;
-using Core.Models;
-using Core.Parameters;
-using Core.Queries;
+﻿using Core.Features.GetVillageContainsDistance;
+using Core.Features.GetVillageContainsPopulationHistory;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
