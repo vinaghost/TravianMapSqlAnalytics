@@ -9,7 +9,7 @@ namespace ConsoleUpdate.Commands
 
     public class DeleteServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<DeleteServerCommand>
     {
-        private readonly string _connectionString = connectionStringOption.Value.Value;
+        private readonly string _connectionString = connectionStringOption.Value.DataSource;
 
         public async Task Handle(DeleteServerCommand request, CancellationToken cancellationToken)
         {

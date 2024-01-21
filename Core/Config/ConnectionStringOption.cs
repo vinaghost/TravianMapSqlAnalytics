@@ -2,7 +2,7 @@
 {
     public class ConnectionStringOption
     {
-        public const string Position = "ConnectionString";
-        public string Value { get; set; } = "";
+        public const string DATASOURCE = "DataSource";
+        public string DataSource { get; set; } = "";
     }
 }

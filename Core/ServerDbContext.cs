@@ -17,7 +17,7 @@ namespace Core
         {
         }
 
-        public ServerDbContext(string connectionStringWithoutDatabase, string database) : base(new DbContextOptionsBuilder().GettOptionsBuilder(connectionStringWithoutDatabase, database).Options)
+        public ServerDbContext(string dataSource, string database) : base(new DbContextOptionsBuilder().GettOptionsBuilder(dataSource, database).Options)
         {
         }
 
@@ -57,9 +57,9 @@ namespace Core
             return optionsBuilder;
         }
 
-        public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, string connectionStringWithoutDatabase, string database)
+        public static DbContextOptionsBuilder GettOptionsBuilder(this DbContextOptionsBuilder optionsBuilder, string dataSource, string database)
         {
-            var connectionString = $"{connectionStringWithoutDatabase};Database={database}";
+            var connectionString = $"{dataSource};Database={database}";
             optionsBuilder
                 .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
 

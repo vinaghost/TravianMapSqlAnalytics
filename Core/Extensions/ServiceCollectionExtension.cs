@@ -32,7 +32,7 @@ namespace Core.Extensions
             {
                 var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
 
-                var connectionString = $"{option.Value.Value};Database={ServerListDbContext.DATABASE_NAME}";
+                var connectionString = $"{option.Value.DataSource};Database={ServerListDbContext.DATABASE_NAME}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
@@ -47,7 +47,7 @@ namespace Core.Extensions
                 var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
                 var dataService = serviceProvider.GetRequiredService<DataService>();
 
-                var connectionString = $"{option.Value.Value};Database={dataService.Server}";
+                var connectionString = $"{option.Value.DataSource};Database={dataService.Server}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()

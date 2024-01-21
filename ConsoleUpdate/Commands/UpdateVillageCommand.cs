@@ -12,7 +12,7 @@ namespace ConsoleUpdate.Commands
 
     public class UpdateVillageCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdateVillageCommand, int>
     {
-        private readonly string _connectionString = connectionStringOption.Value.Value;
+        private readonly string _connectionString = connectionStringOption.Value.DataSource;
 
         public async Task<int> Handle(UpdateVillageCommand request, CancellationToken cancellationToken)
         {

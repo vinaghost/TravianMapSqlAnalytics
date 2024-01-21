@@ -9,7 +9,7 @@ namespace ConsoleUpdate.Commands
 
     public class CreateServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<CreateServerCommand>
     {
-        private readonly string _connectionString = connectionStringOption.Value.Value;
+        private readonly string _connectionString = connectionStringOption.Value.DataSource;
 
         public async Task Handle(CreateServerCommand request, CancellationToken cancellationToken)
         {

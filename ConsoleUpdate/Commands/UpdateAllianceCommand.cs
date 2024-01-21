@@ -12,7 +12,7 @@ namespace ConsoleUpdate.Commands
 
     public class UpdateAllianceCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdateAllianceCommand, int>
     {
-        private readonly string _connectionString = connectionStringOption.Value.Value;
+        private readonly string _connectionString = connectionStringOption.Value.DataSource;
 
         public async Task<int> Handle(UpdateAllianceCommand request, CancellationToken cancellationToken)
         {
