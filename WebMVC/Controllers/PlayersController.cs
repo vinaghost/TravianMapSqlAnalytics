@@ -1,6 +1,8 @@
 ﻿using Core.Features.GetPlayerContainsAllianceHistory;
 using Core.Features.GetPlayerContainsPopulation;
 using Core.Features.GetPlayerContainsPopulationHistory;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers
@@ -12,8 +14,13 @@ namespace WebMVC.Controllers
             return View(parameters);
         }
 
-        public IActionResult PopulationHistory(PlayerContainsPopulationHistoryParameters parameters)
+        public IActionResult PopulationHistory(PlayerContainsPopulationHistoryParameters parameters, [FromServices] IValidator<PlayerContainsPopulationHistoryParameters> validator)
         {
+            var result = validator.Validate(parameters);
+            if (!result.IsValid)
+            {
+                result.AddToModelState(ModelState);
+            }
             return View(parameters);
         }
 

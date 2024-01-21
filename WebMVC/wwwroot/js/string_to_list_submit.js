@@ -4,17 +4,24 @@ $(function () {
             return element.val().toString().split(',');
         }
 
-        var elementsId = [
-            ["#AllianceInput", "#Alliances"],
-            ["#PlayerInput", "#Players"],
-            //["#VillageInput", "#Villages"],
-        ]
+        $('.list-parameter').each(function () {
+            let input = $(this).find('.input');
+            if (input.length !== 1) return;
 
-        elementsId.forEach(ids => {
-            var input = $(ids[0]);
-            if (input.length != 1) return;
-            var value = getVal(input);
-            $(ids[1]).val(value);
+            let name = input.prop('name');
+            input.prop('name', '');
+            let value = getVal(input);
+
+            if (value[0] === '') return;
+
+
+            let text = "";
+            for (let i = 0; i < value.length; i++) {
+                text += `<input type="hidden" name="${name}" value="${value[i]}" />`;
+            }
+            const newDiv = document.createElement('div');
+            newDiv.innerHTML = text;
+            this.append(newDiv);
         });
     });
 });

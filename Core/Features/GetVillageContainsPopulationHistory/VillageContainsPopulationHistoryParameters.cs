@@ -17,7 +17,7 @@ namespace Core.Features.GetVillageContainsPopulationHistory
         public bool IgnoreCapital { get; set; } = DefaultParameters.IgnoreCapital;
 
         public bool IgnoreNormalVillage { get; set; } = DefaultParameters.IgnoreNormalVillage;
-        public string Key => $"{PageNumber}_{PageSize}_{Tribe}_{IgnoreCapital}_{IgnoreNormalVillage}_{MinPopulation}_{MaxPopulation}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{MinChangePopulation}_{MaxChangePopulation}_{Date}_{SortOrder}_{SortField}";
+        public string Key => $"{PageNumber}_{PageSize}_{Tribe}_{IgnoreCapital}_{IgnoreNormalVillage}_{MinPopulation}_{MaxPopulation}_{string.Join(',', Alliances.Distinct().Order())}_{string.Join(',', Players.Distinct().Order())}_{MinChangePopulation}_{MaxChangePopulation}_{Date}_{SortOrder}_{SortField}";
 
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;

@@ -4,34 +4,20 @@
 
 @using (Html.BeginForm(nameof(PlayersController.PopulationHistory), "Players", FormMethod.Post))
 {
-    <div class="form-group">
-        <label for="Date">@Html.DisplayNameFor(m => m.Date)</label>
-        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date", @class="form-control" })
-    </div>
+    @Html.EditorFor(m => m.MinChangePopulation)
+    @Html.EditorFor(m => m.MaxChangePopulation)
 
     <div class="form-group">
-        <label for="MinChangePopulation">@Html.DisplayNameFor(m => m.MinChangePopulation)</label>
-        @Html.TextBoxFor(m => m.MinChangePopulation, new { @type = "number", @class = "form-control" })
+        @Html.LabelFor(m => m.Date, new { @class = "form-check-label" })
+        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })
     </div>
 
-    <div class="form-group">
-        <label for="MaxChangePopulation">@Html.DisplayNameFor(m => m.MaxChangePopulation)</label>
-        @Html.TextBoxFor(m => m.MaxChangePopulation, new { @type = "number", @class = "form-control" })
-    </div>
+    @Html.EditorFor(m => m.Alliances, "ListInt")
+    ;
+    @Html.EditorFor(m => m.Players, "ListInt")
+    ;
 
-    <div class="form-group">
-        <label for="AllianceInput">@Html.DisplayNameFor(m => m.Alliances)</label>
-        <small id="AllianceInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
-        <input id="AllianceInput" class="form-control" type="text" value="@string.Join(',', Model.Alliances)" />
-    </div>
-    <div class="form-group">
-        <label for="PlayerInput">@Html.DisplayNameFor(m => m.Players)</label>
-        <small id="PlayerInputHelp" class="form-text text-muted">Id of alliances, separated with ","</small>
-        <input id="PlayerInput" class="form-control" type="text" value="@string.Join(',', Model.Players)" />
-    </div>
     <div>
-        @Html.HiddenFor(m => m.Alliances)
-        @Html.HiddenFor(m => m.Players)
         @Html.HiddenFor(m => m.PageNumber)
         @Html.HiddenFor(m => m.PageSize)
         @Html.HiddenFor(m => m.SortField)

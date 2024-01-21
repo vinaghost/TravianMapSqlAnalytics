@@ -10,7 +10,7 @@ namespace Core.Features.GetPlayerContainsPopulation
         public List<int> Alliances { get; set; } = [];
         public List<int> Players { get; set; } = [];
 
-        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{SortOrder}_{SortField}";
+        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances.Distinct().Order())}_{string.Join(',', Players.Distinct().Order())}_{SortOrder}_{SortField}";
 
         public int SortOrder { get; set; } = DefaultParameters.SortOrder;
 

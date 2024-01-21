@@ -14,6 +14,7 @@ namespace Core.Extensions
                 var config = builder.Configuration.GetConnectionString(ConnectionStringOption.DATASOURCE);
                 options.DataSource = config;
             });
+
             return builder;
         }
     }

@@ -16,6 +16,6 @@ namespace Core.Features.GetPlayerContainsAllianceHistory
         public int SortOrder { get; set; } = DefaultParameters.SortOrder;
 
         public string SortField { get; set; } = DefaultParameters.SortField;
-        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{MinChangeAlliance}_{MaxChangeAlliance}_{Date}_{SortOrder}_{SortField}";
+        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances.Distinct().Order())}_{string.Join(',', Players.Distinct().Order())}_{MinChangeAlliance}_{MaxChangeAlliance}_{Date}_{SortOrder}_{SortField}";
     }
 }

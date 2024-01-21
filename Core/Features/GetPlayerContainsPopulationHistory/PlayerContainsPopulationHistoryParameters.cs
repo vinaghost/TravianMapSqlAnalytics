@@ -19,6 +19,6 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
 
         public string SortField { get; set; } = DefaultParameters.SortField;
 
-        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances)}_{string.Join(',', Players)}_{MinChangePopulation}_{MaxChangePopulation}_{Date}_{SortOrder}_{SortField}";
+        public string Key => $"{PageNumber}_{PageSize}_{string.Join(',', Alliances.Distinct().Order())}_{string.Join(',', Players.Distinct().Order())}_{MinChangePopulation}_{MaxChangePopulation}_{Date}_{SortOrder}_{SortField}";
     }
 }

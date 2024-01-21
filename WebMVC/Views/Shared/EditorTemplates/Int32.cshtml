@@ -29,7 +29,7 @@
     }
 }
 <div class="form-group">
-    @Html.LabelFor(m => m, new { @class = "control-label" })
+    @Html.LabelForModel(new { @class = "control-label" })
     @Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, htmlAttributes)
-    @Html.ValidationMessageFor(m => m, null, new { @class = "help-block" })
+    @Html.ValidationMessageFor(m => m, "", new { @class = "form-text text-danger" })
 </div>
