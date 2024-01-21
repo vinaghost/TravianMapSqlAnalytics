@@ -6,16 +6,11 @@
 {
     @Html.EditorFor(m => m.MinChangePopulation)
     @Html.EditorFor(m => m.MaxChangePopulation)
-
-    <div class="form-group">
-        @Html.LabelFor(m => m.Date, new { @class = "form-check-label" })
-        @Html.TextBoxFor(m => m.Date, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control" })
-    </div>
+    
+    @Html.EditorFor(m => m.Date)
 
     @Html.EditorFor(m => m.Alliances, "ListInt")
-    ;
     @Html.EditorFor(m => m.Players, "ListInt")
-    ;
 
     <div>
         @Html.HiddenFor(m => m.PageNumber)

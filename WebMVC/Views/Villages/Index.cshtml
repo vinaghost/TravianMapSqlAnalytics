@@ -10,20 +10,27 @@
 
 @Html.EditorForModel(nameof(VillageContainsDistanceParameters))
 
-
-@{
-    var villages = await mediator.Send(new GetVillageContainsDistanceQuery(Model));
-}
-
-<div class="text-center">
-    <p>Your current server is @dataService.Server</p>
-    <p>We found <b>@villages.TotalItemCount villages</b> fit your request</p>
-</div>
-
-@if (villages.Count > 0)
+@if (ViewData.ModelState.IsValid)
 {
-    @Html.DisplayFor(_ => villages, nameof(VillageContainsDistanceDto))
-    @await Html.PartialAsync("_PaginationPartial", villages)
+    var villages = await mediator.Send(new GetVillageContainsDistanceQuery(Model));
+
+    <div class="text-center">
+        <p>Your current server is @dataService.Server</p>
+        <p>We found <b>@villages.TotalItemCount villages</b> fit your request</p>
+    </div>
+
+    @if (villages.Count > 0)
+    {
+        @Html.DisplayFor(_ => villages, nameof(VillageContainsDistanceDto))
+        @await Html.PartialAsync("_PaginationPartial", villages)
+    }
+}
+else
+{
+    <div class="text-center">
+        <p>Your current server is @dataService.Server</p>
+        <p>There is something wrong with your request. Please check again</p>
+    </div>
 }
 
 @section Scripts {

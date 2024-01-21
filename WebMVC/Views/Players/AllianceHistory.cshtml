@@ -10,19 +10,27 @@
 
 @Html.EditorForModel(nameof(PlayerContainsAllianceHistoryParameters))
 
-@{
+@if (ViewData.ModelState.IsValid)
+{
     var players = await mediator.Send(new GetPlayerContainsAllianceHistoryQuery(Model));
-}
-<div class="text-center">
-    <p>Your current server is @dataService.Server</p>
-    <p>We found <b>@players.TotalItemCount players</b> fit your request</p>
-</div>
 
-@if (players.Count > 0) {
-    @Html.DisplayFor(_ => players, nameof(PlayerContainsAllianceHistoryDto))
-    @await Html.PartialAsync("_PaginationPartial", players)
-}
+    <div class="text-center">
+        <p>Your current server is @dataService.Server</p>
+        <p>We found <b>@players.TotalItemCount players</b> fit your request</p>
+    </div>
 
+    if (players.Count > 0) {
+        @Html.DisplayFor(_ => players, nameof(PlayerContainsAllianceHistoryDto))
+        @await Html.PartialAsync("_PaginationPartial", players)
+    }
+}
+else
+{
+    <div class="text-center">
+        <p>Your current server is @dataService.Server</p>
+        <p>There is something wrong with your request. Please check again</p>
+    </div>
+}
 @section Scripts {
     <script src="~/js/pagination.js" asp-append-version="true"></script>
     <script src="~/js/sorting.js" asp-append-version="true"></script>

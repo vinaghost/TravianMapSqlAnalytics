@@ -1,0 +1,11 @@
+﻿@model DateTime
+@{
+    var now = DateTime.Now;
+    var min = now.AddDays(-14).ToString("yyyy-MM-dd");
+    var max = now.ToString("yyyy-MM-dd");
+}
+<div class="form-group">
+    @Html.LabelForModel(new { @class = "form-check-label" })
+    @Html.TextBoxFor(m => m, "{0:yyyy-MM-dd}", new { type = "date", @class = "form-control", min = min, max = max })
+    @Html.ValidationMessageFor(m => m, "", new { @class = "form-text text-danger" })
+</div>
