@@ -4,7 +4,7 @@
     {
         public static int MinPopulation => 0;
         public static int MaxPopulation => 10000;
-        public static DateOnly Date => DateOnly.FromDateTime(DateTime.Now.AddDays(-7));
+        public static DateTime Date => DateTime.Now.AddDays(-7);
         public static int MinChangePopulation => 0;
         public static int MaxChangePopulation => 10000;
 

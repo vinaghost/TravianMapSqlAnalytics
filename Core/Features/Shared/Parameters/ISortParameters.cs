@@ -1,6 +1,6 @@
 ﻿namespace Core.Features.Shared.Parameters
 {
-    internal interface ISortParameters
+    public interface ISortParameters
     {
         int SortOrder { get; }
         string SortField { get; }

@@ -2,7 +2,7 @@
 
 namespace Core.Features.GetVillageContainsPopulationHistory
 {
-    public record VillageContainsPopulationHistoryParameters : IPaginationParameters, IVillageFilterParameter, IPopulationHistoryFilterParameter, ISortParameters
+    public record VillageContainsPopulationHistoryParameters : IPaginationParameters, IVillageFilterParameters, IPopulationHistoryFilterParameters, ISortParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;
@@ -21,7 +21,7 @@ namespace Core.Features.GetVillageContainsPopulationHistory
 
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;
-        public DateOnly Date { get; set; } = DefaultParameters.Date;
+        public DateTime Date { get; set; } = DefaultParameters.Date;
 
         public int SortOrder { get; set; } = DefaultParameters.SortOrder;
 

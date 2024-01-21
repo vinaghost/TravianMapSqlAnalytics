@@ -2,7 +2,7 @@
 
 namespace Core.Features.GetVillageContainsDistance
 {
-    public record VillageContainsDistanceParameters : IPaginationParameters, IVillageFilterParameter, IDistanceFilterParameter, ISortParameters
+    public record VillageContainsDistanceParameters : IPaginationParameters, IVillageFilterParameters, IDistanceFilterParameters, ISortParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;

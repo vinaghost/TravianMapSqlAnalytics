@@ -10,7 +10,7 @@ namespace Core.Features.Shared.Handler
     {
         protected readonly ServerDbContext _dbContext = dbContext;
 
-        protected async Task<List<int>> GetPlayerIds(IPlayerFilterParameter parameters, CancellationToken cancellationToken)
+        protected async Task<List<int>> GetPlayerIds(IPlayerFilterParameters parameters, CancellationToken cancellationToken)
         {
             return await GetBaseQueryable(parameters)
                 .Select(x => x.PlayerId)
@@ -41,7 +41,7 @@ namespace Core.Features.Shared.Handler
                 .ToDictionaryAsync(x => x.AllianceId, x => new AllianceRecord(x.Name), cancellationToken);
         }
 
-        private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameter parameters)
+        private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameters parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0) return _dbContext.Players.AsQueryable();
 

@@ -51,9 +51,8 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
 
-        private async Task<Dictionary<int, PlayerPopulationHistory>> GetPlayers(IList<int> playerIds, IPopulationHistoryFilterParameter parameters, CancellationToken cancellationToken)
+        private async Task<Dictionary<int, PlayerPopulationHistory>> GetPlayers(IList<int> playerIds, IPopulationHistoryFilterParameters parameters, CancellationToken cancellationToken)
         {
-            var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
             return await _dbContext.Players
                 .Where(x => playerIds.Distinct().Contains(x.PlayerId))
                 .Select(x => new
@@ -61,7 +60,7 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
                     x.PlayerId,
                     Populations = x.Villages
                         .SelectMany(x => x.Populations
-                                        .Where(x => x.Date >= date))
+                                        .Where(x => x.Date >= parameters.Date))
                         .GroupBy(x => x.Date)
                         .OrderByDescending(x => x.Key)
                         .Select(x => new

@@ -1,6 +1,7 @@
 ﻿using Core.Behaviors;
 using Core.Config;
 using Core.Services;
+using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,13 +15,15 @@ namespace Core.Extensions
         {
             serviceCollection.AddMemoryCache();
 
+            var assembly = typeof(ServiceCollectionExtension).Assembly;
+
             serviceCollection.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(ServiceCollectionExtension).Assembly);
+                cfg.RegisterServicesFromAssembly(assembly);
 
                 cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
             });
-
+            serviceCollection.AddValidatorsFromAssembly(assembly);
             serviceCollection.AddDbContext();
             serviceCollection.AddServices();
             return serviceCollection;

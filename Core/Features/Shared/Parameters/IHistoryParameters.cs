@@ -2,6 +2,6 @@
 {
     public interface IHistoryParameters
     {
-        DateOnly Date { get; }
+        DateTime Date { get; }
     }
 }

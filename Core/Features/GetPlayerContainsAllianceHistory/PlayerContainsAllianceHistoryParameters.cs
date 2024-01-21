@@ -2,14 +2,14 @@
 
 namespace Core.Features.GetPlayerContainsAllianceHistory
 {
-    public class PlayerContainsAllianceHistoryParameters : IPaginationParameters, IPlayerFilterParameter, IAllianceHistoryFilterParameter, ISortParameters
+    public class PlayerContainsAllianceHistoryParameters : IPaginationParameters, IPlayerFilterParameters, IAllianceHistoryFilterParameters, ISortParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;
 
         public List<int> Alliances { get; set; } = [];
         public List<int> Players { get; set; } = [];
-        public DateOnly Date { get; set; } = DefaultParameters.Date;
+        public DateTime Date { get; set; } = DefaultParameters.Date;
         public int MinChangeAlliance { get; set; } = DefaultParameters.MinChangeAlliance;
         public int MaxChangeAlliance { get; set; } = DefaultParameters.MaxChangeAlliance;
 

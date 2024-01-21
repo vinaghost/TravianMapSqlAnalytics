@@ -10,7 +10,7 @@ namespace Core.Features.Shared.Handler
     {
         protected readonly ServerDbContext _dbContext = dbContext;
 
-        protected async Task<List<int>> GetVillageIds(IVillageFilterParameter parameters, CancellationToken cancellationToken)
+        protected async Task<List<int>> GetVillageIds(IVillageFilterParameters parameters, CancellationToken cancellationToken)
         {
             var query = GetBaseQueryable(parameters)
                 .Where(x => x.Population >= parameters.MinPopulation)
@@ -76,7 +76,7 @@ namespace Core.Features.Shared.Handler
                 .ToDictionaryAsync(x => x.AllianceId, x => new AllianceRecord(x.Name), cancellationToken);
         }
 
-        private IQueryable<Village> GetBaseQueryable(IVillageFilterParameter parameters)
+        private IQueryable<Village> GetBaseQueryable(IVillageFilterParameters parameters)
         {
             if (parameters.Alliances.Count == 0 && parameters.Players.Count == 0) return _dbContext.Villages.AsQueryable();
 

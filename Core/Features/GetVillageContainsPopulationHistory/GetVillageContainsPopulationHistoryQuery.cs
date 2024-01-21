@@ -65,13 +65,11 @@ namespace Core.Features.GetVillageContainsPopulationHistory
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
 
-        public async Task<Dictionary<int, VillagePopulationHistory>> GetVillages(IList<int> villageIds, IPopulationHistoryFilterParameter parameters, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, VillagePopulationHistory>> GetVillages(IList<int> villageIds, IPopulationHistoryFilterParameters parameters, CancellationToken cancellationToken)
         {
-            var date = parameters.Date.ToDateTime(TimeOnly.MinValue);
-
             return await _dbContext.VillagesPopulations
                 .Where(x => villageIds.Distinct().Contains(x.VillageId))
-                .Where(x => x.Date >= date)
+                .Where(x => x.Date >= parameters.Date)
                 .GroupBy(x => x.VillageId)
                 .Select(x => new
                 {

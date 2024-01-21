@@ -2,7 +2,7 @@
 
 namespace Core.Features.GetPlayerContainsPopulationHistory
 {
-    public class PlayerContainsPopulationHistoryParameters : IPaginationParameters, IPlayerFilterParameter, IPopulationHistoryFilterParameter, ISortParameters
+    public class PlayerContainsPopulationHistoryParameters : IPaginationParameters, IPlayerFilterParameters, IPopulationHistoryFilterParameters, ISortParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;
@@ -13,7 +13,7 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
         public int MinChangePopulation { get; set; } = DefaultParameters.MinChangePopulation;
         public int MaxChangePopulation { get; set; } = DefaultParameters.MaxChangePopulation;
 
-        public DateOnly Date { get; set; } = DefaultParameters.Date;
+        public DateTime Date { get; set; } = DefaultParameters.Date;
 
         public int SortOrder { get; set; } = DefaultParameters.SortOrder;
 

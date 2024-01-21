@@ -65,7 +65,7 @@ namespace Core.Features.GetVillageContainsDistance
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
 
-        public async Task<Dictionary<int, VillageInfo>> GetVillages(IList<int> villageIds, IDistanceFilterParameter parameters, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, VillageInfo>> GetVillages(IList<int> villageIds, IDistanceFilterParameters parameters, CancellationToken cancellationToken)
         {
             var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
             return await _dbContext.Villages

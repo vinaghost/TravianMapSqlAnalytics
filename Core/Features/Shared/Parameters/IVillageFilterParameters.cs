@@ -1,6 +1,6 @@
 ﻿namespace Core.Features.Shared.Parameters
 {
-    public interface IVillageFilterParameter : IPopulationFilterParameter
+    public interface IVillageFilterParameters : IPopulationFilterParameters
     {
         List<int> Alliances { get; }
         List<int> Players { get; }

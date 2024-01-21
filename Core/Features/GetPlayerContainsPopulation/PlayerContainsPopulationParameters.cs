@@ -2,7 +2,7 @@
 
 namespace Core.Features.GetPlayerContainsPopulation
 {
-    public class PlayerContainsPopulationParameters : IPaginationParameters, IPlayerFilterParameter, ISortParameters
+    public class PlayerContainsPopulationParameters : IPaginationParameters, IPlayerFilterParameters, ISortParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
         public int PageSize { get; set; } = DefaultParameters.PageSize;

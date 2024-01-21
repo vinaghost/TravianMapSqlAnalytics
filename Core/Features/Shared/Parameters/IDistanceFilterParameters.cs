@@ -1,6 +1,6 @@
 ﻿namespace Core.Features.Shared.Parameters
 {
-    public interface IDistanceFilterParameter
+    public interface IDistanceFilterParameters
     {
         public int TargetX { get; }
         public int TargetY { get; }

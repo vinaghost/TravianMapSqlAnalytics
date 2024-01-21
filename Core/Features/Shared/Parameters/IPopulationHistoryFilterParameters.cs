@@ -1,6 +1,6 @@
 ﻿namespace Core.Features.Shared.Parameters
 {
-    public interface IPopulationHistoryFilterParameter : IHistoryParameters
+    public interface IPopulationHistoryFilterParameters : IHistoryParameters
     {
         int MinChangePopulation { get; }
         int MaxChangePopulation { get; }
