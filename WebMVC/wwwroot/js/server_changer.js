@@ -5,7 +5,7 @@ $(function () {
                 method: "Get",
             });
         if (rawResponse.ok) {
-            document.cookie = await rawResponse.text;
+            document.cookie = await rawResponse.text();
             $("#currentServer").text(this.id);
             alert("Changed your current server to " + this.id)
         }

@@ -26,7 +26,7 @@ namespace WebMVC.Controllers
                 {
                     Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
                 };
-                Response.Cookies.Append("TMA_server", server, options);
+                //Response.Cookies.Append("TMA_server", server, options);
 
                 var cookie = options.CreateCookieHeader("TMA_server", server);
                 return Ok(cookie.ToString());
