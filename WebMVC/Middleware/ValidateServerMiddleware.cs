@@ -22,8 +22,6 @@ namespace WebMVC.Middleware
             var options = new CookieOptions()
             {
                 Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
-                SameSite = SameSiteMode.Strict,
-                HttpOnly = true
             };
             context.Response.Cookies.Append("TMA_server", server, options);
 
