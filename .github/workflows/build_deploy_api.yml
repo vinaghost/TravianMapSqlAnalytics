@@ -2,7 +2,6 @@
 # SSH_PRIVATE_KEY 
 # REMOTE_HOST 
 # REMOTE_USER 
-# REMOTE_TARGET 
 name: Build & deploy ASP.NET Core API
 run-name: Build & deploy ASP.NET Core API
 on:
