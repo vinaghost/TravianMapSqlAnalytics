@@ -13,5 +13,10 @@ namespace WebMVC.Controllers
         {
             return View();
         }
+
+        public IActionResult CookiePolicy()
+        {
+            return View();
+        }
     }
 }

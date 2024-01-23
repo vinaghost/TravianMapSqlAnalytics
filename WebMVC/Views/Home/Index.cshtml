@@ -12,15 +12,3 @@
     <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
     <p> Your current server is @dataService.Server</p>
 </div>
-
-@section Scripts {
-    <script src='https://storage.ko-fi.com/cdn/scripts/overlay-widget.js'></script>
-    <script>
-        kofiWidgetOverlay.draw('vinaghost', {
-            'type': 'floating-chat',
-            'floating-chat.donateButton.text': 'Support me',
-            'floating-chat.donateButton.background-color': '#00b9fe',
-            'floating-chat.donateButton.text-color': '#fff'
-        });
-    </script>
-}

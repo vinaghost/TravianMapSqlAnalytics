@@ -4,54 +4,62 @@ using WebMVC.Middleware;
 
 namespace WebMVC
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+	public class Program
+	{
+		public static void Main(string[] args)
+		{
+			var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
-            AddService(builder.Services);
+			// Add services to the container.
+			builder.Services.AddControllersWithViews();
+			AddService(builder.Services);
 
-            builder.BindConfiguration();
+			builder.BindConfiguration();
 
-            var app = builder.Build();
+			builder.Services.Configure<CookiePolicyOptions>(options =>
+			{
+				options.CheckConsentNeeded = context => true;
+				options.MinimumSameSitePolicy = SameSiteMode.None;
+			});
 
-            // Configure the HTTP request pipeline.
-            if (!app.Environment.IsDevelopment())
-            {
-                app.UseExceptionHandler("/Home/Error");
-            }
-            app.UseStaticFiles();
+			var app = builder.Build();
 
-            app.UseRouting();
+			// Configure the HTTP request pipeline.
+			if (!app.Environment.IsDevelopment())
+			{
+				app.UseExceptionHandler("/Home/Error");
+			}
+			app.UseStaticFiles();
 
-            app.UseAuthorization();
+			app.UseRouting();
 
-            app.MapControllerRoute(
-                name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+			app.UseAuthorization();
 
-            UseMiddleware(app);
+			app.UseCookiePolicy();
 
-            app.Run();
-        }
+			app.MapControllerRoute(
+				name: "default",
+				pattern: "{controller=Home}/{action=Index}/{id?}");
 
-        private static void AddService(IServiceCollection services)
-        {
-            services.AddCore();
-            services.AddScoped<ValidateServerMiddleware>();
-        }
+			UseMiddleware(app);
 
-        private static void UseMiddleware(IApplicationBuilder app)
-        {
-            app.UseMiddleware<ValidateServerMiddleware>();
+			app.Run();
+		}
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-        }
-    }
+		private static void AddService(IServiceCollection services)
+		{
+			services.AddCore();
+			services.AddScoped<ValidateServerMiddleware>();
+		}
+
+		private static void UseMiddleware(IApplicationBuilder app)
+		{
+			app.UseMiddleware<ValidateServerMiddleware>();
+
+			app.UseForwardedHeaders(new ForwardedHeadersOptions
+			{
+				ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+			});
+		}
+	}
 }

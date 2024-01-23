@@ -11,7 +11,7 @@ namespace WebMVC.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var server = context.Request.Cookies["server"];
+            var server = context.Request.Cookies["TMA_server"];
             if (string.IsNullOrEmpty(server))
             {
                 server = await _mediator.Send(new GetMostPlayerServerQuery());
@@ -19,8 +19,13 @@ namespace WebMVC.Middleware
 
             _dataService.Server = server;
 
-            var options = new CookieOptions() { Expires = new DateTimeOffset(DateTime.Now.AddYears(1)) };
-            context.Response.Cookies.Append("server", server, options);
+            var options = new CookieOptions()
+            {
+                Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
+                SameSite = SameSiteMode.Strict,
+                HttpOnly = true
+            };
+            context.Response.Cookies.Append("TMA_server", server, options);
 
             await next(context);
         }
