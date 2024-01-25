@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleUpdate", "ConsoleUpd
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebMVC", "WebMVC\WebMVC.csproj", "{603801D4-9E2D-4E5D-961C-DCC32BD12560}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBlazor", "WebBlazor\WebBlazor\WebBlazor.csproj", "{FFB0903C-4DED-4417-8CC4-1685EA1E226B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebBlazor.Client", "WebBlazor\WebBlazor.Client\WebBlazor.Client.csproj", "{B8119DB8-2108-474B-A1D1-384E2707E7FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +43,14 @@ Global
 		{603801D4-9E2D-4E5D-961C-DCC32BD12560}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{603801D4-9E2D-4E5D-961C-DCC32BD12560}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{603801D4-9E2D-4E5D-961C-DCC32BD12560}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFB0903C-4DED-4417-8CC4-1685EA1E226B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFB0903C-4DED-4417-8CC4-1685EA1E226B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFB0903C-4DED-4417-8CC4-1685EA1E226B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFB0903C-4DED-4417-8CC4-1685EA1E226B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8119DB8-2108-474B-A1D1-384E2707E7FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8119DB8-2108-474B-A1D1-384E2707E7FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8119DB8-2108-474B-A1D1-384E2707E7FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8119DB8-2108-474B-A1D1-384E2707E7FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
