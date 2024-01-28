@@ -1,0 +1,19 @@
+﻿@inject DataService dataService
+
+@{
+    const string expression = "server-select";
+    var server = dataService.Server;
+    var servers = new List<SelectListItem>()
+    {
+        new SelectListItem(server, server, true),
+    };
+}
+
+<div class="form-group">
+    @Html.Label(expression, "Server", new { @class = "control-label", style = "width: 100%" })
+    @Html.DropDownList(expression, servers, new { @class = "form-select" })
+</div>
+
+@Html.PartialSectionScripts(
+    @<script src="~/js/server_dropdown.js" asp-append-version="true"></script>
+)

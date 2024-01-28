@@ -1,6 +1,4 @@
-﻿@using X.PagedList
-@using X.PagedList.Mvc.Bootstrap4.Core
-@using X.PagedList.Mvc.Core
+﻿@using TagRenderMode = X.PagedList.Web.Common.TagRenderMode
 
 @model IPagedList
 
@@ -23,7 +21,7 @@
 
                     } 
 
-                    li.AppendHtml(a.ToString(X.PagedList.Web.Common.TagRenderMode.Normal));
+                    li.AppendHtml(a.ToString(TagRenderMode.Normal));
 
                     return li;
                 };
@@ -32,3 +30,7 @@
         </div>
     </div>
 </div>
+
+@Html.PartialSectionScripts(
+    @<script src="~/js/pagination.js" asp-append-version="true"></script>
+)

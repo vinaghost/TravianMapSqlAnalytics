@@ -1,4 +1,5 @@
 ﻿using Core.Features.GetServer;
+using Core.Features.GetServerList;
 using Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Change(string server)
         {
-            var isValid = await _mediator.Send(new ValidateServerQuery(server));
+            var isValid = await _mediator.Send(new ValidateServerUrlQuery(server));
             if (isValid)
             {
                 _dataService.Server = server;
@@ -25,13 +26,23 @@ namespace WebMVC.Controllers
                 var options = new CookieOptions()
                 {
                     Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
+                    SameSite = SameSiteMode.Lax
                 };
-                //Response.Cookies.Append("TMA_server", server, options);
 
-                var cookie = options.CreateCookieHeader("TMA_server", server);
-                return Ok(cookie.ToString());
+                Response.Cookies.Append("TMSA_server", server, options);
+                return Ok();
             }
             return NotFound();
+        }
+
+        public async Task<IActionResult> ServerList(ServerListParameters parameters)
+        {
+            var servers = await _mediator.Send(new GetServerListQuery(parameters));
+            var serverList = servers
+                .Select(x => new { Id = x.Url, Text = x.Url })
+                .Take(20)
+                .ToList();
+            return Json(new { items = serverList });
         }
     }
 }

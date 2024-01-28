@@ -1,22 +1,21 @@
 ﻿@using Core.Features.GetPlayerContainsPopulationHistory
-
+@using Core.Features.GetServerList
 @model PlayerContainsPopulationHistoryParameters
 
-@using (Html.BeginForm(nameof(PlayersController.PopulationHistory), "Players", FormMethod.Post))
-{
-    @Html.EditorFor(m => m.MinChangePopulation)
-    @Html.EditorFor(m => m.MaxChangePopulation)
+@await Html.PartialAsync("_ServerPickerPartial")
+
+@Html.EditorFor(m => m.MinChangePopulation)
+@Html.EditorFor(m => m.MaxChangePopulation)
     
-    @Html.EditorFor(m => m.Date)
+@Html.EditorFor(m => m.Date)
 
-    @Html.EditorFor(m => m.Alliances, "ListInt")
-    @Html.EditorFor(m => m.Players, "ListInt")
+@Html.EditorFor(m => m.Alliances, "ListInt")
+@Html.EditorFor(m => m.Players, "ListInt")
 
-    <div>
-        @Html.HiddenFor(m => m.PageNumber)
-        @Html.HiddenFor(m => m.PageSize)
-        @Html.HiddenFor(m => m.SortField)
-        @Html.HiddenFor(m => m.SortOrder)
-    </div>
-    <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />
-}
+<div>
+    @Html.HiddenFor(m => m.PageNumber)
+    @Html.HiddenFor(m => m.PageSize)
+    @Html.HiddenFor(m => m.SortField)
+    @Html.HiddenFor(m => m.SortOrder)
+</div>
+<input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />

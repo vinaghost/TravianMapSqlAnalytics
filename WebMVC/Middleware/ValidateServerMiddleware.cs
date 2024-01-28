@@ -11,21 +11,34 @@ namespace WebMVC.Middleware
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var server = context.Request.Cookies["TMA_server"];
+            var server = context.Request.Cookies["TMSA_server"];
             if (string.IsNullOrEmpty(server))
             {
                 server = await _mediator.Send(new GetMostPlayerServerQuery());
+                SetCookie(context, server);
+            }
+            else
+            {
+                var valid = await _mediator.Send(new ValidateServerUrlQuery(server));
+                if (!valid)
+                {
+                    server = await _mediator.Send(new GetMostPlayerServerQuery());
+                    SetCookie(context, server);
+                }
             }
 
             _dataService.Server = server;
 
+            await next(context);
+        }
+
+        private void SetCookie(HttpContext context, string server)
+        {
             var options = new CookieOptions()
             {
                 Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
             };
-            context.Response.Cookies.Append("TMA_server", server, options);
-
-            await next(context);
+            context.Response.Cookies.Append("TMSA_server", server, options);
         }
     }
 }
