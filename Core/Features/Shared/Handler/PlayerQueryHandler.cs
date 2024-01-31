@@ -18,11 +18,11 @@ namespace Core.Features.Shared.Handler
                 .ToListAsync(cancellationToken);
         }
 
-        protected IEnumerable<PlayerDto> GetPlayerDtos(IList<int> playerIds)
+        protected IEnumerable<PlayerTempDto> GetPlayerDtos(IList<int> playerIds)
         {
             return _dbContext.Players
                 .Where(x => playerIds.Distinct().Contains(x.PlayerId))
-                .Select(x => new PlayerDto(
+                .Select(x => new PlayerTempDto(
                     x.PlayerId,
                     x.Name,
                     x.AllianceId

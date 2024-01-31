@@ -9,8 +9,11 @@
     };
 }
 
-<div class="form-group">
-    @Html.Label(expression, "Server", new { @class = "control-label", style = "width: 100%" })
+<div class="input-group mt-3">
+    <span class="input-group-text">
+        @Html.Label(expression, "Server", new { @class = "control-label", style = "width: 100%" })
+    </span>
+    
     @Html.DropDownList(expression, servers, new { @class = "form-select" })
 </div>
 

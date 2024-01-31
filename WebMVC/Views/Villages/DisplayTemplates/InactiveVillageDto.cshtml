@@ -1,0 +1,82 @@
+﻿@using Core.Features.GetInactiveVillage
+-
+@inject DataService dataService
+@model IPagedList<InactiveVillageDto>
+
+@{
+    var dates = Enumerable.Range(0, 6).Select(x => DateTime.Now.AddDays(-x)).ToList();
+    var page = Model.PageSize * (Model.PageNumber - 1);
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveVillageDto village) => village.Distance)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveVillageDto village) => village.Player)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveVillageDto village) => village.Village)
+
+            </th>
+            @for (var i = 0; i < dates.Count; i++)
+            {
+                <th>
+                    @dates[i].ToString("dd/MM")
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var value in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => value.Distance)
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/profile/@value.Player.PlayerId" target="_blank">@Html.DisplayFor(m => value.Player.PlayerName)</a>
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/karte.php?d=@value.Village.MapId" target="_blank">@Html.DisplayFor(m => value.Village.VillageName)</a>
+                </td>
+                @for (var pos = 0; pos < dates.Count; pos++)
+                {
+                    <td>
+                        @if (pos >= value.Populations.Count)
+                        {
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => value.Populations[pos].Population)
+
+                                @if (pos == value.Populations.Count - 1) continue;
+                                @{
+                                    var different = value.Populations[pos].Population - value.Populations[pos + 1].Population;
+                                    if (different > 0)
+                                    {
+                                        <span class="badge bg-success">+@different</span>
+                                    }
+                                    else if (different < 0)
+                                    {
+                                        <span class="badge bg-danger">@different</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@different</span>
+
+                                    }
+                                }
+                            </p>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+

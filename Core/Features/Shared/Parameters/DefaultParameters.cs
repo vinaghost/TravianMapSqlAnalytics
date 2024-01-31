@@ -13,8 +13,8 @@
         public static int PageNumber => 1;
         public static int PageSize => 50;
 
-        public static int TargetX => 0;
-        public static int TargetY => 0;
+        public static int X => 0;
+        public static int Y => 0;
 
         public static int MinDistance => 0;
         public static int MaxDistance => 400;

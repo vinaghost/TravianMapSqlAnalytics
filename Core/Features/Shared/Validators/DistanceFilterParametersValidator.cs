@@ -7,18 +7,18 @@ namespace Core.Features.Shared.Validators
     {
         public DistanceFilterParametersValidator()
         {
-            RuleFor(x => x.TargetX)
+            RuleFor(x => x.X)
                 .LessThanOrEqualTo(200)
                 .GreaterThanOrEqualTo(-200);
 
-            RuleFor(x => x.TargetY)
+            RuleFor(x => x.Y)
                 .LessThanOrEqualTo(200)
                 .GreaterThanOrEqualTo(-200);
 
             RuleFor(x => x.MinDistance)
                 .GreaterThanOrEqualTo(0);
             RuleFor(x => x.MaxDistance)
-                .LessThanOrEqualTo(x => x.MinDistance);
+                .GreaterThanOrEqualTo(x => x.MinDistance);
         }
     }
 }

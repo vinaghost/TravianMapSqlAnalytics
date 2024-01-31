@@ -67,7 +67,7 @@ namespace Core.Features.GetVillageContainsDistance
 
         public async Task<Dictionary<int, VillageInfo>> GetVillages(IList<int> villageIds, IDistanceFilterParameters parameters, CancellationToken cancellationToken)
         {
-            var centerCoordinate = new Coordinates(parameters.TargetX, parameters.TargetY);
+            var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
             return await _dbContext.Villages
                 .Where(x => villageIds.Distinct().Contains(x.VillageId))
                 .AsAsyncEnumerable()

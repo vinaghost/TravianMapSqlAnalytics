@@ -37,11 +37,11 @@ namespace Core.Features.Shared.Handler
                 .ToListAsync(cancellationToken);
         }
 
-        public IEnumerable<VillageDto> GetVillageDtos(IList<int> villageIds)
+        public IEnumerable<VillageTempDto> GetVillageDtos(IList<int> villageIds)
         {
             return _dbContext.Villages
                 .Where(x => villageIds.Distinct().Contains(x.VillageId))
-                .Select(x => new VillageDto(
+                .Select(x => new VillageTempDto(
                     x.PlayerId,
                     x.VillageId,
                     x.MapId,

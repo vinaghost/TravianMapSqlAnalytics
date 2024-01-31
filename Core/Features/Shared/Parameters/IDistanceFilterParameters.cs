@@ -2,8 +2,8 @@
 {
     public interface IDistanceFilterParameters
     {
-        public int TargetX { get; }
-        public int TargetY { get; }
+        public int X { get; }
+        public int Y { get; }
 
         public int MinDistance { get; }
         public int MaxDistance { get; }

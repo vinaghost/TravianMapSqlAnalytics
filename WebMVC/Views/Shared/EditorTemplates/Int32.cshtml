@@ -1,16 +1,6 @@
 ﻿@model int?
 
 @{
-    int i;
-    if (!Model.HasValue)
-    {
-        i = 0;
-    }
-    else
-    {
-        i = Model.Value;
-    }
-
     var htmlAttributes = new RouteValueDictionary();
     htmlAttributes.Add("type", "number");
 
@@ -28,8 +18,8 @@
         htmlAttributes.Add("placeholder", ViewBag.placeholder);
     }
 }
-<div class="form-group">
-    @Html.LabelForModel(new { @class = "control-label" })
+<div class="input-group mt-3">
+    <span class="input-group-text">@Html.LabelForModel(new { @class = "control-label" })</span>    
     @Html.TextBox("", ViewData.TemplateInfo.FormattedModelValue, htmlAttributes)
     @Html.ValidationMessageFor(m => m, "", new { @class = "form-text text-danger" })
 </div>
