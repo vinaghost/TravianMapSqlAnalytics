@@ -35,11 +35,12 @@ jobs:
       - name: Publish 
         run: dotnet publish ConsoleUpdate -c Release -p:PublishSingleFile=true -o bin/ConsoleUpdate
       
-      - name: 
+      - name: Update sql connection string
         uses: im-open/variable-substitution@v2.0.5
+        with:
           files: 'bin/ConsoleUpdate/appsettings.Production.json'
-          env:
-            ConnectionStrings.DataSource: 'Host=${{ secrets.MYSQL_HOST }};Port=${{ secrets.MYSQL_PORT }};Username=${{ secrets.MYSQL_USERNAME }};Password=${{ secrets.MYSQL_PASSWORD }}'
+        env:
+          ConnectionStrings.DataSource: 'Host=${{ secrets.MYSQL_HOST }};Port=${{ secrets.MYSQL_PORT }};Username=${{ secrets.MYSQL_USERNAME }};Password=${{ secrets.MYSQL_PASSWORD }}'
 
       - name: Build and push update image
         uses: docker/build-push-action@v4
