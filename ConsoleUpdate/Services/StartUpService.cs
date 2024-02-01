@@ -49,9 +49,11 @@ namespace ConsoleUpdate.Services
             var serversInfo = new List<Server>();
             foreach (var server in servers)
             {
+                Console.WriteLine("{Time} Update {server}", DateTime.Now.ToShortTimeString(), server);
                 var serverInfo = await HandleUpdate(server, cancellationToken);
                 if (serverInfo is null) return;
                 serversInfo.Add(serverInfo);
+                Console.WriteLine("{Time} Updated {server}", DateTime.Now.ToShortTimeString(), server);
             }
 
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
