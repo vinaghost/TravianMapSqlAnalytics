@@ -2,6 +2,10 @@
 # DOCKERHUB_USERNAME
 # DOCKERHUB_TOKEN
 # DOCKERHUB_REPOSITORY_UPDATE
+# MYSQL_HOST
+# MYSQL_PORT
+# MYSQL_USERNAME
+# MYSQL_PASSWORD
 
 name: Release Docker build
 run-name: Release Docker build
@@ -31,6 +35,12 @@ jobs:
       - name: Publish 
         run: dotnet publish ConsoleUpdate -c Release -p:PublishSingleFile=true -o bin/ConsoleUpdate
       
+      - name: 
+      uses: im-open/variable-substitution@v2.0.5
+        files: 'bin/ConsoleUpdate/appsettings.Production.json'
+      env:
+        ConnectionStrings.DataSource: 'Host=${{ secrets.MYSQL_HOST }};Port=${{ secrets.MYSQL_PORT }};Username=${{ secrets.MYSQL_USERNAME }};Password=${{ secrets.MYSQL_PASSWORD }}'
+
       - name: Build and push update image
         uses: docker/build-push-action@v4
         with:
