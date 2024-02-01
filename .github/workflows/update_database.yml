@@ -28,5 +28,5 @@ jobs:
       - name: Run update database
         env:
             connectionString: Host=${{ secrets.MYSQL_HOST }};Port=${{ secrets.MYSQL_PORT }};Username=${{ secrets.MYSQL_USERNAME }};Password=${{ secrets.MYSQL_PASSWORD }}
-        run: docker run -e connectionString="${{ env.connectionString}}" ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest
+        run: docker run -e ConnectionStrings.DataSource="${{ env.connectionString}}" ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPOSITORY_UPDATE }}:latest
        
