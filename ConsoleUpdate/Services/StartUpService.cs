@@ -3,6 +3,7 @@ using ConsoleUpdate.Commands;
 using ConsoleUpdate.Models;
 using Core.Entities;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
@@ -48,7 +49,7 @@ namespace ConsoleUpdate.Services
             var serversInfo = new List<Server>();
             foreach (var server in servers)
             {
-                var serverInfo = await HandleUpdate(server);
+                var serverInfo = await HandleUpdate(server, cancellationToken);
                 if (serverInfo is null) return;
                 serversInfo.Add(serverInfo);
             }
@@ -63,20 +64,35 @@ namespace ConsoleUpdate.Services
             _hostApplicationLifetime.StopApplication();
         }
 
-        private async Task HandleDelete(string url)
+        private async Task HandleDelete(string url, CancellationToken cancellationToken)
         {
-            await _mediator.Send(new DeleteServerCommand(url));
+            await _mediator.Send(new DeleteServerCommand(url), cancellationToken);
         }
 
-        private async Task<Server?> HandleUpdate(ServerRaw serverRaw)
+        private async Task<Server?> HandleUpdate(ServerRaw serverRaw, CancellationToken cancellationToken)
         {
-            var villages = await _mediator.Send(new GetMapSqlCommand(serverRaw.Url));
+            var villages = await _mediator.Send(new GetMapSqlCommand(serverRaw.Url), cancellationToken);
             if (villages.Count == 0) return null;
-            await _mediator.Send(new CreateServerCommand(serverRaw.Url));
 
-            int allianceCount = await _mediator.Send(new UpdateAllianceCommand(serverRaw.Url, villages));
-            int playerCount = await _mediator.Send(new UpdatePlayerCommand(serverRaw.Url, villages));
-            int villageCount = await _mediator.Send(new UpdateVillageCommand(serverRaw.Url, villages));
+            using var context = await _mediator.Send(new CreateServerCommand(serverRaw.Url), cancellationToken);
+
+            var transaction = context.Database.BeginTransaction();
+            try
+            {
+                await _mediator.Send(new UpdateAllianceCommand(context, villages), cancellationToken);
+                await _mediator.Send(new UpdatePlayerCommand(context, villages), cancellationToken);
+                await _mediator.Send(new UpdateVillageCommand(context, villages), cancellationToken);
+                transaction.Commit();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "{message}", e.Message);
+                transaction.Rollback();
+            }
+            var allianceCount = await context.Alliances.CountAsync(cancellationToken: cancellationToken);
+            var playerCount = await context.Players.CountAsync(cancellationToken: cancellationToken);
+            var villageCount = await context.Villages.CountAsync(cancellationToken: cancellationToken);
+            var oasisCount = 0;
 
             var server = new Server
             {
@@ -86,7 +102,7 @@ namespace ConsoleUpdate.Services
                 AllianceCount = allianceCount,
                 PlayerCount = playerCount,
                 VillageCount = villageCount,
-                OasisCount = 0,
+                OasisCount = oasisCount,
             };
 
             return server;

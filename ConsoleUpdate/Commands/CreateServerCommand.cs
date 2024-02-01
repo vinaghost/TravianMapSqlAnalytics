@@ -5,16 +5,17 @@ using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record CreateServerCommand(string ServerUrl) : IRequest;
+    public record CreateServerCommand(string ServerUrl) : IRequest<ServerDbContext>;
 
-    public class CreateServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<CreateServerCommand>
+    public class CreateServerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<CreateServerCommand, ServerDbContext>
     {
         private readonly string _connectionString = connectionStringOption.Value.DataSource;
 
-        public async Task Handle(CreateServerCommand request, CancellationToken cancellationToken)
+        public async Task<ServerDbContext> Handle(CreateServerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
+            var context = new ServerDbContext(_connectionString, request.ServerUrl);
             await context.Database.EnsureCreatedAsync(cancellationToken);
+            return context;
         }
     }
 }

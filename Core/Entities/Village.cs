@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core.Entities
 {
@@ -6,6 +7,7 @@ namespace Core.Entities
     [Index(nameof(Population), nameof(Tribe), nameof(IsCapital))]
     public class Village
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public ICollection<VillagePopulationHistory> Populations { get; set; }

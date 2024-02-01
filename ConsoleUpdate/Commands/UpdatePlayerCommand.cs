@@ -1,22 +1,18 @@
 ﻿using ConsoleUpdate.Extensions;
 using ConsoleUpdate.Models;
 using Core;
-using Core.Config;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace ConsoleUpdate.Commands
 {
-    public record UpdatePlayerCommand(string ServerUrl, List<VillageRaw> VillageRaws) : IRequest<int>;
+    public record UpdatePlayerCommand(ServerDbContext Context, List<VillageRaw> VillageRaws) : IRequest;
 
-    public class UpdatePlayerCommandHandler(IOptions<ConnectionStringOption> connectionStringOption) : IRequestHandler<UpdatePlayerCommand, int>
+    public class UpdatePlayerCommandHandler : IRequestHandler<UpdatePlayerCommand>
     {
-        private readonly string _connectionString = connectionStringOption.Value.DataSource;
-
-        public async Task<int> Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
+        public async Task Handle(UpdatePlayerCommand request, CancellationToken cancellationToken)
         {
-            using var context = new ServerDbContext(_connectionString, request.ServerUrl);
+            var context = request.Context;
             var players = request.VillageRaws
                .DistinctBy(x => x.PlayerId)
                .Select(x => x.GetPlayer());
@@ -29,8 +25,6 @@ namespace ConsoleUpdate.Commands
 
                 await context.BulkInsertAsync(playerAlliances, cancellationToken: cancellationToken);
             }
-            var count = await context.Players.CountAsync(cancellationToken: cancellationToken);
-            return count;
         }
     }
 }
