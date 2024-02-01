@@ -28,12 +28,9 @@ namespace ConsoleUpdate.Services
             var servers = await _mediator.Send(new GetServerListCommand(), cancellationToken);
             _logger.LogInformation("Found {count} servers", servers.Count);
 
-            var serverVaild = servers.Where(x => !(x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now)).ToList();
-            var serverInvaild = servers.Where(x => x.IsClosed || x.IsEnded || x.StartDate > DateTime.Now).ToList();
-
             var serverFailed = new ConcurrentQueue<ServerRaw>();
 
-            await Parallel.ForEachAsync(serverVaild, async (server, token) =>
+            await Parallel.ForEachAsync(servers, async (server, token) =>
             {
                 var isValid = await _mediator.Send(new ValidateServerCommand(server.Url), token);
                 if (!isValid)
@@ -42,23 +39,19 @@ namespace ConsoleUpdate.Services
                 }
             });
 
-            serverInvaild.AddRange(serverFailed);
-            _logger.LogInformation("{count} servers are dead. Deleting their database to free space ...", serverInvaild.Count);
-            await Parallel.ForEachAsync(serverInvaild, async (server, token) => await HandleDelete(server.Url));
-
             foreach (var server in serverFailed)
             {
-                serverVaild.Remove(server);
+                servers.Remove(server);
             }
-            _logger.LogInformation("{count} servers are alive. Updating...", serverVaild.Count);
+            _logger.LogInformation("{count} servers are alive. Updating...", servers.Count);
 
-            var serversInfo = new ConcurrentQueue<Server>();
-            await Parallel.ForEachAsync(serverVaild, async (server, token) =>
+            var serversInfo = new List<Server>();
+            foreach (var server in servers)
             {
                 var serverInfo = await HandleUpdate(server);
                 if (serverInfo is null) return;
-                serversInfo.Enqueue(serverInfo);
-            });
+                serversInfo.Add(serverInfo);
+            }
 
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
 
@@ -70,12 +63,12 @@ namespace ConsoleUpdate.Services
             _hostApplicationLifetime.StopApplication();
         }
 
-        public async Task HandleDelete(string url)
+        private async Task HandleDelete(string url)
         {
             await _mediator.Send(new DeleteServerCommand(url));
         }
 
-        public async Task<Server?> HandleUpdate(ServerRaw serverRaw)
+        private async Task<Server?> HandleUpdate(ServerRaw serverRaw)
         {
             var villages = await _mediator.Send(new GetMapSqlCommand(serverRaw.Url));
             if (villages.Count == 0) return null;
@@ -89,8 +82,7 @@ namespace ConsoleUpdate.Services
             {
                 Id = serverRaw.Id,
                 Url = serverRaw.Url,
-                Zone = serverRaw.Zone,
-                StartDate = serverRaw.StartDate,
+                LastUpdate = DateTime.Now,
                 AllianceCount = allianceCount,
                 PlayerCount = playerCount,
                 VillageCount = villageCount,

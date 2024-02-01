@@ -20,8 +20,8 @@ namespace Core.Features.GetServer
         public async Task<IPagedList<Server>> Handle(GetServerQuery request, CancellationToken cancellationToken)
         {
             return await _dbContext.Servers
-                .OrderByDescending(x => x.StartDate)
-                .Select(x => new Server(x.Url, x.Zone, x.StartDate, x.AllianceCount, x.PlayerCount, x.VillageCount))
+                .OrderByDescending(x => x.Id)
+                .Select(x => new Server(x.Url, x.AllianceCount, x.PlayerCount, x.VillageCount))
                 .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
     }

@@ -67,7 +67,7 @@ namespace Core.Features.GetVillageContainsPopulationHistory
 
         public async Task<Dictionary<int, VillagePopulationHistory>> GetVillages(IList<int> villageIds, IPopulationHistoryFilterParameters parameters, CancellationToken cancellationToken)
         {
-            return await _dbContext.VillagesPopulations
+            return await _dbContext.VillagePopulationHistory
                 .Where(x => villageIds.Distinct().Contains(x.VillageId))
                 .Where(x => x.Date >= parameters.Date)
                 .GroupBy(x => x.VillageId)

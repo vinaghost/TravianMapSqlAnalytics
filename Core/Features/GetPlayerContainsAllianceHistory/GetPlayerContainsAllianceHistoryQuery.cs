@@ -64,10 +64,10 @@ namespace Core.Features.GetPlayerContainsAllianceHistory
         public async Task<Dictionary<int, PlayerAllianceHistory>> GetPlayers(IList<int> playerIds, IAllianceHistoryFilterParameters parameters, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
-                .Where(x => playerIds.Distinct().Contains(x.PlayerId))
+                .Where(x => playerIds.Distinct().Contains(x.Id))
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.Id,
                     Alliances = x.Alliances
                         .Where(x => x.Date >= parameters.Date)
                         .OrderByDescending(x => x.Date)
@@ -80,22 +80,22 @@ namespace Core.Features.GetPlayerContainsAllianceHistory
                 .AsAsyncEnumerable()
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.Id,
                     ChangeAlliance = x.Alliances.DistinctBy(y => y.AllianceId).Count() - 1,
                     Alliances = x.Alliances.Select(y => new AllianceHistoryRecord(y.AllianceId, "", y.Date)).ToList()
                 })
                 .Where(x => x.ChangeAlliance >= parameters.MinChangeAlliance)
                 .Where(x => x.ChangeAlliance <= parameters.MaxChangeAlliance)
-                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerAllianceHistory(x.ChangeAlliance, x.Alliances), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new PlayerAllianceHistory(x.ChangeAlliance, x.Alliances), cancellationToken);
         }
 
         public async Task<Dictionary<int, AllianceRecord>> GetAlliances(IList<int> playerIds, IHistoryParameters parameters, CancellationToken cancellationToken)
         {
             var allianceCurrentIds = _dbContext.Players
-                .Where(x => playerIds.Distinct().Contains(x.PlayerId))
+                .Where(x => playerIds.Distinct().Contains(x.Id))
                 .Select(x => x.AllianceId);
 
-            var allianceHistoryIds = _dbContext.PlayersAlliances
+            var allianceHistoryIds = _dbContext.PlayerAllianceHistory
                 .Where(x => playerIds.Distinct().Contains(x.PlayerId))
                 .Where(x => x.Date >= parameters.Date)
                 .Select(x => x.AllianceId);
@@ -105,8 +105,8 @@ namespace Core.Features.GetPlayerContainsAllianceHistory
                 .Distinct();
 
             return await _dbContext.Alliances
-                .Where(x => allianceIds.Contains(x.AllianceId))
-                .ToDictionaryAsync(x => x.AllianceId, x => new AllianceRecord(x.Name), cancellationToken);
+                .Where(x => allianceIds.Contains(x.Id))
+                .ToDictionaryAsync(x => x.Id, x => new AllianceRecord(x.Name), cancellationToken);
         }
     }
 }

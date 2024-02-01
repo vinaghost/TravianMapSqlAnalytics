@@ -13,7 +13,7 @@ namespace Core.Features.Shared.Handler
         protected async Task<List<int>> GetPlayerIds(IPlayerFilterParameters parameters, CancellationToken cancellationToken)
         {
             return await GetBaseQueryable(parameters)
-                .Select(x => x.PlayerId)
+                .Select(x => x.Id)
                 .Distinct()
                 .ToListAsync(cancellationToken);
         }
@@ -21,9 +21,9 @@ namespace Core.Features.Shared.Handler
         protected IEnumerable<PlayerTempDto> GetPlayerDtos(IList<int> playerIds)
         {
             return _dbContext.Players
-                .Where(x => playerIds.Distinct().Contains(x.PlayerId))
+                .Where(x => playerIds.Distinct().Contains(x.Id))
                 .Select(x => new PlayerTempDto(
-                    x.PlayerId,
+                    x.Id,
                     x.Name,
                     x.AllianceId
                     ))
@@ -33,12 +33,12 @@ namespace Core.Features.Shared.Handler
         protected async Task<Dictionary<int, AllianceRecord>> GetAlliances(IList<int> playerIds, CancellationToken cancellationToken)
         {
             return await _dbContext.Alliances
-                .Join(_dbContext.Players.Where(x => playerIds.Distinct().Contains(x.PlayerId)),
+                .Join(_dbContext.Players.Where(x => playerIds.Distinct().Contains(x.Id)),
+                    x => x.Id,
                     x => x.AllianceId,
-                    x => x.AllianceId,
-                    (alliance, player) => new { alliance.AllianceId, alliance.Name })
+                    (alliance, player) => new { alliance.Id, alliance.Name })
                 .Distinct()
-                .ToDictionaryAsync(x => x.AllianceId, x => new AllianceRecord(x.Name), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new AllianceRecord(x.Name), cancellationToken);
         }
 
         private IQueryable<Player> GetBaseQueryable(IPlayerFilterParameters parameters)
@@ -57,7 +57,7 @@ namespace Core.Features.Shared.Handler
         {
             if (Alliances.Count == 0) return query;
             var allianceQuery = _dbContext.Alliances
-                 .Where(x => Alliances.Contains(x.AllianceId))
+                 .Where(x => Alliances.Contains(x.Id))
                  .SelectMany(x => x.Players);
             if (query is null) return allianceQuery;
             return query
@@ -68,7 +68,7 @@ namespace Core.Features.Shared.Handler
         {
             if (Players.Count == 0) return query;
             var playerQuery = _dbContext.Players
-                     .Where(x => Players.Contains(x.PlayerId));
+                     .Where(x => Players.Contains(x.Id));
             if (query is null) return playerQuery;
             return query
                 .Union(playerQuery);

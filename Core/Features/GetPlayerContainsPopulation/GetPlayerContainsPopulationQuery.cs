@@ -58,14 +58,14 @@ namespace Core.Features.GetPlayerContainsPopulation
         private async Task<Dictionary<int, PlayerInfo>> GetPlayers(IList<int> playerIds, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
-                .Where(x => playerIds.Distinct().Contains(x.PlayerId))
+                .Where(x => playerIds.Distinct().Contains(x.Id))
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.Id,
                     VillageCount = x.Villages.Count(),
                     Population = x.Villages.Select(x => x.Population).Sum()
                 })
-                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerInfo(x.VillageCount, x.Population), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new PlayerInfo(x.VillageCount, x.Population), cancellationToken);
         }
     }
 }

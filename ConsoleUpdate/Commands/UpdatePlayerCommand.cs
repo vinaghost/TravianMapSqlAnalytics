@@ -22,10 +22,11 @@ namespace ConsoleUpdate.Commands
                .Select(x => x.GetPlayer());
             await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);
 
-            if (!await context.PlayersAlliances.AnyAsync(x => x.Date == DateTime.Today, cancellationToken: cancellationToken))
+            if (!await context.PlayerAllianceHistory.AnyAsync(x => x.Date == DateTime.Today, cancellationToken: cancellationToken))
             {
                 var playerAlliances = players
                     .Select(x => x.GetPlayerAlliance(DateTime.Today));
+
                 await context.BulkInsertAsync(playerAlliances, cancellationToken: cancellationToken);
             }
             var count = await context.Players.CountAsync(cancellationToken: cancellationToken);

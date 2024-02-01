@@ -1,17 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core.Entities
 {
+    [Index(nameof(Name))]
     public class Alliance
     {
-        // primary key
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int AllianceId { get; set; }
+        public int Id { get; set; }
 
-        // foreign key
         public ICollection<Player> Players { get; set; }
 
-        // properties
         public string Name { get; set; } = "";
     }
 }

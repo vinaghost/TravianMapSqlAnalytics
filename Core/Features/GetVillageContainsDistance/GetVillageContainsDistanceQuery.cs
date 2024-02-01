@@ -69,16 +69,16 @@ namespace Core.Features.GetVillageContainsDistance
         {
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
             return await _dbContext.Villages
-                .Where(x => villageIds.Distinct().Contains(x.VillageId))
+                .Where(x => villageIds.Distinct().Contains(x.Id))
                 .AsAsyncEnumerable()
                 .Select(x => new
                 {
-                    x.VillageId,
+                    x.Id,
                     Distance = centerCoordinate.Distance(new Coordinates(x.X, x.Y))
                 })
                 .Where(x => x.Distance >= parameters.MinDistance)
                 .Where(x => x.Distance <= parameters.MaxDistance)
-                .ToDictionaryAsync(x => x.VillageId, x => new VillageInfo(x.Distance), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new VillageInfo(x.Distance), cancellationToken);
         }
     }
 }

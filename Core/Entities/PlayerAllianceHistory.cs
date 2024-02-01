@@ -1,11 +1,12 @@
-﻿namespace Core.Entities
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Core.Entities
 {
-    public class PlayerAlliance
+    [Index(nameof(PlayerId), nameof(Date))]
+    public class PlayerAllianceHistory
     {
-        // primary key
         public int Id { get; set; }
 
-        // properties
         public int PlayerId { get; set; }
 
         public DateTime Date { get; set; }

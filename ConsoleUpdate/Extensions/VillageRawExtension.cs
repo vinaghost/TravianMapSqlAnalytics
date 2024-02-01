@@ -9,7 +9,7 @@ namespace ConsoleUpdate.Extensions
         {
             return new Alliance
             {
-                AllianceId = villageRaw.AllianceId,
+                Id = villageRaw.AllianceId,
                 Name = villageRaw.AllianceName
             };
         }
@@ -18,7 +18,7 @@ namespace ConsoleUpdate.Extensions
         {
             return new Player
             {
-                PlayerId = villageRaw.PlayerId,
+                Id = villageRaw.PlayerId,
                 Name = villageRaw.PlayerName,
                 AllianceId = villageRaw.AllianceId
             };
@@ -28,7 +28,7 @@ namespace ConsoleUpdate.Extensions
         {
             return new Village
             {
-                VillageId = villageRaw.VillageId,
+                Id = villageRaw.VillageId,
                 MapId = villageRaw.MapId,
                 Name = villageRaw.VillageName,
                 Tribe = villageRaw.Tribe,
@@ -44,21 +44,21 @@ namespace ConsoleUpdate.Extensions
             };
         }
 
-        public static VillagePopulation GetVillagePopulation(this Village village, DateTime date)
+        public static VillagePopulationHistory GetVillagePopulation(this Village village, DateTime date)
         {
-            return new VillagePopulation
+            return new VillagePopulationHistory
             {
-                VillageId = village.VillageId,
+                VillageId = village.Id,
                 Population = village.Population,
                 Date = date,
             };
         }
 
-        public static PlayerAlliance GetPlayerAlliance(this Player player, DateTime date)
+        public static PlayerAllianceHistory GetPlayerAlliance(this Player player, DateTime date)
         {
-            return new PlayerAlliance
+            return new PlayerAllianceHistory
             {
-                PlayerId = player.PlayerId,
+                PlayerId = player.Id,
                 AllianceId = player.AllianceId,
                 Date = date,
             };

@@ -9,8 +9,8 @@ namespace Core
         public DbSet<Alliance> Alliances { get; set; }
         public DbSet<Player> Players { get; set; }
         public DbSet<Village> Villages { get; set; }
-        public DbSet<VillagePopulation> VillagesPopulations { get; set; }
-        public DbSet<PlayerAlliance> PlayersAlliances { get; set; }
+        public DbSet<VillagePopulationHistory> VillagePopulationHistory { get; set; }
+        public DbSet<PlayerAllianceHistory> PlayerAllianceHistory { get; set; }
 
         [ActivatorUtilitiesConstructor]
         public ServerDbContext(DbContextOptions<ServerDbContext> options) : base(options)
@@ -23,27 +23,6 @@ namespace Core
 
         public ServerDbContext(string connectionString, ServerVersion version) : base(new DbContextOptionsBuilder().GettOptionsBuilder(connectionString, version).Options)
         {
-        }
-
-        public List<DateTime> GetDateBefore(int days)
-        {
-            var dates = new List<DateTime>();
-            var today = GetNewestDay();
-            for (int i = 0; i <= days; i++)
-            {
-                var beforeDate = today.AddDays(-i);
-                dates.Add(beforeDate);
-            }
-            return dates;
-        }
-
-        public DateTime GetNewestDay()
-        {
-            var query = VillagesPopulations
-                .OrderByDescending(x => x.Date)
-                .Select(x => x.Date)
-                .FirstOrDefault();
-            return query;
         }
     }
 

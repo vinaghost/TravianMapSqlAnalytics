@@ -36,7 +36,7 @@ namespace Benchmark.Queries
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -49,7 +49,7 @@ namespace Benchmark.Queries
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -60,7 +60,7 @@ namespace Benchmark.Queries
                 })
                 .Select(x => new VillageContainPopulationHistory(
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -80,7 +80,7 @@ namespace Benchmark.Queries
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -93,7 +93,7 @@ namespace Benchmark.Queries
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -104,7 +104,7 @@ namespace Benchmark.Queries
                 })
                 .Select(x => new VillageContainPopulationHistory(
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.Name,
                     x.X,
                     x.Y,

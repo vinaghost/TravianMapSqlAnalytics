@@ -1,6 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Core;
-using Core.Entities;
 using Core.Features.GetVillageContainsPopulationHistory;
 using Core.Features.Shared.Models;
 using Microsoft.EntityFrameworkCore;
@@ -157,7 +156,7 @@ namespace Benchmark.Queries
             var distanceVillages = context.Villages
                 .Select(x => new
                 {
-                    x.VillageId,
+                    VillageId = x.Id,
                     x.X,
                     x.Y,
                 })
@@ -169,7 +168,7 @@ namespace Benchmark.Queries
                 })
                 .Select(x => x.VillageId);
 
-            var populationVillage = context.VillagesPopulations
+            var populationVillage = context.VillagePopulationHistory
                 .Where(x => distanceVillages.Contains(x.VillageId))
                 .Where(x => x.Date >= Date)
                 .GroupBy(x => x.VillageId)
@@ -188,11 +187,11 @@ namespace Benchmark.Queries
                 .ToDictionary(x => x.VillageId, x => new { x.ChangePopulation, x.Populations });
 
             return await context.Villages
-                .Where(x => populationVillage.Keys.Contains(x.VillageId))
+                .Where(x => populationVillage.Keys.Contains(x.Id))
                 .Select(x => new
                 {
                     x.PlayerId,
-                    x.VillageId,
+                    VillageId = x.Id,
                     x.Name,
                     x.X,
                     x.Y,
@@ -224,7 +223,7 @@ namespace Benchmark.Queries
                .Select(x => new
                {
                    x.PlayerId,
-                   x.VillageId,
+                   VillageId = x.Id,
                    x.Name,
                    x.X,
                    x.Y,
@@ -279,7 +278,7 @@ namespace Benchmark.Queries
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<VillagePopulation>()
+            modelBuilder.Entity<Core.Entities.VillagePopulationHistory>()
                 .HasIndex(x => x.Date);
         }
     }

@@ -54,10 +54,10 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
         private async Task<Dictionary<int, PlayerPopulationHistory>> GetPlayers(IList<int> playerIds, IPopulationHistoryFilterParameters parameters, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
-                .Where(x => playerIds.Distinct().Contains(x.PlayerId))
+                .Where(x => playerIds.Distinct().Contains(x.Id))
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.Id,
                     Populations = x.Villages
                         .SelectMany(x => x.Populations
                                         .Where(x => x.Date >= parameters.Date))
@@ -75,13 +75,13 @@ namespace Core.Features.GetPlayerContainsPopulationHistory
                 .AsAsyncEnumerable()
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.Id,
                     ChangePopulation = x.Populations.Select(x => x.Population).FirstOrDefault() - x.Populations.Select(x => x.Population).LastOrDefault(),
                     Populations = x.Populations.Select(x => new PopulationHistoryRecord(x.Population, x.Date)).ToList()
                 })
                 .Where(x => x.ChangePopulation >= parameters.MinChangePopulation)
                 .Where(x => x.ChangePopulation <= parameters.MaxChangePopulation)
-                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerPopulationHistory(x.ChangePopulation, x.Populations), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new PlayerPopulationHistory(x.ChangePopulation, x.Populations), cancellationToken);
         }
     }
 }

@@ -1,17 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace Core.Entities
 {
+    [Index(nameof(Name))]
+    [Index(nameof(Population), nameof(Tribe), nameof(IsCapital))]
     public class Village
     {
-        // primary key
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int VillageId { get; set; }
+        public int Id { get; set; }
 
-        // foreign key
-        public ICollection<VillagePopulation> Populations { get; set; }
+        public ICollection<VillagePopulationHistory> Populations { get; set; }
 
-        // properties
         public int MapId { get; set; }
 
         public int PlayerId { get; set; }

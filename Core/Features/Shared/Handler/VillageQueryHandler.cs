@@ -32,7 +32,7 @@ namespace Core.Features.Shared.Handler
                     .Where(x => x.IsCapital == true);
             }
             return await query
-                .Select(x => x.VillageId)
+                .Select(x => x.Id)
                 .Distinct()
                 .ToListAsync(cancellationToken);
         }
@@ -40,10 +40,10 @@ namespace Core.Features.Shared.Handler
         public IEnumerable<VillageTempDto> GetVillageDtos(IList<int> villageIds)
         {
             return _dbContext.Villages
-                .Where(x => villageIds.Distinct().Contains(x.VillageId))
+                .Where(x => villageIds.Distinct().Contains(x.Id))
                 .Select(x => new VillageTempDto(
                     x.PlayerId,
-                    x.VillageId,
+                    x.Id,
                     x.MapId,
                     x.Name,
                     x.X,
@@ -57,23 +57,23 @@ namespace Core.Features.Shared.Handler
         protected async Task<Dictionary<int, PlayerRecord>> GetPlayers(IList<int> villageIds, CancellationToken cancellationToken)
         {
             return await _dbContext.Players
-                .Join(_dbContext.Villages.Where(x => villageIds.Distinct().Contains(x.VillageId)),
+                .Join(_dbContext.Villages.Where(x => villageIds.Distinct().Contains(x.Id)),
+                    x => x.Id,
                     x => x.PlayerId,
-                    x => x.PlayerId,
-                    (player, village) => new { player.AllianceId, player.Name, player.PlayerId })
+                    (player, village) => new { player.AllianceId, player.Name, player.Id })
                 .Distinct()
-                .ToDictionaryAsync(x => x.PlayerId, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new PlayerRecord(x.AllianceId, x.Name), cancellationToken);
         }
 
         protected async Task<Dictionary<int, AllianceRecord>> GetAlliances(IList<int> playerIds, CancellationToken cancellationToken)
         {
             return await _dbContext.Alliances
-                .Join(_dbContext.Players.Where(x => playerIds.Distinct().Contains(x.PlayerId)),
+                .Join(_dbContext.Players.Where(x => playerIds.Distinct().Contains(x.Id)),
+                    x => x.Id,
                     x => x.AllianceId,
-                    x => x.AllianceId,
-                    (alliance, player) => new { alliance.AllianceId, alliance.Name })
+                    (alliance, player) => new { alliance.Id, alliance.Name })
                 .Distinct()
-                .ToDictionaryAsync(x => x.AllianceId, x => new AllianceRecord(x.Name), cancellationToken);
+                .ToDictionaryAsync(x => x.Id, x => new AllianceRecord(x.Name), cancellationToken);
         }
 
         private IQueryable<Village> GetBaseQueryable(IVillageFilterParameters parameters)
@@ -93,7 +93,7 @@ namespace Core.Features.Shared.Handler
         {
             if (Alliances.Count == 0) return query;
             var allianceQuery = _dbContext.Alliances
-                 .Where(x => Alliances.Contains(x.AllianceId))
+                 .Where(x => Alliances.Contains(x.Id))
                  .SelectMany(x => x.Players)
                  .SelectMany(x => x.Villages);
             if (query is null) return allianceQuery;
@@ -105,7 +105,7 @@ namespace Core.Features.Shared.Handler
         {
             if (Players.Count == 0) return query;
             var playerQuery = _dbContext.Players
-                     .Where(x => Players.Contains(x.PlayerId))
+                     .Where(x => Players.Contains(x.Id))
                      .SelectMany(x => x.Villages);
             if (query is null) return playerQuery;
             return query

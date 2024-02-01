@@ -13,7 +13,7 @@ namespace Core.Features.GetInactiveVillage
         {
             var parameters = request.Parameters;
 
-            var changePopulationVillages = _dbContext.VillagesPopulations
+            var changePopulationVillages = _dbContext.VillagePopulationHistory
                 .Where(x => x.Date >= parameters.Date)
                 .GroupBy(x => x.VillageId)
                 .Where(x => Math.Abs(
@@ -25,9 +25,9 @@ namespace Core.Features.GetInactiveVillage
 
             var notChangePopulationPlayers = _dbContext.Villages
                 .GroupBy(x => x.PlayerId)
-                .Where(x => x.OrderBy(x => x.VillageId).Select(x => x.Population).Sum() >= parameters.MinPlayerPopulation)
-                .Where(x => x.OrderBy(x => x.VillageId).Select(x => x.Population).Sum() <= parameters.MaxPlayerPopulation)
-                .Where(x => x.OrderBy(x => x.VillageId).Any(x => changePopulationVillages.Contains(x.VillageId)))
+                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() >= parameters.MinPlayerPopulation)
+                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() <= parameters.MaxPlayerPopulation)
+                .Where(x => x.OrderBy(x => x.Id).Any(x => changePopulationVillages.Contains(x.Id)))
                 .Select(x => x.Key);
 
             var villages = _dbContext.Villages
@@ -46,11 +46,11 @@ namespace Core.Features.GetInactiveVillage
 
             var players = _dbContext.Players
                 .Join(villages,
-                    x => x.PlayerId,
+                    x => x.Id,
                     x => x.PlayerId,
                     (player, village) => new
                     {
-                        Player = new PlayerDto(player.PlayerId, player.Name, player.Villages.Select(x => x.Population).Sum(), player.Villages.Count()),
+                        Player = new PlayerDto(player.Id, player.Name, player.Villages.Select(x => x.Population).Sum(), player.Villages.Count()),
                         village.Village,
                         Populations = village.Populations.ToList()
                     })

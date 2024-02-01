@@ -21,11 +21,31 @@ namespace ConsoleUpdate.Commands
                 .Select(x => x.GetVillage());
             await context.BulkSynchronizeAsync(villages, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);
 
-            if (!await context.VillagesPopulations.AnyAsync(x => x.Date == DateTime.Today, cancellationToken: cancellationToken))
+            var today = DateTime.Today;
+            if (!await context.VillagePopulationHistory.AnyAsync(x => x.Date == today, cancellationToken: cancellationToken))
             {
-                var villagePopulations = villages
-                    .Select(x => x.GetVillagePopulation(DateTime.Today));
-                await context.BulkInsertAsync(villagePopulations, cancellationToken: cancellationToken);
+                var yesterday = today.AddDays(-1);
+                var populationHistory = await context.VillagePopulationHistory
+                    .Where(x => x.Date == yesterday)
+                    .Select(x => new
+                    {
+                        x.VillageId,
+                        x.Population
+                    })
+                    .OrderBy(x => x.VillageId)
+                    .ToListAsync(cancellationToken: cancellationToken);
+
+                var populations = villages
+                    .Select(x => x.GetVillagePopulation(DateTime.Today))
+                    .ToList();
+
+                foreach (var population in populations)
+                {
+                    var history = populationHistory.FirstOrDefault(x => x.VillageId == population.VillageId);
+                    if (history is null) { continue; }
+                    population.Change = population.Population - history.Population;
+                }
+                await context.BulkInsertAsync(populations, cancellationToken: cancellationToken);
             }
             var count = await context.Villages.CountAsync(cancellationToken: cancellationToken);
             return count;
