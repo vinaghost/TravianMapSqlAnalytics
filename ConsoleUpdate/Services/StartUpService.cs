@@ -49,7 +49,7 @@ namespace ConsoleUpdate.Services
             var serversInfo = new List<Server>();
             foreach (var server in servers)
             {
-                Console.WriteLine("{0} Update {1}", DateTime.Now.ToShortTimeString(), server.Url);
+                Console.WriteLine("{0} Updating {1}", DateTime.Now.ToShortTimeString(), server.Url);
                 var serverInfo = await HandleUpdate(server, cancellationToken);
                 if (serverInfo is null) return;
                 serversInfo.Add(serverInfo);
