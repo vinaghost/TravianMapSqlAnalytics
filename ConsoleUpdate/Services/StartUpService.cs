@@ -49,11 +49,11 @@ namespace ConsoleUpdate.Services
             var serversInfo = new List<Server>();
             foreach (var server in servers)
             {
-                Console.WriteLine("{0} Update {1}", DateTime.Now.ToShortTimeString(), server);
+                Console.WriteLine("{0} Update {1}", DateTime.Now.ToShortTimeString(), server.Url);
                 var serverInfo = await HandleUpdate(server, cancellationToken);
                 if (serverInfo is null) return;
                 serversInfo.Add(serverInfo);
-                Console.WriteLine("{0} Updated {1}", DateTime.Now.ToShortTimeString(), server);
+                Console.WriteLine("{0} Updated {1}", DateTime.Now.ToShortTimeString(), server.Url);
             }
 
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
