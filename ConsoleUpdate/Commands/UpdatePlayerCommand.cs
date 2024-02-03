@@ -1,6 +1,7 @@
 ﻿using ConsoleUpdate.Extensions;
 using ConsoleUpdate.Models;
 using Core;
+using Core.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,8 +15,16 @@ namespace ConsoleUpdate.Commands
         {
             var context = request.Context;
             var players = request.VillageRaws
-               .DistinctBy(x => x.PlayerId)
-               .Select(x => x.GetPlayer());
+               .GroupBy(x => x.PlayerId)
+               .Select(x => new Player
+               {
+                   Id = x.Key,
+                   Name = x.First().PlayerName,
+                   AllianceId = x.First().AllianceId,
+                   Population = x.Sum(x => x.Population),
+                   VillageCount = x.Count(),
+               });
+
             await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);
 
             if (!await context.PlayerAllianceHistory.AnyAsync(x => x.Date == DateTime.Today, cancellationToken: cancellationToken))
