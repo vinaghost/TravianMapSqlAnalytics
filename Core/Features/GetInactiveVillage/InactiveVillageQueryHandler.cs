@@ -1,4 +1,5 @@
-﻿using Core.Features.Shared.Models;
+﻿using Core.Features.Shared.Dtos;
+using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
@@ -12,46 +13,47 @@ namespace Core.Features.GetInactiveVillage
         {
             var parameters = request.Parameters;
 
-            var players = _dbContext.Players
-                .AsQueryable();
-            var villages = _dbContext.Villages
-                .AsQueryable();
-            var population = _dbContext.VillagePopulationHistory
-                .Where(x => x.Date >= parameters.Date);
-
-            if (parameters.MaxPlayerPopulation != 0)
-            {
-                players = players
-                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
-                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
-            }
-
-            var query = villages
-                .Join(population,
-                    x => x.Id,
-                    x => x.VillageId,
-                    (village, population) => new
-                    {
-                        village.PlayerId,
-                        population.Change,
-                    })
-                .GroupBy(x => x.PlayerId)
-                .Where(x =>
-                    x.OrderBy(x => x.PlayerId).MaxBy(x => x.Change).Change
+            var changePopulationVillages = _dbContext.VillagePopulationHistory
+                .Where(x => x.Date >= parameters.Date)
+                .GroupBy(x => x.VillageId)
+                .Where(x => Math.Abs(
+                    x.OrderBy(x => x.VillageId).Select(x => x.Population).Max()
                     -
-                    x.OrderBy(x => x.PlayerId).MinBy(x => x.Change).Change
-                    == 0)
+                    x.OrderBy(x => x.VillageId).Select(x => x.Population).Average())
+                    >= 0.1)
+                .Select(x => x.Key);
+
+            var notChangePopulationPlayers = _dbContext.Villages
+                .GroupBy(x => x.PlayerId)
+                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() >= parameters.MinPlayerPopulation)
+                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() <= parameters.MaxPlayerPopulation)
+                .Where(x => x.OrderBy(x => x.Id).Any(x => changePopulationVillages.Contains(x.Id)))
+                .Select(x => x.Key);
+
+            var villages = _dbContext.Villages
+                .Where(x => notChangePopulationPlayers.Contains(x.PlayerId))
+                .Where(x => x.Population >= parameters.MinVillagePopulation)
+                .Where(x => x.Population <= parameters.MaxVillagePopulation)
                 .Select(x => new
                 {
-                    PlayerId = x.Key,
+                    x.PlayerId,
+                    Village = new VillageDto(x.MapId, x.Name, x.X, x.Y, x.Population),
+                    Populations = x.Populations
+                        .Where(x => x.Date <= parameters.Date)
+                        .OrderByDescending(x => x.Date)
+                        .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
                 });
 
-            var data = query
-                .Select(x => new
-                {
-                    w
-                    x.Data
-                })
+            var players = _dbContext.Players
+                .Join(villages,
+                    x => x.Id,
+                    x => x.PlayerId,
+                    (player, village) => new
+                    {
+                        Player = new PlayerDto(player.Id, player.Name, player.Villages.Select(x => x.Population).Sum(), player.Villages.Count()),
+                        village.Village,
+                        Populations = village.Populations.ToList()
+                    })
                 .AsEnumerable();
 
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
