@@ -54,6 +54,16 @@ namespace ConsoleUpdate.Extensions
             };
         }
 
+        public static PlayerPopulationHistory GetPlayerPopulation(this Player player, DateTime date)
+        {
+            return new PlayerPopulationHistory
+            {
+                PlayerId = player.Id,
+                Population = player.Population,
+                Date = date,
+            };
+        }
+
         public static PlayerAllianceHistory GetPlayerAlliance(this Player player, DateTime date)
         {
             return new PlayerAllianceHistory

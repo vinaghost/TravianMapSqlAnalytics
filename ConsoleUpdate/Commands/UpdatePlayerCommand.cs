@@ -27,12 +27,41 @@ namespace ConsoleUpdate.Commands
 
             await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);
 
-            if (!await context.PlayerAllianceHistory.AnyAsync(x => x.Date == DateTime.Today, cancellationToken: cancellationToken))
+            var today = DateTime.Today;
+
+            if (!await context.PlayerAllianceHistory.AnyAsync(x => x.Date == today, cancellationToken: cancellationToken))
             {
                 var playerAlliances = players
-                    .Select(x => x.GetPlayerAlliance(DateTime.Today));
+                    .Select(x => x.GetPlayerAlliance(today));
 
                 await context.BulkInsertAsync(playerAlliances, cancellationToken: cancellationToken);
+            }
+
+            if (!await context.PlayerPopulationHistory.AnyAsync(x => x.Date == today, cancellationToken: cancellationToken))
+            {
+                var yesterday = today.AddDays(-1);
+                var populationHistory = await context.PlayerPopulationHistory
+                    .Where(x => x.Date == yesterday)
+                    .Select(x => new
+                    {
+                        x.PlayerId,
+                        x.Population
+                    })
+                    .OrderBy(x => x.PlayerId)
+                    .ToListAsync(cancellationToken: cancellationToken);
+
+                var populations = players
+                    .Select(x => x.GetPlayerPopulation(DateTime.Today))
+                    .ToList();
+
+                foreach (var population in populations)
+                {
+                    var history = populationHistory.FirstOrDefault(x => x.PlayerId == population.PlayerId);
+                    if (history is null) { continue; }
+                    population.Change = population.Population - history.Population;
+                }
+
+                await context.BulkInsertAsync(populations, cancellationToken: cancellationToken);
             }
         }
     }

@@ -12,6 +12,7 @@ namespace Core.Entities
         public ICollection<Village> Villages { get; set; }
 
         public ICollection<PlayerAllianceHistory> Alliances { get; set; }
+        public ICollection<PlayerPopulationHistory> Populations { get; set; }
 
         public int AllianceId { get; set; }
 

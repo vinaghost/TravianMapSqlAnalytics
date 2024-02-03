@@ -10,6 +10,7 @@ namespace Core
         public DbSet<Player> Players { get; set; }
         public DbSet<Village> Villages { get; set; }
         public DbSet<VillagePopulationHistory> VillagePopulationHistory { get; set; }
+        public DbSet<PlayerPopulationHistory> PlayerPopulationHistory { get; set; }
         public DbSet<PlayerAllianceHistory> PlayerAllianceHistory { get; set; }
 
         [ActivatorUtilitiesConstructor]
