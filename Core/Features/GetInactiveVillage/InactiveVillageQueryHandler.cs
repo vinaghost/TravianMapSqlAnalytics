@@ -13,52 +13,62 @@ namespace Core.Features.GetInactiveVillage
         {
             var parameters = request.Parameters;
 
-            var changePopulationVillages = _dbContext.VillagePopulationHistory
+            var inactivePlayers = _dbContext.PlayerPopulationHistory
                 .Where(x => x.Date >= parameters.Date)
-                .GroupBy(x => x.VillageId)
-                .Where(x => Math.Abs(
-                    x.OrderBy(x => x.VillageId).Select(x => x.Population).Max()
-                    -
-                    x.OrderBy(x => x.VillageId).Select(x => x.Population).Average())
-                    >= 0.1)
-                .Select(x => x.Key);
-
-            var notChangePopulationPlayers = _dbContext.Villages
                 .GroupBy(x => x.PlayerId)
-                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() >= parameters.MinPlayerPopulation)
-                .Where(x => x.OrderBy(x => x.Id).Select(x => x.Population).Sum() <= parameters.MaxPlayerPopulation)
-                .Where(x => x.OrderBy(x => x.Id).Any(x => changePopulationVillages.Contains(x.Id)))
+                .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                 .Select(x => x.Key);
 
-            var villages = _dbContext.Villages
-                .Where(x => notChangePopulationPlayers.Contains(x.PlayerId))
-                .Where(x => x.Population >= parameters.MinVillagePopulation)
-                .Where(x => x.Population <= parameters.MaxVillagePopulation)
-                .Select(x => new
-                {
-                    x.PlayerId,
-                    Village = new VillageDto(x.MapId, x.Name, x.X, x.Y, x.Population),
-                    Populations = x.Populations
-                        .Where(x => x.Date <= parameters.Date)
-                        .OrderByDescending(x => x.Date)
-                        .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
-                });
+            var filterInactivePlayers = _dbContext.Players
+                .Where(x => inactivePlayers.Contains(x.Id));
 
-            var players = _dbContext.Players
-                .Join(villages,
-                    x => x.Id,
+            if (parameters.MaxPlayerPopulation != 0)
+            {
+                filterInactivePlayers = filterInactivePlayers
+                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
+                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
+            }
+
+            var filterVillages = _dbContext.Villages
+                .AsQueryable();
+
+            if (parameters.MaxVillagePopulation != 0)
+            {
+                filterVillages = filterVillages
+                    .Where(x => x.Population >= parameters.MinVillagePopulation)
+                    .Where(x => x.Population <= parameters.MaxVillagePopulation);
+            }
+
+            var filterPopulations = _dbContext.VillagePopulationHistory
+                .Where(x => x.Date >= parameters.Date);
+
+            var villages = filterVillages
+                .Join(filterInactivePlayers,
                     x => x.PlayerId,
-                    (player, village) => new
+                    x => x.Id,
+                    (village, player) => new
                     {
-                        Player = new PlayerDto(player.Id, player.Name, player.Villages.Select(x => x.Population).Sum(), player.Villages.Count()),
+                        Player = new PlayerDto(player.Id, player.Name, player.Population, player.VillageCount),
+                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population),
+                        VillageId = village.Id,
+                    })
+                .GroupJoin(filterPopulations,
+                    x => x.VillageId,
+                    x => x.VillageId,
+                    (village, populations) => new
+                    {
+                        village.Player,
                         village.Village,
-                        Populations = village.Populations.ToList()
+                        Populations = populations
+                            .OrderByDescending(x => x.Date)
+                            .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
+                            .ToList(),
                     })
                 .AsEnumerable();
 
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
-            var distance = players
+            var dtos = villages
                 .Select(x => new InactiveVillageDto()
                 {
                     Distance = centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)),
@@ -67,15 +77,18 @@ namespace Core.Features.GetInactiveVillage
                     Populations = x.Populations
                 });
 
-            var filter = distance
-                .Where(x => x.Distance >= request.Parameters.MinDistance)
-                .Where(x => x.Distance <= request.Parameters.MaxDistance);
+            if (parameters.MaxDistance != 0)
+            {
+                dtos = dtos
+                    .Where(x => x.Distance >= parameters.MinDistance)
+                    .Where(x => x.Distance <= parameters.MaxDistance);
+            }
 
-            var order = distance
+            var orderDtos = dtos
                 .OrderBy(x => x.Distance);
 
-            return await order
-                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
+            return await orderDtos
+                .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
     }
 }
