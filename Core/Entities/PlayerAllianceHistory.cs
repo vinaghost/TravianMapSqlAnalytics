@@ -12,5 +12,7 @@ namespace Core.Entities
         public DateTime Date { get; set; }
 
         public int AllianceId { get; set; }
+
+        public int Change { get; set; }
     }
 }

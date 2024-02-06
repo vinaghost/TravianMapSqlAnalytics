@@ -28,18 +28,41 @@ namespace ConsoleUpdate.Commands
             await context.BulkSynchronizeAsync(players, options => options.SynchronizeKeepidentity = true, cancellationToken: cancellationToken);
 
             var today = DateTime.Today;
+            var yesterday = today.AddDays(-1);
 
             if (!await context.PlayerAllianceHistory.AnyAsync(x => x.Date == today, cancellationToken: cancellationToken))
             {
-                var playerAlliances = players
+                var allianceHistory = await context.PlayerAllianceHistory
+                    .Where(x => x.Date == yesterday)
+                    .Select(x => new
+                    {
+                        x.PlayerId,
+                        x.AllianceId
+                    })
+                    .OrderBy(x => x.PlayerId)
+                    .ToListAsync(cancellationToken: cancellationToken);
+                var alliances = players
                     .Select(x => x.GetPlayerAlliance(today));
 
-                await context.BulkInsertAsync(playerAlliances, cancellationToken: cancellationToken);
+                foreach (var alliance in alliances)
+                {
+                    var history = allianceHistory.FirstOrDefault(x => x.PlayerId == alliance.PlayerId);
+                    if (history is null) { continue; }
+                    if (history.AllianceId == alliance.AllianceId)
+                    {
+                        alliance.Change = 0;
+                    }
+                    else
+                    {
+                        alliance.Change = 1;
+                    }
+                }
+
+                await context.BulkInsertAsync(alliances, cancellationToken: cancellationToken);
             }
 
             if (!await context.PlayerPopulationHistory.AnyAsync(x => x.Date == today, cancellationToken: cancellationToken))
             {
-                var yesterday = today.AddDays(-1);
                 var populationHistory = await context.PlayerPopulationHistory
                     .Where(x => x.Date == yesterday)
                     .Select(x => new
