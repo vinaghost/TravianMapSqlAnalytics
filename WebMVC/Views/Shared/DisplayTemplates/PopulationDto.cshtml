@@ -1,0 +1,22 @@
+﻿@using Core.Features.Shared.Dtos
+@inject DataService dataService
+@model PopulationDto
+
+@Html.DisplayFor(m => m.Population)
+
+@{
+    var change = Model.Change;
+    if (change > 0)
+    {
+        <span class="badge bg-success">+@change</span>
+    }
+    else if (change < 0)
+    {
+        <span class="badge bg-danger">@change</span>
+    }
+    else
+    {
+        <span class="badge bg-secondary">@change</span>
+
+    }
+}

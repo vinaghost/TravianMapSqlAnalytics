@@ -1,7 +1,7 @@
 ﻿using Core.Features.Shared.Query;
 using X.PagedList;
 
-namespace Core.Features.GetInactiveFarms
+namespace WebMVC.Features.GetInactiveFarms
 {
     public record GetInactiveFarmsQuery(InactiveFarmParameters Parameters) : ICachedQuery<IPagedList<InactiveFarmDto>>
     {

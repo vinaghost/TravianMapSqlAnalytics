@@ -1,0 +1,7 @@
+﻿@using Core.Features.Shared.Dtos
+@inject DataService dataService
+
+@model PlayerDto
+
+<a href="https://@dataService.Server/profile/@Model.PlayerId" target="_blank">@Html.DisplayFor(m => m.PlayerName)</a>
+

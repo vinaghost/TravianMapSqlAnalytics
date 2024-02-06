@@ -1,6 +1,6 @@
 ﻿using Core.Features.Shared.Dtos;
 
-namespace Core.Features.GetInactiveFarms
+namespace WebMVC.Features.GetInactiveFarms
 {
     public class InactiveFarmDto
     {

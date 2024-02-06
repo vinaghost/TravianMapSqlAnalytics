@@ -1,9 +1,10 @@
-﻿using Core.Features.Shared.Dtos;
+﻿using Core;
+using Core.Features.Shared.Dtos;
 using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
-namespace Core.Features.GetInactiveFarms
+namespace WebMVC.Features.GetInactiveFarms
 {
     public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<InactiveFarmDto>>
     {

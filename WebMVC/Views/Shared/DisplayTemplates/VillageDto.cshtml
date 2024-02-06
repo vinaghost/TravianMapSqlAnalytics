@@ -1,0 +1,7 @@
+﻿@using Core.Features.Shared.Dtos
+@inject DataService dataService
+
+@model VillageDto
+
+<a href="https://@dataService.Server/karte.php?d=@Model.MapId" target="_blank">@Html.DisplayFor(m => m.VillageName)</a>
+

@@ -1,4 +1,4 @@
-﻿@using Core.Features.GetInactiveFarms
+﻿@    using Core.Features.GetInactiveFarms
 
 @inject IMediator mediator
 @inject DataService dataService
@@ -77,10 +77,10 @@
                     @Html.DisplayFor(m => value.Distance)
                 </td>
                 <td>
-                    <a href="https://@dataService.Server/profile/@value.Player.PlayerId" target="_blank">@Html.DisplayFor(m => value.Player.PlayerName)</a>
+                    @Html.DisplayFor(m => value.Player)
                 </td>
                 <td>
-                    <a href="https://@dataService.Server/karte.php?d=@value.Village.MapId" target="_blank">@Html.DisplayFor(m => value.Village.VillageName)</a>
+                    @Html.DisplayFor(m => value.Village)
                 </td>
                 @for (var pos = 0; pos < dates.Count; pos++)
                 {
@@ -92,24 +92,7 @@
                         else
                         {
                             <p>
-                                @Html.DisplayFor(m => value.Populations[pos].Population)
-
-                                @{
-                                    var change = value.Populations[pos].Change;
-                                    if (change > 0)
-                                    {
-                                        <span class="badge bg-success">+@change</span>
-                                    }
-                                    else if (change < 0)
-                                    {
-                                        <span class="badge bg-danger">@change</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="badge bg-secondary">@change</span>
-
-                                    }
-                                }
+                                @Html.DisplayFor(m => value.Populations[pos])
                             </p>
                         }
                     </td>
