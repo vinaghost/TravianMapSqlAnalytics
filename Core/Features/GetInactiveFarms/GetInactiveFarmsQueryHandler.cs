@@ -3,13 +3,13 @@ using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
-namespace Core.Features.GetInactiveVillage
+namespace Core.Features.GetInactiveFarms
 {
-    public class InactiveVillageQueryHandler(ServerDbContext dbContext) : IRequestHandler<InactiveVillageQuery, IPagedList<InactiveVillageDto>>
+    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<InactiveFarmDto>>
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<InactiveVillageDto>> Handle(InactiveVillageQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<InactiveFarmDto>> Handle(GetInactiveFarmsQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -69,7 +69,7 @@ namespace Core.Features.GetInactiveVillage
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = villages
-                .Select(x => new InactiveVillageDto()
+                .Select(x => new InactiveFarmDto()
                 {
                     Distance = centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)),
                     Player = x.Player,

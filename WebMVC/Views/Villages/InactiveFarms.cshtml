@@ -1,0 +1,122 @@
+﻿@using Core.Features.GetInactiveFarms
+
+@inject IMediator mediator
+@inject DataService dataService
+
+@model IPagedList<InactiveFarmDto>
+
+@{
+    ViewData["Title"] = "Inactive farms";
+    var parameters = new InactiveFarmParameters();
+}
+
+@using (Html.BeginForm(nameof(VillagesController.InactiveFarms), "Villages", FormMethod.Post))
+{
+    <div class="container">
+        @await Html.PartialAsync("_ServerPickerPartial")
+
+        @Html.EditorFor(m => parameters.X)
+        @Html.EditorFor(m => parameters.Y)
+
+        @Html.EditorFor(m => parameters.Date)
+
+        <div class="mt-3">
+            <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">
+                Advanced filters
+            </a>
+
+        </div>
+        <div class="collapse" id="filter-fields">
+            @Html.EditorFor(m => parameters.MinDistance)
+            @Html.EditorFor(m => parameters.MaxDistance)
+
+            @Html.EditorFor(m => parameters.MinPlayerPopulation)
+            @Html.EditorFor(m => parameters.MaxPlayerPopulation)
+
+            @Html.EditorFor(m => parameters.MinVillagePopulation)
+            @Html.EditorFor(m => parameters.MaxVillagePopulation)
+        </div>
+
+        <div>
+            @Html.HiddenFor(m => m.PageNumber)
+            @Html.HiddenFor(m => m.PageSize)
+        </div>
+        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />
+    </div>
+}
+
+@{
+    var dates = Enumerable.Range(0, 6).Select(x => DateTime.Now.AddDays(-x)).ToList();
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Distance)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Player)
+            </th>
+            <th>
+                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Village)
+            </th>
+            @for (var i = 0; i < dates.Count; i++)
+            {
+                <th>
+                    @dates[i].ToString("dd/MM")
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var value in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(m => value.Distance)
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/profile/@value.Player.PlayerId" target="_blank">@Html.DisplayFor(m => value.Player.PlayerName)</a>
+                </td>
+                <td>
+                    <a href="https://@dataService.Server/karte.php?d=@value.Village.MapId" target="_blank">@Html.DisplayFor(m => value.Village.VillageName)</a>
+                </td>
+                @for (var pos = 0; pos < dates.Count; pos++)
+                {
+                    <td>
+                        @if (pos >= value.Populations.Count)
+                        {
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => value.Populations[pos].Population)
+
+                                @{
+                                    var change = value.Populations[pos].Change;
+                                    if (change > 0)
+                                    {
+                                        <span class="badge bg-success">+@change</span>
+                                    }
+                                    else if (change < 0)
+                                    {
+                                        <span class="badge bg-danger">@change</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">@change</span>
+
+                                    }
+                                }
+                            </p>
+                        }
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@await Html.PartialAsync("_PaginationPartial", Model)

@@ -1,11 +1,11 @@
 ﻿using Core.Features.Shared.Validators;
 using FluentValidation;
 
-namespace Core.Features.GetInactiveVillage
+namespace Core.Features.GetInactiveFarms
 {
-    public class InactiveVillagesParametersValidator : AbstractValidator<InactiveVillagesParameters>
+    public class InactiveFarmParametersValidator : AbstractValidator<InactiveFarmParameters>
     {
-        public InactiveVillagesParametersValidator()
+        public InactiveFarmParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());

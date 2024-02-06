@@ -1,8 +1,8 @@
 ﻿using Core.Features.Shared.Dtos;
 
-namespace Core.Features.GetInactiveVillage
+namespace Core.Features.GetInactiveFarms
 {
-    public class InactiveVillageDto
+    public class InactiveFarmDto
     {
         public required double Distance { get; set; }
 

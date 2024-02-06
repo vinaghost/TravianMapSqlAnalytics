@@ -1,8 +1,8 @@
 ﻿using Core.Features.Shared.Parameters;
 
-namespace Core.Features.GetInactiveVillage
+namespace Core.Features.GetInactiveFarms
 {
-    public record InactiveVillagesParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters
+    public record InactiveFarmParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
@@ -24,7 +24,7 @@ namespace Core.Features.GetInactiveVillage
 
     public static class InactiveVillagesParametersExtension
     {
-        public static string Key(this InactiveVillagesParameters parameters)
+        public static string Key(this InactiveFarmParameters parameters)
         {
             return $"{parameters.X}_{parameters.Y}_{parameters.Date:d}_{parameters.PageNumber}_{parameters.PageSize}";
         }
