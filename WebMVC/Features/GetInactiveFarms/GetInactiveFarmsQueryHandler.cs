@@ -69,6 +69,12 @@ namespace WebMVC.Features.GetInactiveFarms
 
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
+            if (parameters.MaxDistance != 0)
+            {
+                villages = villages
+                    .Where(x => new Coordinates(x.Village.X, x.Village.Y).InSimpleRange(centerCoordinate, parameters.MaxDistance));
+            }
+
             var dtos = villages
                 .Select(x => new InactiveFarmDto()
                 {
