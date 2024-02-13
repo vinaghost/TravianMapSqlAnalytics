@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Core.Features.Shared.Validators
 {
-    internal class VillagePopulationFilterParametersValidator : AbstractValidator<IVillagePopulationFilterParameters>
+    public class VillagePopulationFilterParametersValidator : AbstractValidator<IVillagePopulationFilterParameters>
     {
         public VillagePopulationFilterParametersValidator()
         {

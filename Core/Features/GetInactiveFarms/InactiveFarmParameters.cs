@@ -1,6 +1,6 @@
 ﻿using Core.Features.Shared.Parameters;
 
-namespace WebMVC.Features.GetInactiveFarms
+namespace Core.Features.GetInactiveFarms
 {
     public record InactiveFarmParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters
     {

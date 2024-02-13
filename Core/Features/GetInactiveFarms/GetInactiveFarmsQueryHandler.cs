@@ -1,10 +1,9 @@
-﻿using Core;
-using Core.Features.Shared.Dtos;
+﻿using Core.Features.Shared.Dtos;
 using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
-namespace WebMVC.Features.GetInactiveFarms
+namespace Core.Features.GetInactiveFarms
 {
     public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<InactiveFarmDto>>
     {
@@ -76,6 +75,7 @@ namespace WebMVC.Features.GetInactiveFarms
             }
 
             var dtos = villages
+                .AsParallel()
                 .Select(x => new InactiveFarmDto()
                 {
                     Distance = centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)),

@@ -1,10 +1,10 @@
-﻿using Core.Features.GetVillageContainsDistance;
+﻿using Core.Features.GetInactiveFarms;
+using Core.Features.GetVillageContainsDistance;
 using Core.Features.GetVillageContainsPopulationHistory;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebMVC.Features.GetInactiveFarms;
 using X.PagedList;
 
 namespace WebMVC.Controllers

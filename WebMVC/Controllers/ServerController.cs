@@ -1,5 +1,5 @@
 ﻿using Core.Features.GetServer;
-using Core.Features.GetServerList;
+using Core.Features.SearchServer;
 using Core.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -35,9 +35,9 @@ namespace WebMVC.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> ServerList(ServerListParameters parameters)
+        public async Task<IActionResult> ServerList(ServerSearchParameters parameters)
         {
-            var servers = await _mediator.Send(new GetServerListQuery(parameters));
+            var servers = await _mediator.Send<IList<ServerRecord>>(new Core.Features.SearchServer.GetServerQuery(parameters));
             var serverList = servers
                 .Select(x => new { Id = x.Url, Text = x.Url })
                 .Take(20)

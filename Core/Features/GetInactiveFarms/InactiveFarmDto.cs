@@ -1,6 +1,6 @@
 ﻿using Core.Features.Shared.Dtos;
 
-namespace WebMVC.Features.GetInactiveFarms
+namespace Core.Features.GetInactiveFarms
 {
     public class InactiveFarmDto
     {
@@ -9,6 +9,7 @@ namespace WebMVC.Features.GetInactiveFarms
         public required PlayerDto Player { get; set; }
 
         public required VillageDto Village { get; set; }
-        public List<PopulationDto> Populations { get; set; }
+
+        public required IList<PopulationDto> Populations { get; set; }
     }
 }

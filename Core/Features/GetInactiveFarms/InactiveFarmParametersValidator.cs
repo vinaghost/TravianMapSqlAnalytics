@@ -1,7 +1,7 @@
 ﻿using Core.Features.Shared.Validators;
 using FluentValidation;
 
-namespace WebMVC.Features.GetInactiveFarms
+namespace Core.Features.GetInactiveFarms
 {
     public class InactiveFarmParametersValidator : AbstractValidator<InactiveFarmParameters>
     {
