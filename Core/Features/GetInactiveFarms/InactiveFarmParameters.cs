@@ -20,6 +20,8 @@ namespace Core.Features.GetInactiveFarms
 
         public int MinVillagePopulation { get; set; }
         public int MaxVillagePopulation { get; set; }
+
+        public IList<int> Players { get; set; } = [];
     }
 
     public static class InactiveVillagesParametersExtension

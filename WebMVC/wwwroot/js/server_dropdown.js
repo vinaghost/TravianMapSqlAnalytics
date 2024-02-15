@@ -1,24 +1,5 @@
 $(function () {
     let el = $('#server-select');
-    el.select2({
-        theme: "bootstrap-5",
-        ajax: {
-            url: '/servers/ServerList',
-            data: function (params) {
-                var query = {
-                    searchTerm: params.term,
-                }
-                return query;
-            },
-            processResults: function (data) {
-                return {
-                    results: data.items
-                }
-            },
-
-            cache: true
-        }
-    });
 
     el.prop('name', '');
     el.on('change', async function () {

@@ -1,10 +1,20 @@
 ﻿@model List<int>
+
 @{
-    var value = string.Join(',', Model);
-    var name = ViewData.ModelMetadata.Name;
+    var name = ViewData["Name"] as string;
+
+    var htmlAttributes = new Dictionary<string, object>
+    {
+        {"class", $"form-select {Constants.Select2Combox}"},
+        {"data-ajax--url", $"{ViewData["Url"]}"},
+    };
 }
-<div class="form-group list-parameter" >
-    @Html.LabelForModel(new { @class = "control-label" })
-    <small class="form-text text-muted">@ViewData.ModelMetadata.Name's id, separated with ","</small>
-    <input type="text" class="form-control input"  name="@name" id="@name" value="@value" />
+
+<div class="input-group mt-3 list-parameter">
+    <span class="input-group-text">
+        @Html.Label(name, name, new { @class = "control-label", style = "width: 100%", })
+    </span>
+
+    @Html.ListBox(name, [], htmlAttributes)
 </div>
+

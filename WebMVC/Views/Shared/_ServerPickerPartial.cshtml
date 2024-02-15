@@ -7,6 +7,12 @@
     {
         new SelectListItem(server, server, true),
     };
+
+    var htmlAttributes = new Dictionary<string, object>
+    {
+        {"class", $"form-select {Constants.Select2Combox}"},
+        {"data-ajax--url", "/servers/ServerList"},
+    };
 }
 
 <div class="input-group mt-3">
@@ -14,7 +20,7 @@
         @Html.Label(expression, "Server", new { @class = "control-label", style = "width: 100%" })
     </span>
     
-    @Html.DropDownList(expression, servers, new { @class = "form-select" })
+    @Html.DropDownList(expression, servers, htmlAttributes)
 </div>
 
 @Html.PartialSectionScripts(
