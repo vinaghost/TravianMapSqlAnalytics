@@ -2,35 +2,39 @@
 
 @model IPagedList
 
-<div id="pagination" class="text-center">
-    <div>
-        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
-    </div>
-    <br />
-    <div class="pagination" style="display:grid; place-items:center;">
+@if (Model is not null) 
+{
+    <div id="pagination" class="text-center">
         <div>
-            @{
-                var options = Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast;
-                options.FunctionToTransformEachPageLink = (li, a) =>
-                {
-                    if (a.Attributes.ContainsKey("href"))
+            Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) / @Model.PageCount
+        </div>
+        <br />
+        <div class="pagination" style="display:grid; place-items:center;">
+            <div>
+                @{
+                    var options = Bootstrap4PagedListRenderOptions.ClassicPlusFirstAndLast;
+                    options.FunctionToTransformEachPageLink = (li, a) =>
                     {
-                        var page = a.Attributes["href"];
-                        a.Attributes["href"] = "#";
-                        a.Attributes.Add("data-num", page);
+                        if (a.Attributes.ContainsKey("href"))
+                        {
+                            var page = a.Attributes["href"];
+                            a.Attributes["href"] = "#";
+                            a.Attributes.Add("data-num", page);
 
-                    } 
+                        } 
 
-                    li.AppendHtml(a.ToString(TagRenderMode.Normal));
+                        li.AppendHtml(a.ToString(TagRenderMode.Normal));
 
-                    return li;
-                };
-            }
-            @Html.PagedListPager(Model, page => $"{page}", options)
+                        return li;
+                    };
+                }
+                @Html.PagedListPager(Model, page => $"{page}", options)
+            </div>
         </div>
     </div>
-</div>
 
-@Html.PartialSectionScripts(
-    @<script src="~/js/pagination.js" asp-append-version="true"></script>
-)
+    @Html.PartialSectionScripts(
+        @<script src="~/js/pagination.js" asp-append-version="true"></script>
+    )
+
+}

@@ -3,11 +3,10 @@
 @inject IMediator mediator
 @inject DataService dataService
 
-@model IPagedList<InactiveFarmDto>
+@model InactiveFarmParameters
 
 @{
     ViewData["Title"] = "Inactive farms";
-    var parameters = new InactiveFarmParameters();
 }
 
 @using (Html.BeginForm(nameof(VillagesController.InactiveFarms), "Villages", FormMethod.Post))
@@ -15,7 +14,7 @@
     <div class="container">
         @await Html.PartialAsync("_ServerPickerPartial")
 
-        @Html.EditorFor(x => parameters, null, "")
+        @Html.EditorForModel()
         
         <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check" />
     </div>
@@ -23,8 +22,12 @@
 
 @{
     var dates = Enumerable.Range(0, 6).Select(x => DateTime.Now.AddDays(-x)).ToList();
+    IPagedList<InactiveFarmDto>? dto = null;
 }
-
+@if (ViewData.ModelState.IsValid)
+{
+    dto = await mediator.Send(new GetInactiveFarmsQuery(Model));            
+}
 <table class="table">
     <thead>
         <tr>
@@ -45,37 +48,41 @@
             }
         </tr>
     </thead>
-    <tbody>
-        @foreach (var value in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(m => value.Distance)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => value.Player)
-                </td>
-                <td>
-                    @Html.DisplayFor(m => value.Village)
-                </td>
-                @for (var pos = 0; pos < dates.Count; pos++)
-                {
+    @if (dto is not null)
+    {       
+        <tbody>            
+            @foreach (var value in dto)
+            {
+                <tr>
                     <td>
-                        @if (pos >= value.Populations.Count)
-                        {
-                            <p>~</p>
-                        }
-                        else
-                        {
-                            <p>
-                                @Html.DisplayFor(m => value.Populations[pos])
-                            </p>
-                        }
+                        @Html.DisplayFor(m => value.Distance)
                     </td>
-                }
-            </tr>
-        }
-    </tbody>
+                    <td>
+                        @Html.DisplayFor(m => value.Player)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => value.Village)
+                    </td>
+                    @for (var pos = 0; pos < dates.Count; pos++)
+                    {
+                        <td>
+                            @if (pos >= value.Populations.Count)
+                            {
+                                <p>~</p>
+                            }
+                            else
+                            {
+                                <p>
+                                    @Html.DisplayFor(m => value.Populations[pos])
+                                </p>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    }
 </table>
 
-@await Html.PartialAsync("_PaginationPartial", Model)
+
+@await Html.PartialAsync("_PaginationPartial", dto)

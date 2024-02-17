@@ -1,7 +1,9 @@
-﻿@model List<int>
+﻿@using Core.Features.Shared.Models
+@model List<int>
 
 @{
     var name = ViewData["Name"] as string;
+    var data = ViewData["Data"] as IList<SearchResult> ?? [];
 
     var htmlAttributes = new Dictionary<string, object>
     {
@@ -15,6 +17,6 @@
         @Html.Label(name, name, new { @class = "control-label", style = "width: 100%", })
     </span>
 
-    @Html.ListBox(name, [], htmlAttributes)
+    @Html.ListBox(name, data.Select(x => new SelectListItem(x.Text, x.Id.ToString(), true)), htmlAttributes)
 </div>
 

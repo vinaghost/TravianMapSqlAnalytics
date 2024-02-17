@@ -1,12 +1,25 @@
 ﻿@using Core.Features.GetInactiveFarms
+@using Core.Features.SearchAlliance
+@using Core.Features.SearchPlayer
+
+@inject IMediator mediator
+
 @model InactiveFarmParameters
+
 
 @Html.EditorFor(m => m.X)
 @Html.EditorFor(m => m.Y)
 
 @Html.EditorFor(m => m.Date)
 
-@Html.EditorFor(m => m.Players, "ListInt", "", new { Name = nameof(Model.Players), Url = "/players/playerList" })
+@{
+    var players = await mediator.Send(new SearchPlayerByIdQuery(Model.Players));
+    var alliances = await mediator.Send(new SearchAllianceByIdQuery(Model.Alliances));
+}
+
+
+@Html.EditorFor(m => m.Players, "ListInt", "", new { Name = nameof(Model.Players), Url = "/players/search", Data = players })
+@Html.EditorFor(m => m.Alliances, "ListInt", "", new { Name = nameof(Model.Alliances), Url = "/alliances/search", Data = alliances })
 
 <div class="mt-3">
     <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">

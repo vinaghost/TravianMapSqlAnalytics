@@ -1,15 +1,14 @@
 ﻿using Core.Features.Shared.Models;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 
 namespace Core.Features.SearchServer
 {
-    public class GetServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerQuery, IList<SearchResult>>
+    public class GetServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerQuery, IPagedList<SearchResult>>
     {
         private readonly ServerListDbContext _dbContext = dbContext;
 
-        public async Task<IList<SearchResult>> Handle(GetServerQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<SearchResult>> Handle(GetServerQuery request, CancellationToken cancellationToken)
         {
             var query = _dbContext.Servers
                 .AsQueryable();
@@ -22,7 +21,7 @@ namespace Core.Features.SearchServer
             return await query
                 .OrderBy(x => x.Url)
                 .Select(x => new SearchResult(x.Id, x.Url))
-                .ToListAsync(cancellationToken);
+                .ToPagedListAsync(request.Parameters.Page, request.Parameters.PageSize);
         }
     }
 }

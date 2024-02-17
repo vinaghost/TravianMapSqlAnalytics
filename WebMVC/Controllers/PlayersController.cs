@@ -2,7 +2,6 @@
 using Core.Features.GetPlayerContainsPopulation;
 using Core.Features.GetPlayerContainsPopulationHistory;
 using Core.Features.SearchPlayer;
-using Core.Features.Shared.Models;
 using Core.Features.Shared.Parameters;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -43,13 +42,10 @@ namespace WebMVC.Controllers
             return View(parameters);
         }
 
-        public async Task<IActionResult> PlayerList(SearchParameters parameters)
+        public async Task<IActionResult> Search(SearchParameters parameters)
         {
-            var players = await _mediator.Send<IList<SearchResult>>(new GetPlayerQuery(parameters));
-            var result = players
-                .Take(20)
-                .ToList();
-            return Json(new { items = result });
+            var players = await _mediator.Send(new SearchPlayerByParametersQuery(parameters));
+            return Json(new { results = players, pagination = new { more = (players.PageNumber * players.Count) < players.TotalItemCount } });
         }
     }
 }

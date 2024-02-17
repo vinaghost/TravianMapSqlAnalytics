@@ -5,7 +5,6 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using X.PagedList;
 
 namespace WebMVC.Controllers
 {
@@ -29,12 +28,11 @@ namespace WebMVC.Controllers
             return View(parameters);
         }
 
-        public async Task<IActionResult> InactiveFarms(InactiveFarmParameters parameters, [FromServices] IValidator<InactiveFarmParameters> validator)
+        public IActionResult InactiveFarms(InactiveFarmParameters parameters, [FromServices] IValidator<InactiveFarmParameters> validator)
         {
             var result = validator.Validate(parameters);
-            if (!result.IsValid) return View(new PagedList<InactiveFarmDto>(null, 1, 1));
-            var dto = await _mediator.Send(new GetInactiveFarmsQuery(parameters));
-            return View(dto);
+            result.AddToModelState(ModelState);
+            return View(parameters);
         }
     }
 }
