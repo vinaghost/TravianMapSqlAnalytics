@@ -14,33 +14,33 @@ namespace Core.Features.GetInactiveFarms
         {
             var parameters = request.Parameters;
 
-            var filterInactivePlayers = _dbContext.Players
-                .Where(x => GetInactivePlayers(parameters).Contains(x.Id));
+            var villages = GetVillages(parameters);
 
-            var filterVillages = _dbContext.Villages
-                .AsQueryable();
+            var populations = GetPopulation(parameters);
 
-            if (parameters.MaxVillagePopulation != 0)
-            {
-                filterVillages = filterVillages
-                    .Where(x => x.Population >= parameters.MinVillagePopulation)
-                    .Where(x => x.Population <= parameters.MaxVillagePopulation);
-            }
-
-            var filterPopulations = _dbContext.VillagePopulationHistory
-                .Where(x => x.Date >= parameters.Date);
-
-            var villages = filterVillages
-                .Join(filterInactivePlayers,
-                    x => x.PlayerId,
+            var data = GetInactivePlayers(parameters)
+                .Join(_dbContext.Alliances,
+                    x => x.AllianceId,
                     x => x.Id,
-                    (village, player) => new
+                    (player, alliance) => new
                     {
-                        Player = new PlayerDto(player.Id, player.Name, player.Population, player.VillageCount),
-                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population),
+                        PlayerId = player.Id,
+                        PlayerName = player.Name,
+                        AllianceId = alliance.Id,
+                        AllianceName = alliance.Name,
+                        player.Population,
+                        player.VillageCount
+                    })
+                .Join(villages,
+                    x => x.PlayerId,
+                    x => x.PlayerId,
+                    (player, village) => new
+                    {
+                        Player = new PlayerDto(player.PlayerId, player.PlayerName, player.AllianceId, player.AllianceName, player.Population, player.VillageCount),
+                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.Tribe),
                         VillageId = village.Id,
                     })
-                .GroupJoin(filterPopulations,
+                .GroupJoin(populations,
                     x => x.VillageId,
                     x => x.VillageId,
                     (village, populations) => new
@@ -58,12 +58,11 @@ namespace Core.Features.GetInactiveFarms
 
             if (parameters.MaxDistance != 0)
             {
-                villages = villages
+                data = data
                     .Where(x => new Coordinates(x.Village.X, x.Village.Y).InSimpleRange(centerCoordinate, parameters.MaxDistance));
             }
 
-            var dtos = villages
-                .AsParallel()
+            var dtos = data
                 .Select(x => new InactiveFarmDto()
                 {
                     Distance = centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)),
@@ -86,7 +85,7 @@ namespace Core.Features.GetInactiveFarms
                 .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
 
-        private bool IsPlayerFiltered(InactiveFarmParameters parameters)
+        private static bool IsPlayerFiltered(InactiveFarmParameters parameters)
         {
             if (parameters.Alliances.Count > 0) return true;
             if (parameters.ExcludeAlliances.Count > 0) return true;
@@ -118,7 +117,7 @@ namespace Core.Features.GetInactiveFarms
             return query;
         }
 
-        private IQueryable<int> GetInactivePlayers(InactiveFarmParameters parameters)
+        private IQueryable<int> GetInactivePlayerIds(InactiveFarmParameters parameters)
         {
             if (IsPlayerFiltered(parameters))
             {
@@ -133,7 +132,7 @@ namespace Core.Features.GetInactiveFarms
                             population.Change
                         })
                     .GroupBy(x => x.Id)
-                    .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                    .Where(x => x.Count() >= 7 && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                     .Select(x => x.Key);
                 return query;
             }
@@ -142,10 +141,41 @@ namespace Core.Features.GetInactiveFarms
                 var query = _dbContext.PlayerPopulationHistory
                    .Where(x => x.Date >= parameters.Date)
                    .GroupBy(x => x.PlayerId)
-                   .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                   .Where(x => x.Count() >= 7 && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                    .Select(x => x.Key);
                 return query;
             }
+        }
+
+        private IQueryable<Player> GetInactivePlayers(InactiveFarmParameters parameters)
+        {
+            var ids = GetInactivePlayerIds(parameters);
+
+            var loaded = ids.ToList();
+
+            return _dbContext.Players
+                .Where(x => ids.Contains(x.Id));
+        }
+
+        private IQueryable<Village> GetVillages(InactiveFarmParameters parameters)
+        {
+            var query = _dbContext.Villages
+               .AsQueryable();
+
+            if (parameters.MaxVillagePopulation != 0)
+            {
+                query = query
+                    .Where(x => x.Population >= parameters.MinVillagePopulation)
+                    .Where(x => x.Population <= parameters.MaxVillagePopulation);
+            }
+            return query;
+        }
+
+        private IQueryable<VillagePopulationHistory> GetPopulation(InactiveFarmParameters parameters)
+        {
+            var query = _dbContext.VillagePopulationHistory
+                .Where(x => x.Date >= parameters.Date);
+            return query;
         }
     }
 }

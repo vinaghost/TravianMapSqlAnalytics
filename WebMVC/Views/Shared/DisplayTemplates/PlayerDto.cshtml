@@ -3,5 +3,23 @@
 
 @model PlayerDto
 
-<a href="https://@dataService.Server/profile/@Model.PlayerId" target="_blank">@Html.DisplayFor(m => m.PlayerName)</a>
-
+<div>
+    @if (Model.AllianceId != 0)
+    {
+        <a href="https://@dataService.Server/alliance/@Model.AllianceId"
+           target="_blank"
+           type="button"
+           class="btn-link small text-muted text-decoration-none">
+            [@Html.DisplayFor(m => m.AllianceName)]
+        </a>
+    }
+    <a 
+        href="https://@dataService.Server/profile/@Model.PlayerId" 
+        target="_blank" 
+        type="button"
+       class="btn-link text-decoration-none">
+        @Html.DisplayFor(m => m.PlayerName)
+    </a>
+    
+    
+</div>

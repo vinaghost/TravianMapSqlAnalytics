@@ -1,0 +1,32 @@
+﻿@using Core.Features.GetInactiveFarms
+@model InactiveFarmDto
+
+@if (Model is not null)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(m => m.Distance)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Player)
+        </td>
+        <td>
+            @Html.DisplayFor(m => m.Village)
+        </td>
+        @for (var pos = 0; pos < Constants.DateAmount; pos++)
+        {
+            <td>
+                @if (pos >= Model.Populations.Count)
+                {
+                    <p>~</p>
+                }
+                else
+                {
+                    <p>
+                        @Html.DisplayFor(m => m.Populations[pos])
+                    </p>
+                }
+            </td>
+        }
+    </tr>
+}

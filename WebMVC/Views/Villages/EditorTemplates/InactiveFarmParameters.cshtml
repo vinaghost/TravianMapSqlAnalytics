@@ -10,8 +10,6 @@
 @Html.EditorFor(m => m.X)
 @Html.EditorFor(m => m.Y)
 
-@Html.EditorFor(m => m.Date)
-
 <div class="mt-3">
     <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">
         Advanced filters
@@ -39,6 +37,7 @@
 </div>
 
 <div>
+    @Html.HiddenFor(m => m.Date)
     @Html.HiddenFor(m => m.PageNumber)
     @Html.HiddenFor(m => m.PageSize)
 </div>

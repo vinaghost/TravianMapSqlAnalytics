@@ -21,13 +21,18 @@
 }
 
 @{
-    var dates = Enumerable.Range(0, 6).Select(x => DateTime.Now.AddDays(-x)).ToList();
+    var dates = Enumerable.Range(0, Constants.DateAmount).Select(x => DateTime.Now.AddDays(-x)).ToList();
     IPagedList<InactiveFarmDto>? dto = null;
 }
 @if (ViewData.ModelState.IsValid)
 {
     dto = await mediator.Send(new GetInactiveFarmsQuery(Model));            
 }
+
+<div class="text-center">
+    <p>We found <b>@(dto?.TotalItemCount ?? 0) villages</b> fit your request</p>
+</div>
+
 <table class="table">
     <thead>
         <tr>
@@ -48,40 +53,9 @@
             }
         </tr>
     </thead>
-    @if (dto is not null)
-    {       
-        <tbody>            
-            @foreach (var value in dto)
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(m => value.Distance)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => value.Player)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(m => value.Village)
-                    </td>
-                    @for (var pos = 0; pos < dates.Count; pos++)
-                    {
-                        <td>
-                            @if (pos >= value.Populations.Count)
-                            {
-                                <p>~</p>
-                            }
-                            else
-                            {
-                                <p>
-                                    @Html.DisplayFor(m => value.Populations[pos])
-                                </p>
-                            }
-                        </td>
-                    }
-                </tr>
-            }
-        </tbody>
-    }
+    <tbody>  
+        @Html.DisplayFor(x => dto);
+    </tbody>
 </table>
 
 

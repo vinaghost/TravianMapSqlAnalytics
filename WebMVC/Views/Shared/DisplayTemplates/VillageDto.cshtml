@@ -3,5 +3,22 @@
 
 @model VillageDto
 
-<a href="https://@dataService.Server/karte.php?d=@Model.MapId" target="_blank">@Html.DisplayFor(m => m.VillageName)</a>
+<div>
 
+    <a href="https://@dataService.Server/karte.php?d=@Model.MapId"
+        target="_blank"
+        type="button"
+       class="btn-link text-decoration-none">
+        @Html.DisplayFor(m => m.VillageName)
+
+        <span class="small text-muted">
+            [@Html.DisplayFor(m => m.X) | @Html.DisplayFor(m => m.Y)]
+        </span>
+        <br />
+
+        <span class="small text-muted">
+            [@Constants.TribeNames[Model.Tribe]]
+        </span>
+    </a>   
+
+</div>

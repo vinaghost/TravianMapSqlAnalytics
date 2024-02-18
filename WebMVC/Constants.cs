@@ -4,6 +4,7 @@ namespace WebMVC
 {
     public static class Constants
     {
+        public const int DateAmount = 7;
         public const string Select2Combox = "select2-tmsa";
 
         public static readonly Dictionary<int, string> TribeNames = new()
