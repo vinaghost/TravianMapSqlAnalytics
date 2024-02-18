@@ -41,10 +41,17 @@ namespace Core.Features.GetInactiveFarms
             sb.Append(parameters.PageNumber);
             sb.Append(SEPARATOR);
             sb.Append(parameters.PageSize);
-            sb.Append(SEPARATOR);
-            sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
-            sb.Append(SEPARATOR);
-            sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
+            if (parameters.Alliances.Count > 0)
+            {
+                sb.Append(SEPARATOR);
+                sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
+            }
+            else if (parameters.ExcludeAlliances.Count > 0)
+            {
+                sb.Append(SEPARATOR);
+                sb.Append(SEPARATOR);
+                sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
+            }
 
             return sb.ToString();
         }
