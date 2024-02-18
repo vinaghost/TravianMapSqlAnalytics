@@ -1,4 +1,5 @@
-﻿using Core.Features.Shared.Dtos;
+﻿using Core.Entities;
+using Core.Features.Shared.Dtos;
 using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
@@ -13,21 +14,8 @@ namespace Core.Features.GetInactiveFarms
         {
             var parameters = request.Parameters;
 
-            var inactivePlayers = _dbContext.PlayerPopulationHistory
-                .Where(x => x.Date >= parameters.Date)
-                .GroupBy(x => x.PlayerId)
-                .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
-                .Select(x => x.Key);
-
             var filterInactivePlayers = _dbContext.Players
-                .Where(x => inactivePlayers.Contains(x.Id));
-
-            if (parameters.MaxPlayerPopulation != 0)
-            {
-                filterInactivePlayers = filterInactivePlayers
-                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
-                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
-            }
+                .Where(x => GetInactivePlayers(parameters).Contains(x.Id));
 
             var filterVillages = _dbContext.Villages
                 .AsQueryable();
@@ -96,6 +84,68 @@ namespace Core.Features.GetInactiveFarms
 
             return await orderDtos
                 .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+        }
+
+        private bool IsPlayerFiltered(InactiveFarmParameters parameters)
+        {
+            if (parameters.Alliances.Count > 0) return true;
+            if (parameters.ExcludeAlliances.Count > 0) return true;
+            if (parameters.MaxPlayerPopulation != 0) return true;
+            return false;
+        }
+
+        private IQueryable<Player> GetPlayers(InactiveFarmParameters parameters)
+        {
+            var query = _dbContext.Players
+                .AsQueryable();
+            if (parameters.Alliances.Count > 0)
+            {
+                query = query
+                    .Where(x => parameters.Alliances.Contains(x.AllianceId));
+            }
+            else if (parameters.ExcludeAlliances.Count > 0)
+            {
+                query = query
+                    .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+            }
+
+            if (parameters.MaxPlayerPopulation != 0)
+            {
+                query = query
+                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
+                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
+            }
+            return query;
+        }
+
+        private IQueryable<int> GetInactivePlayers(InactiveFarmParameters parameters)
+        {
+            if (IsPlayerFiltered(parameters))
+            {
+                var query = GetPlayers(parameters)
+                    .Join(_dbContext.PlayerPopulationHistory
+                            .Where(x => x.Date >= parameters.Date),
+                        x => x.Id,
+                        x => x.PlayerId,
+                        (player, population) => new
+                        {
+                            player.Id,
+                            population.Change
+                        })
+                    .GroupBy(x => x.Id)
+                    .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                    .Select(x => x.Key);
+                return query;
+            }
+            else
+            {
+                var query = _dbContext.PlayerPopulationHistory
+                   .Where(x => x.Date >= parameters.Date)
+                   .GroupBy(x => x.PlayerId)
+                   .Where(x => x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                   .Select(x => x.Key);
+                return query;
+            }
         }
     }
 }

@@ -30,15 +30,11 @@
 
 
     @{
-        var players = await mediator.Send(new SearchPlayerByIdQuery(Model.Players));
         var alliances = await mediator.Send(new SearchAllianceByIdQuery(Model.Alliances));
-        var excludePlayers = await mediator.Send(new SearchPlayerByIdQuery(Model.ExcludePlayers));
         var excludeAlliances = await mediator.Send(new SearchAllianceByIdQuery(Model.ExcludeAlliances));
     }
-    @Html.EditorFor(m => m.Players, "ListInt", "", new { Name = nameof(Model.Players), Url = "/players/search", Data = players })
     @Html.EditorFor(m => m.Alliances, "ListInt", "", new { Name = nameof(Model.Alliances), Url = "/alliances/search", Data = alliances })
 
-    @Html.EditorFor(m => m.ExcludePlayers, "ListInt", "", new { Name = nameof(Model.ExcludePlayers), Url = "/players/search", Data = excludePlayers })
     @Html.EditorFor(m => m.ExcludeAlliances, "ListInt", "", new { Name = nameof(Model.ExcludeAlliances), Url = "/alliances/search", Data = excludeAlliances })
 </div>
 

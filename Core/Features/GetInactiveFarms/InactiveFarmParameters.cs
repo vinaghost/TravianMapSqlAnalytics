@@ -1,4 +1,5 @@
 ﻿using Core.Features.Shared.Parameters;
+using System.Text;
 
 namespace Core.Features.GetInactiveFarms
 {
@@ -21,9 +22,7 @@ namespace Core.Features.GetInactiveFarms
         public int MinVillagePopulation { get; set; }
         public int MaxVillagePopulation { get; set; }
 
-        public IList<int> Players { get; set; } = [];
         public IList<int> Alliances { get; set; } = [];
-        public IList<int> ExcludePlayers { get; set; } = [];
         public IList<int> ExcludeAlliances { get; set; } = [];
     }
 
@@ -31,7 +30,23 @@ namespace Core.Features.GetInactiveFarms
     {
         public static string Key(this InactiveFarmParameters parameters)
         {
-            return $"{parameters.X}_{parameters.Y}_{parameters.Date:d}_{parameters.PageNumber}_{parameters.PageSize}";
+            var sb = new StringBuilder();
+            const char SEPARATOR = '_';
+            sb.Append(parameters.X);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.Y);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.Date.ToString("d"));
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.PageNumber);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.PageSize);
+            sb.Append(SEPARATOR);
+            sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
+            sb.Append(SEPARATOR);
+            sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
+
+            return sb.ToString();
         }
     }
 }
