@@ -23,6 +23,8 @@ namespace Core.Features.GetInactiveFarms
 
         public IList<int> Players { get; set; } = [];
         public IList<int> Alliances { get; set; } = [];
+        public IList<int> ExcludePlayers { get; set; } = [];
+        public IList<int> ExcludeAlliances { get; set; } = [];
     }
 
     public static class InactiveVillagesParametersExtension
