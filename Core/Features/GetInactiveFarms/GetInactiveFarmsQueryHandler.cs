@@ -6,11 +6,11 @@ using X.PagedList;
 
 namespace Core.Features.GetInactiveFarms
 {
-    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<InactiveFarmDto>>
+    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<VillageDataDto>>
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<InactiveFarmDto>> Handle(GetInactiveFarmsQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDataDto>> Handle(GetInactiveFarmsQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -63,13 +63,7 @@ namespace Core.Features.GetInactiveFarms
             }
 
             var dtos = data
-                .Select(x => new InactiveFarmDto()
-                {
-                    Distance = centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)),
-                    Player = x.Player,
-                    Village = x.Village,
-                    Populations = x.Populations
-                });
+                .Select(x => new VillageDataDto(centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)), x.Player, x.Village, x.Populations));
 
             if (parameters.MaxDistance != 0)
             {

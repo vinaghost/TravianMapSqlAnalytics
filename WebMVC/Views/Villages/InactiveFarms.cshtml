@@ -1,4 +1,5 @@
 ﻿@using Core.Features.GetInactiveFarms
+@using Core.Features.Shared.Dtos
 
 @inject IMediator mediator
 @inject DataService dataService
@@ -22,7 +23,7 @@
 
 @{
     var dates = Enumerable.Range(0, Constants.DateAmount).Select(x => DateTime.Now.AddDays(-x)).ToList();
-    IPagedList<InactiveFarmDto>? dto = null;
+    IPagedList<VillageDataDto>? dto = null;
 }
 @if (ViewData.ModelState.IsValid)
 {
@@ -37,13 +38,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Distance)
+                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Distance)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Player)
+                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Player)
             </th>
             <th>
-                @Html.DisplayNameForInnerType((InactiveFarmDto village) => village.Village)
+                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Village)
             </th>
             @for (var i = 0; i < dates.Count; i++)
             {

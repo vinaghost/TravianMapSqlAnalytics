@@ -1,9 +1,9 @@
 ﻿using Core.Features.Shared.Parameters;
 using System.Text;
 
-namespace Core.Features.GetInactiveFarms
+namespace Core.Features.GetNeighbors
 {
-    public record InactiveFarmParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters, IAllianceFilterParameters
+    public record NeighborsParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters, IAllianceFilterParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
@@ -11,7 +11,6 @@ namespace Core.Features.GetInactiveFarms
 
         public int X { get; set; }
         public int Y { get; set; }
-        public DateTime Date { get; set; } = DefaultParameters.Date;
 
         public int MinDistance { get; set; }
         public int MaxDistance { get; set; }
@@ -26,9 +25,9 @@ namespace Core.Features.GetInactiveFarms
         public IList<int> ExcludeAlliances { get; set; } = [];
     }
 
-    public static class InactiveFarmParametersExtension
+    public static class NeighborsParametersExtension
     {
-        public static string Key(this InactiveFarmParameters parameters)
+        public static string Key(this NeighborsParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -40,8 +39,6 @@ namespace Core.Features.GetInactiveFarms
             sb.Append(parameters.X);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Y);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Date.ToString("d"));
             if (parameters.Alliances.Count > 0)
             {
                 sb.Append(SEPARATOR);
