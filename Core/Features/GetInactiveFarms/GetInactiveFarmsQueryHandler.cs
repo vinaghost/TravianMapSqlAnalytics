@@ -1,15 +1,14 @@
 ﻿using Core.Entities;
 using Core.Features.Shared.Dtos;
+using Core.Features.Shared.Handler;
 using Core.Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
 namespace Core.Features.GetInactiveFarms
 {
-    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetInactiveFarmsQuery, IPagedList<VillageDataDto>>
+    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveFarmsQuery, IPagedList<VillageDataDto>>
     {
-        private readonly ServerDbContext _dbContext = dbContext;
-
         public async Task<IPagedList<VillageDataDto>> Handle(GetInactiveFarmsQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
@@ -149,20 +148,6 @@ namespace Core.Features.GetInactiveFarms
 
             return _dbContext.Players
                 .Where(x => ids.Contains(x.Id));
-        }
-
-        private IQueryable<Village> GetVillages(InactiveFarmParameters parameters)
-        {
-            var query = _dbContext.Villages
-               .AsQueryable();
-
-            if (parameters.MaxVillagePopulation != 0)
-            {
-                query = query
-                    .Where(x => x.Population >= parameters.MinVillagePopulation)
-                    .Where(x => x.Population <= parameters.MaxVillagePopulation);
-            }
-            return query;
         }
 
         private IQueryable<VillagePopulationHistory> GetPopulation(InactiveFarmParameters parameters)

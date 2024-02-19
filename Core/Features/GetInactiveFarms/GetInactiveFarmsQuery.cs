@@ -8,7 +8,7 @@ namespace Core.Features.GetInactiveFarms
     {
         public string CacheKey => $"{nameof(GetInactiveFarmsQuery)}_{Parameters.Key()}";
 
-        public TimeSpan? Expiation => TimeSpan.FromMilliseconds(1);
+        public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
