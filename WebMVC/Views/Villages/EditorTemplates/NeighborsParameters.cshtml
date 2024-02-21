@@ -1,10 +1,10 @@
-﻿@using Core.Features.GetInactiveFarms
+﻿@using Core.Features.GetNeighbors
 @using Core.Features.SearchAlliance
 @using Core.Features.SearchPlayer
 
 @inject IMediator mediator
 
-@model InactiveFarmParameters
+@model NeighborsParameters
 
 
 @Html.EditorFor(m => m.X)
@@ -34,7 +34,7 @@
     @Html.EditorFor(m => m.Alliances, "ListInt", "", new { Name = nameof(Model.Alliances), Url = "/alliances/search", Data = alliances })
 
     @Html.EditorFor(m => m.ExcludeAlliances, "ListInt", "", new { Name = nameof(Model.ExcludeAlliances), Url = "/alliances/search", Data = excludeAlliances })
-    
+
     @Html.EditorFor(m => m.Tribe)
     @Html.EditorFor(m => m.Capital)
 </div>

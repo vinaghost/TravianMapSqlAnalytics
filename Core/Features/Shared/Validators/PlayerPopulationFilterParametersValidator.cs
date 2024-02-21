@@ -3,7 +3,7 @@ using FluentValidation;
 
 namespace Core.Features.Shared.Validators
 {
-    public class PlayerPopulationFilterParametersValidator : AbstractValidator<IPlayerPopulationFilterParameters>
+    public class PlayerPopulationFilterParametersValidator : AbstractValidator<IPlayerFilterParameters>
     {
         public PlayerPopulationFilterParametersValidator()
         {

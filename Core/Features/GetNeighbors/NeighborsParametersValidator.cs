@@ -11,6 +11,10 @@ namespace Core.Features.GetNeighbors
             Include(new DistanceFilterParametersValidator());
             Include(new PlayerPopulationFilterParametersValidator());
             Include(new VillagePopulationFilterParametersValidator());
+
+            RuleFor(x => x.MaxDistance)
+                .GreaterThan(0)
+                .LessThanOrEqualTo(50);
         }
     }
 }

@@ -54,6 +54,20 @@
         "resolved": "2022.3.1",
         "contentHash": "11nsS3+lFICGkztVs9PP2NRItxf9fF+qD6xEW/T0YGto52zj07wseUeBdMAU1ah9HNVTDZyRC1u4NWdtJScwhw=="
       },
+      "LinqKit.Core": {
+        "type": "Transitive",
+        "resolved": "1.2.5",
+        "contentHash": "+5UKyagtVX33TSeOGorYzDXus/ypAISfM7HFfrix4BEmuuGF+nhSjf8P9csejLQ79ny5ms33M5/lQ2SkwC0Jxw=="
+      },
+      "LinqKit.Microsoft.EntityFrameworkCore": {
+        "type": "Transitive",
+        "resolved": "8.1.5",
+        "contentHash": "2nTqWs9ZrxNoYrV7nNWjDvAquepoeOyHoJ80fJTAieIVINfZx7n2HVlNtWOGdN0uc7LcftKBFpIu4qua5r7ivQ==",
+        "dependencies": {
+          "LinqKit.Core": "1.2.5",
+          "Microsoft.EntityFrameworkCore": "8.0.0"
+        }
+      },
       "MediatR": {
         "type": "Transitive",
         "resolved": "12.2.0",
@@ -249,6 +263,7 @@
         "dependencies": {
           "FluentValidation": "[11.9.0, )",
           "FluentValidation.AspNetCore": "[11.3.0, )",
+          "LinqKit.Microsoft.EntityFrameworkCore": "[8.1.5, )",
           "MediatR": "[12.2.0, )",
           "Microsoft.EntityFrameworkCore": "[8.0.1, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[8.0.0, )",

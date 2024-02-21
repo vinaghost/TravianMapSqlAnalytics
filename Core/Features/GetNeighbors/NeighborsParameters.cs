@@ -1,9 +1,10 @@
-﻿using Core.Features.Shared.Parameters;
+﻿using Core.Features.Shared.Enums;
+using Core.Features.Shared.Parameters;
 using System.Text;
 
 namespace Core.Features.GetNeighbors
 {
-    public record NeighborsParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters, IAllianceFilterParameters
+    public record NeighborsParameters : WebParameters, IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
@@ -13,13 +14,17 @@ namespace Core.Features.GetNeighbors
         public int Y { get; set; }
 
         public int MinDistance { get; set; }
-        public int MaxDistance { get; set; }
+        public int MaxDistance { get; set; } = 50;
 
         public int MinPlayerPopulation { get; set; }
         public int MaxPlayerPopulation { get; set; }
 
         public int MinVillagePopulation { get; set; }
         public int MaxVillagePopulation { get; set; }
+
+        public Capital Capital { get; set; }
+
+        public Tribe Tribe { get; set; }
 
         public IList<int> Alliances { get; set; } = [];
         public IList<int> ExcludeAlliances { get; set; } = [];

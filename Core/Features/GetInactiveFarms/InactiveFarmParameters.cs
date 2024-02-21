@@ -1,9 +1,10 @@
-﻿using Core.Features.Shared.Parameters;
+﻿using Core.Features.Shared.Enums;
+using Core.Features.Shared.Parameters;
 using System.Text;
 
 namespace Core.Features.GetInactiveFarms
 {
-    public record InactiveFarmParameters : IPaginationParameters, IDistanceFilterParameters, IPlayerPopulationFilterParameters, IVillagePopulationFilterParameters, IAllianceFilterParameters
+    public record InactiveFarmParameters : WebParameters, IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
@@ -11,8 +12,6 @@ namespace Core.Features.GetInactiveFarms
 
         public int X { get; set; }
         public int Y { get; set; }
-        public DateTime Date { get; set; } = DefaultParameters.Date;
-
         public int MinDistance { get; set; }
         public int MaxDistance { get; set; }
 
@@ -21,6 +20,10 @@ namespace Core.Features.GetInactiveFarms
 
         public int MinVillagePopulation { get; set; }
         public int MaxVillagePopulation { get; set; }
+
+        public Capital Capital { get; set; }
+
+        public Tribe Tribe { get; set; }
 
         public IList<int> Alliances { get; set; } = [];
         public IList<int> ExcludeAlliances { get; set; } = [];
@@ -40,8 +43,6 @@ namespace Core.Features.GetInactiveFarms
             sb.Append(parameters.X);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Y);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Date.ToString("d"));
             if (parameters.Alliances.Count > 0)
             {
                 sb.Append(SEPARATOR);

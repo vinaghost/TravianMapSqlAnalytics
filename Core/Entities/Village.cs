@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace Core.Entities
 {
     [Index(nameof(Name))]
-    [Index(nameof(Population), nameof(Tribe), nameof(IsCapital))]
+    [Index(nameof(X), nameof(Y))]
     public class Village
     {
         [DatabaseGenerated(DatabaseGeneratedOption.None)]

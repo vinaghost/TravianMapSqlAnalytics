@@ -2,6 +2,7 @@
 using Core.Features.Shared.Dtos;
 using Core.Features.Shared.Handler;
 using Core.Features.Shared.Models;
+using Core.Features.Shared.Parameters;
 using MediatR;
 using X.PagedList;
 
@@ -13,11 +14,12 @@ namespace Core.Features.GetInactiveFarms
         {
             var parameters = request.Parameters;
 
-            var villages = GetVillages(parameters);
+            var players = GetInactivePlayers(parameters);
+            var villages = GetVillages(parameters, parameters);
 
-            var populations = GetPopulation(parameters);
+            var populations = GetPopulation();
 
-            var data = GetInactivePlayers(parameters)
+            var data = players
                 .Join(_dbContext.Alliances,
                     x => x.AllianceId,
                     x => x.Id,
@@ -36,7 +38,7 @@ namespace Core.Features.GetInactiveFarms
                     (player, village) => new
                     {
                         Player = new PlayerDto(player.PlayerId, player.PlayerName, player.AllianceId, player.AllianceName, player.Population, player.VillageCount),
-                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.Tribe),
+                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.Tribe, village.IsCapital),
                         VillageId = village.Id,
                     })
                 .GroupJoin(populations,
@@ -55,12 +57,6 @@ namespace Core.Features.GetInactiveFarms
 
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
-            if (parameters.MaxDistance != 0)
-            {
-                data = data
-                    .Where(x => new Coordinates(x.Village.X, x.Village.Y).InSimpleRange(centerCoordinate, parameters.MaxDistance));
-            }
-
             var dtos = data
                 .Select(x => new VillageDataDto(centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)), x.Player, x.Village, x.Populations));
 
@@ -74,40 +70,15 @@ namespace Core.Features.GetInactiveFarms
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);
 
-            return await orderDtos
-                .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+            return await ToPagedList(orderDtos, parameters);
         }
 
-        private static bool IsPlayerFiltered(InactiveFarmParameters parameters)
+        private static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
         {
             if (parameters.Alliances.Count > 0) return true;
             if (parameters.ExcludeAlliances.Count > 0) return true;
             if (parameters.MaxPlayerPopulation != 0) return true;
             return false;
-        }
-
-        private IQueryable<Player> GetPlayers(InactiveFarmParameters parameters)
-        {
-            var query = _dbContext.Players
-                .AsQueryable();
-            if (parameters.Alliances.Count > 0)
-            {
-                query = query
-                    .Where(x => parameters.Alliances.Contains(x.AllianceId));
-            }
-            else if (parameters.ExcludeAlliances.Count > 0)
-            {
-                query = query
-                    .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
-            }
-
-            if (parameters.MaxPlayerPopulation != 0)
-            {
-                query = query
-                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
-                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
-            }
-            return query;
         }
 
         private IQueryable<int> GetInactivePlayerIds(InactiveFarmParameters parameters)
@@ -116,7 +87,7 @@ namespace Core.Features.GetInactiveFarms
             {
                 var query = GetPlayers(parameters)
                     .Join(_dbContext.PlayerPopulationHistory
-                            .Where(x => x.Date >= parameters.Date),
+                            .Where(x => x.Date >= DefaultParameters.Date),
                         x => x.Id,
                         x => x.PlayerId,
                         (player, population) => new
@@ -132,7 +103,7 @@ namespace Core.Features.GetInactiveFarms
             else
             {
                 var query = _dbContext.PlayerPopulationHistory
-                   .Where(x => x.Date >= parameters.Date)
+                   .Where(x => x.Date >= DefaultParameters.Date)
                    .GroupBy(x => x.PlayerId)
                    .Where(x => x.Count() >= 7 && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                    .Select(x => x.Key);
@@ -148,13 +119,6 @@ namespace Core.Features.GetInactiveFarms
 
             return _dbContext.Players
                 .Where(x => ids.Contains(x.Id));
-        }
-
-        private IQueryable<VillagePopulationHistory> GetPopulation(InactiveFarmParameters parameters)
-        {
-            var query = _dbContext.VillagePopulationHistory
-                .Where(x => x.Date >= parameters.Date);
-            return query;
         }
     }
 }

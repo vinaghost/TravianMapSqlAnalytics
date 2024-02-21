@@ -1,0 +1,8 @@
+﻿@using Core.Features.Shared.Enums
+@model Capital
+
+<div class="form-group">
+    @Html.LabelFor(m => m, new { @class = "form-check-label" })
+    @Html.DropDownListFor(m => m, Html.GetEnumSelectList<Capital>(), new { @class = "form-select" })
+</div>
+
