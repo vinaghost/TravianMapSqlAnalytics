@@ -14,7 +14,7 @@ namespace Core.Features.GetNeighbors
         public int Y { get; set; }
 
         public int MinDistance { get; set; }
-        public int MaxDistance { get; set; } = 50;
+        public int Distance { get; set; } = 50;
 
         public int MinPlayerPopulation { get; set; }
         public int MaxPlayerPopulation { get; set; }

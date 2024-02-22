@@ -1,4 +1,7 @@
-﻿namespace Core.Features.Shared.Models
+﻿using LinqKit;
+using System.Linq.Expressions;
+
+namespace Core.Features.Shared.Models
 {
     public record Coordinates(int X, int Y)
     {
@@ -14,14 +17,38 @@
         private const int _sizeWorld = 200;
         private const int _deltaWorld = 2 * _sizeWorld + 1;
 
-        public static double Distance(this Coordinates coord1, Coordinates coord2)
+        public static double Distance(this Coordinates coord1, int xX, int yY)
         {
-            var x = Delta(coord1.X, coord2.X);
-            var y = Delta(coord1.Y, coord2.Y);
+            var x = Delta(coord1.X, xX);
+            var y = Delta(coord1.Y, yY);
             return Math.Round(Math.Sqrt(x * x + y * y), 2);
         }
 
-        private static double Delta(int c1, int c2)
+        [Expandable(nameof(DistanceImpl))]
+        public static long Distance(int x1, int y1, int x2, int y2)
+        {
+            var x = Delta(x1, x2);
+            var y = Delta(y1, y2);
+            return x * x + y * y;
+        }
+
+        private static Expression<Func<int, int, int, int, long>> DistanceImpl()
+        {
+            return (x1, y1, x2, y2) =>
+                Power().Invoke(DeltaImpl().Invoke(x1, x2)) + Power().Invoke(DeltaImpl().Invoke(y1, y2));
+        }
+
+        private static Expression<Func<long, long>> Power()
+        {
+            return (x) => x * x;
+        }
+
+        private static Expression<Func<int, int, long>> DeltaImpl()
+        {
+            return (c1, c2) => (c1 - c2 + 3 * _sizeWorld + 1) % (2 * _sizeWorld + 1) - _sizeWorld;
+        }
+
+        private static long Delta(int c1, int c2)
         {
             return (c1 - c2 + 3 * _sizeWorld + 1) % (2 * _sizeWorld + 1) - _sizeWorld;
         }

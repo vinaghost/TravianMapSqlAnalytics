@@ -58,14 +58,7 @@ namespace Core.Features.GetInactiveFarms
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDataDto(centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)), x.Player, x.Village, x.Populations));
-
-            if (parameters.MaxDistance != 0)
-            {
-                dtos = dtos
-                    .Where(x => x.Distance >= parameters.MinDistance)
-                    .Where(x => x.Distance <= parameters.MaxDistance);
-            }
+                .Select(x => new VillageDataDto(centerCoordinate.Distance(x.Village.X, x.Village.Y), x.Player, x.Village, x.Populations));
 
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);

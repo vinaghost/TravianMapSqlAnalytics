@@ -16,6 +16,8 @@ namespace Core.Features.GetNeighbors
             var villages = GetVillages(parameters, parameters);
             var populations = GetPopulation();
 
+            var maxDistance = Math.Pow(parameters.Distance, 2);
+
             var data = players
                .Join(_dbContext.Alliances,
                    x => x.AllianceId,
@@ -38,7 +40,7 @@ namespace Core.Features.GetNeighbors
                         Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.Tribe, village.IsCapital),
                         VillageId = village.Id,
                     })
-               .GroupJoin(populations,
+                .GroupJoin(populations,
                     x => x.VillageId,
                     x => x.VillageId,
                     (village, populations) => new
@@ -55,14 +57,7 @@ namespace Core.Features.GetNeighbors
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDataDto(centerCoordinate.Distance(new Coordinates(x.Village.X, x.Village.Y)), x.Player, x.Village, x.Populations));
-
-            if (parameters.MaxDistance != 0)
-            {
-                dtos = dtos
-                    .Where(x => x.Distance >= parameters.MinDistance)
-                    .Where(x => x.Distance <= parameters.MaxDistance);
-            }
+                .Select(x => new VillageDataDto(centerCoordinate.Distance(x.Village.X, x.Village.Y), x.Player, x.Village, x.Populations));
 
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);

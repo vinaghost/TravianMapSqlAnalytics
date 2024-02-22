@@ -55,6 +55,7 @@ namespace Core.Extensions
 #if DEBUG
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
+                    //.LogTo(Console.WriteLine)
 #endif
                     .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);

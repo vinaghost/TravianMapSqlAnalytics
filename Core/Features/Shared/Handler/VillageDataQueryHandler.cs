@@ -79,13 +79,13 @@ namespace Core.Features.Shared.Handler
                     break;
             }
 
-            if (distanceParameters.MaxDistance != 0)
+            if (distanceParameters.Distance != 0)
             {
                 var predicate = PredicateBuilder.New<Village>();
 
                 var center = new Coordinates(distanceParameters.X, distanceParameters.Y);
 
-                var maxBBoxes = center.GetBoudingBoxes(distanceParameters.MaxDistance);
+                var maxBBoxes = center.GetBoudingBoxes(distanceParameters.Distance);
 
                 foreach (var box in maxBBoxes)
                 {
@@ -100,6 +100,9 @@ namespace Core.Features.Shared.Handler
 
                 query = query
                     .Where(predicate);
+
+                query = query
+                    .Where(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
             }
             return query;
         }

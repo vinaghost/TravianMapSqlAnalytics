@@ -13,7 +13,7 @@ namespace Core.Features.GetInactiveFarms
         public int X { get; set; }
         public int Y { get; set; }
         public int MinDistance { get; set; }
-        public int MaxDistance { get; set; }
+        public int Distance { get; set; }
 
         public int MinPlayerPopulation { get; set; }
         public int MaxPlayerPopulation { get; set; }

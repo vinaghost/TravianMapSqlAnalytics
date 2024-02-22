@@ -5,7 +5,6 @@
         public int X { get; }
         public int Y { get; }
 
-        public int MinDistance { get; }
-        public int MaxDistance { get; }
+        public int Distance { get; }
     }
 }
