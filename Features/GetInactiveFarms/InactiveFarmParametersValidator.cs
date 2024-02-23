@@ -11,6 +11,10 @@ namespace Features.GetInactiveFarms
             Include(new DistanceFilterParametersValidator());
             Include(new PlayerPopulationFilterParametersValidator());
             Include(new VillagePopulationFilterParametersValidator());
+
+            RuleFor(x => x.InactiveDays)
+                .GreaterThanOrEqualTo(3)
+                .LessThanOrEqualTo(7);
         }
     }
 }

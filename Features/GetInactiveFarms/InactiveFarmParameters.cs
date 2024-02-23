@@ -14,6 +14,8 @@ namespace Features.GetInactiveFarms
         public int Y { get; set; }
         public int Distance { get; set; }
 
+        public int InactiveDays { get; set; } = 3;
+
         public int MinPlayerPopulation { get; set; }
         public int MaxPlayerPopulation { get; set; }
 
@@ -44,6 +46,8 @@ namespace Features.GetInactiveFarms
             sb.Append(parameters.Y);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Distance);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.InactiveDays);
             sb.Append(SEPARATOR);
             sb.Append(parameters.MinPlayerPopulation);
             sb.Append(SEPARATOR);

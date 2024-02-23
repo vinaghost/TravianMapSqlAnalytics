@@ -78,11 +78,12 @@ namespace Features.GetInactiveFarms
 
         private IQueryable<int> GetInactivePlayerIds(InactiveFarmParameters parameters)
         {
+            var date = DateTime.Today.AddDays(-parameters.InactiveDays);
             if (IsPlayerFiltered(parameters))
             {
                 var query = GetPlayers(parameters)
                     .Join(_dbContext.PlayerPopulationHistory
-                            .Where(x => x.Date >= DefaultParameters.Date),
+                            .Where(x => x.Date >= date),
                         x => x.Id,
                         x => x.PlayerId,
                         (player, population) => new
@@ -91,16 +92,16 @@ namespace Features.GetInactiveFarms
                             population.Change
                         })
                     .GroupBy(x => x.Id)
-                    .Where(x => x.Count() >= 7 && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                    .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                     .Select(x => x.Key);
                 return query;
             }
             else
             {
                 var query = _dbContext.PlayerPopulationHistory
-                   .Where(x => x.Date >= DefaultParameters.Date)
+                   .Where(x => x.Date >= date)
                    .GroupBy(x => x.PlayerId)
-                   .Where(x => x.Count() >= 7 && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                   .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
                    .Select(x => x.Key);
                 return query;
             }
