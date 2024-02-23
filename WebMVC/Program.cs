@@ -1,4 +1,5 @@
 using Core.Extensions;
+using Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebMVC.Middleware;
 
@@ -48,6 +49,7 @@ namespace WebMVC
         private static void AddService(IServiceCollection services)
         {
             services.AddCore();
+            services.AddFeatures();
             services.AddScoped<ValidateServerMiddleware>();
         }
 

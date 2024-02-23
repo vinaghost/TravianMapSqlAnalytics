@@ -1,6 +1,6 @@
-﻿using Core.Features.GetServer;
-using Core.Features.Shared.Parameters;
+﻿using Features.GetServer;
 using Core.Services;
+using Features.Shared.Parameters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +32,7 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> ServerList(SearchParameters parameters)
         {
-            var servers = await _mediator.Send(new Core.Features.SearchServer.GetServerQuery(parameters));
+            var servers = await _mediator.Send(new Features.SearchServer.GetServerQuery(parameters));
             var serverList = servers
                 .Select(x => new { Id = x.Text, x.Text });
             return Json(new { results = serverList, pagination = new { more = servers.PageNumber * servers.PageSize < servers.TotalItemCount } });

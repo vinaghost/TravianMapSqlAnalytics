@@ -1,4 +1,4 @@
-﻿using Core.Features.GetServer;
+﻿using Features.GetServer;
 using Core.Services;
 using MediatR;
 

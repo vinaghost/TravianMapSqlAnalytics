@@ -271,6 +271,12 @@
           "System.Linq.Async": "[6.0.1, )",
           "X.PagedList": "[8.4.7, )"
         }
+      },
+      "features": {
+        "type": "Project",
+        "dependencies": {
+          "Core": "[1.0.0, )"
+        }
       }
     },
     "net8.0/linux-arm64": {},

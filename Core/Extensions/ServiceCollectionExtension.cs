@@ -1,7 +1,5 @@
-﻿using Core.Behaviors;
-using Core.Config;
+﻿using Core.Config;
 using Core.Services;
-using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,16 +12,6 @@ namespace Core.Extensions
         public static IServiceCollection AddCore(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddMemoryCache();
-
-            var assembly = typeof(ServiceCollectionExtension).Assembly;
-
-            serviceCollection.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(assembly);
-
-                cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
-            });
-            serviceCollection.AddValidatorsFromAssembly(assembly);
             serviceCollection.AddDbContext();
             serviceCollection.AddServices();
             return serviceCollection;

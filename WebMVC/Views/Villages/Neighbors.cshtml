@@ -1,6 +1,5 @@
-﻿@using Core.Features.GetNeighbors
-@using Core.Features.Shared.Dtos
-@using System.Diagnostics
+﻿@using Features.GetNeighbors
+@using Features.Shared.Dtos
 
 @inject IMediator mediator
 @inject DataService dataService
@@ -37,21 +36,9 @@ else
     <div class="text-center">
         @if (ViewData.ModelState.IsValid)
         {
-            var sw = new Stopwatch();
-            sw.Start();
             dto = await mediator.Send(new GetNeighborsQuery(Model));
-            sw.Stop();
-            string content;
-            if (sw.ElapsedMilliseconds > 1000)
-            {
-                content = $"{sw.ElapsedMilliseconds / 1000} s";
-            }
-            else
-            {
-                content = $"{sw.ElapsedMilliseconds} ms";
-            }
-
-            <p>We found <b>@(dto?.TotalItemCount ?? 0) villages</b> fit your request in @content</p>
+            
+            <p>We found <b>@(dto?.TotalItemCount ?? 0) villages</b> fit your request</p>
         }
         else
         {

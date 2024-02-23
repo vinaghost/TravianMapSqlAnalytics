@@ -1,5 +1,5 @@
-﻿using Core.Features.GetInactiveFarms;
-using Core.Features.GetNeighbors;
+﻿using Features.GetInactiveFarms;
+using Features.GetNeighbors;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Mvc;

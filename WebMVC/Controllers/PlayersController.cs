@@ -1,5 +1,5 @@
-﻿using Core.Features.SearchPlayer;
-using Core.Features.Shared.Parameters;
+﻿using Features.SearchPlayer;
+using Features.Shared.Parameters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
