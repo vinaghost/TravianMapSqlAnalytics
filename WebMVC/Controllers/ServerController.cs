@@ -35,7 +35,7 @@ namespace WebMVC.Controllers
             var servers = await _mediator.Send(new Core.Features.SearchServer.GetServerQuery(parameters));
             var serverList = servers
                 .Select(x => new { Id = x.Text, x.Text });
-            return Json(new { results = serverList, pagination = new { more = (servers.PageNumber * servers.Count) < servers.TotalItemCount } });
+            return Json(new { results = serverList, pagination = new { more = servers.PageNumber * servers.PageSize < servers.TotalItemCount } });
         }
     }
 }

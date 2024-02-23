@@ -12,7 +12,7 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> Search(SearchParameters parameters)
         {
             var players = await _mediator.Send(new SearchPlayerByParametersQuery(parameters));
-            return Json(new { results = players, pagination = new { more = (players.PageNumber * players.Count) < players.TotalItemCount } });
+            return Json(new { results = players, pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
         }
     }
 }

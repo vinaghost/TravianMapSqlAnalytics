@@ -37,8 +37,8 @@ namespace Core.Features.GetInactiveFarms
                     x => x.PlayerId,
                     (player, village) => new
                     {
-                        Player = new PlayerDto(player.PlayerId, player.PlayerName, player.AllianceId, player.AllianceName, player.Population, player.VillageCount),
-                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.Tribe, village.IsCapital),
+                        Player = new PlayerDto(player.PlayerId, player.PlayerName, player.AllianceId, player.AllianceName, player.Population, player.VillageCount, village.Tribe),
+                        Village = new VillageDto(village.MapId, village.Name, village.X, village.Y, village.Population, village.IsCapital),
                         VillageId = village.Id,
                     })
                 .GroupJoin(populations,
