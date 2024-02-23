@@ -1,8 +1,10 @@
 ﻿@using Core.Features.Shared.Enums
 @model Tribe
 
-<div class="form-group">
-    @Html.LabelFor(m => m, new { @class = "form-check-label" })
+<div class="input-group mt-3 list-parameter">
+    <span class="input-group-text">
+        @Html.LabelFor(m => m, new { @class = "form-check-label", style = "width: 100%", })
+    </span>
+
     @Html.DropDownListFor(m => m, Html.GetEnumSelectList<Tribe>(), new { @class = "form-select" })
 </div>
-

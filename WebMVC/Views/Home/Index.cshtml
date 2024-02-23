@@ -10,5 +10,6 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
-    <p> Your current server is @dataService.Server</p>
+    @await Html.PartialAsync("_ServerPickerPartial")
+
 </div>

@@ -7,8 +7,10 @@
 @model InactiveFarmParameters
 
 
-@Html.EditorFor(m => m.X)
-@Html.EditorFor(m => m.Y)
+<div>
+    @Html.EditorFor(m => m.X)
+    @Html.EditorFor(m => m.Y)
+</div>
 
 <div class="mt-3">
     <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">
@@ -19,12 +21,8 @@
 <div class="collapse" id="filter-fields">
     @Html.EditorFor(m => m.Distance)
 
-    @Html.EditorFor(m => m.MinPlayerPopulation)
-    @Html.EditorFor(m => m.MaxPlayerPopulation)
-
-    @Html.EditorFor(m => m.MinVillagePopulation)
-    @Html.EditorFor(m => m.MaxVillagePopulation)
-
+    @Html.EditorFor(m => m.Tribe)
+    @Html.EditorFor(m => m.Capital)
 
     @{
         var alliances = await mediator.Send(new SearchAllianceByIdQuery(Model.Alliances));
@@ -33,9 +31,12 @@
     @Html.EditorFor(m => m.Alliances, "ListInt", "", new { Name = nameof(Model.Alliances), Url = "/alliances/search", Data = alliances })
 
     @Html.EditorFor(m => m.ExcludeAlliances, "ListInt", "", new { Name = nameof(Model.ExcludeAlliances), Url = "/alliances/search", Data = excludeAlliances })
-    
-    @Html.EditorFor(m => m.Tribe)
-    @Html.EditorFor(m => m.Capital)
+
+    @Html.EditorFor(m => m.MinPlayerPopulation)
+    @Html.EditorFor(m => m.MaxPlayerPopulation)
+
+    @Html.EditorFor(m => m.MinVillagePopulation)
+    @Html.EditorFor(m => m.MaxVillagePopulation)
 </div>
 
 <div>
