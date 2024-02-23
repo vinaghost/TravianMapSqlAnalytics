@@ -12,7 +12,6 @@ namespace Features.GetInactiveFarms
 
         public int X { get; set; }
         public int Y { get; set; }
-        public int MinDistance { get; set; }
         public int Distance { get; set; }
 
         public int MinPlayerPopulation { get; set; }
@@ -43,6 +42,22 @@ namespace Features.GetInactiveFarms
             sb.Append(parameters.X);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Y);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.Distance);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.MinPlayerPopulation);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.MaxPlayerPopulation);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.MinVillagePopulation);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.MaxVillagePopulation);
+
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.Capital);
+            sb.Append(SEPARATOR);
+            sb.Append(parameters.Tribe);
+
             if (parameters.Alliances.Count > 0)
             {
                 sb.Append(SEPARATOR);
