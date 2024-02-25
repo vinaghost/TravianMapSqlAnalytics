@@ -1,4 +1,5 @@
-﻿using Features.SearchPlayer;
+﻿using Features.GetPlayerData;
+using Features.SearchPlayer;
 using Features.Shared.Parameters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,6 +14,14 @@ namespace WebMVC.Controllers
         {
             var players = await _mediator.Send(new SearchPlayerByParametersQuery(parameters));
             return Json(new { results = players, pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
+        }
+
+        public async Task<IActionResult> Index(int playerId)
+        {
+            if (playerId == default) return View();
+            var result = await _mediator.Send(new GetPlayerDataQuery(playerId));
+            if (result.IsFailed) return View();
+            return View(result.Value);
         }
     }
 }
