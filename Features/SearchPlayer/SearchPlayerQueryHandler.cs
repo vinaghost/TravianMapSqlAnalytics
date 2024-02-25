@@ -6,7 +6,7 @@ using X.PagedList;
 
 namespace Features.SearchPlayer
 {
-    public class SearchPlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<SearchPlayerByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchPlayerByIdQuery, IList<SearchResult>>
+    public class SearchPlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<SearchPlayerByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchPlayerByAllianceIdQuery, IList<SearchResult>>
     {
         private readonly ServerDbContext _dbContext = dbContext;
 
@@ -26,12 +26,11 @@ namespace Features.SearchPlayer
                 .ToPagedListAsync(request.Parameters.Page, request.Parameters.PageSize);
         }
 
-        public async Task<IList<SearchResult>> Handle(SearchPlayerByIdQuery request, CancellationToken cancellationToken)
+        public async Task<IList<SearchResult>> Handle(SearchPlayerByAllianceIdQuery request, CancellationToken cancellationToken)
         {
-            if (request.Ids.Count == 0) return [];
-            var ids = request.Ids.Distinct();
+            var id = request.AllianceId;
             return await _dbContext.Players
-                .Where(x => ids.Contains(x.Id))
+                .Where(x => x.AllianceId == id)
                 .OrderBy(x => x.Name)
                 .Select(x => new SearchResult(x.Id, x.Name))
                 .ToListAsync(cancellationToken);

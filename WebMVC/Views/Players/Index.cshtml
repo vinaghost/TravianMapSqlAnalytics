@@ -8,3 +8,36 @@
 {
 	<div>Nothing here</div>
 }
+
+@using (Html.BeginForm(nameof(PlayersController.Index), "Players", FormMethod.Get))
+{
+    <div class="container">
+        @await Html.PartialAsync("_ServerPickerPartial")
+
+        <div class="input-group mt-3">
+            <span class="input-group-text">
+                Alliances
+            </span>
+
+            <select class="form-select" id="player_alliance" data-ajax--url="/alliances/search"></select>
+        </div>
+
+
+        <div class="input-group mt-3">
+            <span class="input-group-text">
+                Players
+            </span>
+
+            <select class="form-select" id="player_player" name="PlayerId"></select>
+
+        </div>
+        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check players" />
+    </div>
+}
+
+
+@section Scripts
+{
+    <script src="~/js/player.js" asp-append-version="true"></script>
+}
+

@@ -12,6 +12,8 @@ function saveCoords() {
 }
 
 function loadCoords() {
+    if (xField == null) return;
+
     if (localStorage.getItem(xKey) && localStorage.getItem(yKey)) {
         xField.value = localStorage.getItem(xKey)
         yField.value = localStorage.getItem(yKey)
