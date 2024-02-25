@@ -17,7 +17,8 @@ namespace Features.SearchPlayer
 
             if (!string.IsNullOrWhiteSpace(request.Parameters.SearchTerm))
             {
-                query = query.Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
+                query = query
+                    .Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
             }
 
             return await query

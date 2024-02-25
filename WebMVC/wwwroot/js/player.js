@@ -17,6 +17,11 @@ $(function () {
         }
     });
 
+    let server = $('#server-select');
+    server.on('select2:select', function (e) {
+        alliance.val(null).trigger('change');
+    });
+
     let player = $('#player_player');
 
     player.select2({
@@ -31,7 +36,7 @@ $(function () {
             let newOptions = '<option value="">-- Select --</option>';
 
             let items = result.results;
-            
+
             for (var key in items) {
                 var item = items[key];
                 newOptions += '<option value="' + item['id'] + '">' + item['text'] + '</option>';

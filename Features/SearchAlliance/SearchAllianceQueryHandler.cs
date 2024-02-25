@@ -17,13 +17,19 @@ namespace Features.SearchAlliance
 
             if (!string.IsNullOrWhiteSpace(request.Parameters.SearchTerm))
             {
-                query = query.Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
+                query = query
+                    .Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
             }
 
-            return await query
+            query = query
+                .Where(x => x.Players.Count > 0);
+
+            var data = await query
                 .OrderBy(x => x.Name)
-                .Select(x => new SearchResult(x.Id, x.Name))
+                .Select(x => new SearchResult(x.Id, string.IsNullOrWhiteSpace(x.Name) ? "No alliance" : x.Name))
                 .ToPagedListAsync(request.Parameters.Page, request.Parameters.PageSize);
+
+            return data;
         }
 
         public async Task<IList<SearchResult>> Handle(SearchAllianceByIdQuery request, CancellationToken cancellationToken)

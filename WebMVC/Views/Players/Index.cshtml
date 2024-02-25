@@ -4,11 +4,6 @@
 	ViewData["Title"] = "Players";
 }
 
-@if (Model is null)
-{
-	<div>Nothing here</div>
-}
-
 @using (Html.BeginForm(nameof(PlayersController.Index), "Players", FormMethod.Get))
 {
     <div class="container">
@@ -19,7 +14,12 @@
                 Alliances
             </span>
 
-            <select class="form-select" id="player_alliance" data-ajax--url="/alliances/search"></select>
+            <select class="form-select" id="player_alliance" data-ajax--url="/alliances/search">
+                @if (Model is not null)
+                {
+                    <option value="@Model.Player.AllianceId">@(string.IsNullOrWhiteSpace(Model.Player.AllianceName) ? "No alliance" : Model.Player.AllianceName)</option>
+                }
+            </select>
         </div>
 
 
@@ -28,7 +28,12 @@
                 Players
             </span>
 
-            <select class="form-select" id="player_player" name="PlayerId"></select>
+            <select class="form-select" id="player_player" name="PlayerId">
+                @if (Model is not null)
+                {
+                    <option value="@Model.Player.PlayerId">@Model.Player.PlayerName</option>
+                }
+            </select>
 
         </div>
         <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check players" />
