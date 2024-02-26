@@ -34,6 +34,7 @@ namespace Features.GetPlayerData
 
             var villageData = await _dbContext.Villages
                 .Where(x => x.PlayerId == playerId)
+                .OrderByDescending(x => x.Population)
                 .GroupJoin(_dbContext.VillagePopulationHistory.Where(x => x.Date >= DefaultParameters.Date),
                     x => x.Id,
                     x => x.VillageId,
