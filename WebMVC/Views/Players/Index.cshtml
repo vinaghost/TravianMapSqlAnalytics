@@ -1,4 +1,6 @@
 ﻿@using Features.GetPlayerData
+@inject DataService dataService
+
 @model PlayerDataDto
 @{
 	ViewData["Title"] = "Players";
@@ -39,6 +41,140 @@
         <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check players" />
     </div>
 }
+<br />
+<br />
+<div>
+@if (Model is not null)
+{
+    <div class="card">
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    Player name:
+                </div>
+                <div class="col">
+                    <a 
+                        href="https://@dataService.Server/profile/@Model.Player.PlayerId"
+                        target="_blank"
+                        type="button"
+                        class="btn-link text-decoration-none">
+                        @Model.Player.PlayerName
+                    </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Alliance name:
+                </div>
+                <div class="col">
+                    @if (string.IsNullOrWhiteSpace(Model.Player.AllianceName))
+                    {
+                        <div>No alliance</div>
+                    }
+                    else 
+                    {
+                        <a href="https://@dataService.Server/alliance/@Model.Player.AllianceId"
+                            target="_blank"
+                            type="button"
+                            class="btn-link text-decoration-none">
+                            @Model.Player.AllianceName
+                        </a>
+                    }
+                        
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Tribe:
+                </div>
+                <div class="col">
+                    @Constants.TribeNames[Model.Villages.First().Tribe];
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Population:
+                </div>
+                <div class="col">
+                    @Model.Player.Population
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Village count:
+                </div>
+                <div class="col">
+                    @Model.Player.VillageCount
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    var dates = Enumerable.Range(0, Constants.DateAmount).Select(x => DateTime.Now.AddDays(-x)).ToList();
+    <br />
+
+    <table class="table table-hover">
+    <thead>
+        <tr>
+            <th class="col-4">
+                Village
+            </th>
+            @for (var i = 0; i < dates.Count; i++)
+            {
+                <th>
+                    @dates[i].ToString("dd/MM")
+                </th>
+            }
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var village in Model.Villages)
+        {
+            <tr>
+                <td>
+                    <a href="https://@dataService.Server/karte.php?d=@village.MapId"
+                        target="_blank"
+                        type="button"
+                        class="btn-link text-decoration-none">
+                        @if (village.IsCapital)
+                        {
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+                            </svg>
+                        }
+
+                        <span>@village.VillageName</span>
+
+                        <span class="small text-muted">
+                            [@village.X | @village.Y]
+                        </span>
+                    </a>
+                </td>
+                @for (var pos = 0; pos < Constants.DateAmount; pos++)
+                {
+                    <td>
+                            @if (pos >= village.Populations.Count)
+                        {
+                            <p>~</p>
+                        }
+                        else
+                        {
+                            <p>
+                                @Html.DisplayFor(m => village.Populations[pos])
+                            </p>
+                        }
+                    </td>
+                }
+            </tr>
+        }                
+    </tbody>
+</table>
+}
+else
+{
+     <div>Choose player and check</div>   
+}
+</div>
 
 
 @section Scripts
