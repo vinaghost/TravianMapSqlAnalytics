@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 
 namespace ConsoleUpdate.Services
 {
@@ -27,7 +28,7 @@ namespace ConsoleUpdate.Services
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             var servers = await _mediator.Send(new GetServerListCommand(), cancellationToken);
-            _logger.LogInformation("Found {count} servers", servers.Count);
+            Console.WriteLine("Found {0} servers.", servers.Count);
 
             var serverFailed = new ConcurrentQueue<ServerRaw>();
 
@@ -44,17 +45,21 @@ namespace ConsoleUpdate.Services
             {
                 servers.Remove(server);
             }
-            _logger.LogInformation("{count} servers are alive. Updating...", servers.Count);
+            Console.WriteLine("{0} servers are alive. Updating...", servers.Count);
 
-            var serversInfo = new List<Server>();
-            foreach (var server in servers)
+            var serversInfo = new ConcurrentQueue<Server>();
+
+            await Parallel.ForEachAsync(servers, async (server, token) =>
             {
-                Console.WriteLine("{0} Updating {1}", DateTime.Now.ToShortTimeString(), server.Url);
+                var sw = new Stopwatch();
+                Console.WriteLine("Updating {0}", server.Url);
+                sw.Start();
                 var serverInfo = await HandleUpdate(server, cancellationToken);
+                sw.Stop();
                 if (serverInfo is null) return;
-                serversInfo.Add(serverInfo);
-                Console.WriteLine("{0} Updated {1}", DateTime.Now.ToShortTimeString(), server.Url);
-            }
+                serversInfo.Enqueue(serverInfo);
+                Console.WriteLine("Updated {0} in {1}s", server.Url, sw.ElapsedMilliseconds / 1000);
+            });
 
             await _mediator.Send(new UpdateServerListCommand([.. serversInfo]), cancellationToken);
 
