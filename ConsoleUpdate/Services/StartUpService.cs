@@ -52,7 +52,6 @@ namespace ConsoleUpdate.Services
             await Parallel.ForEachAsync(servers, async (server, token) =>
             {
                 var sw = new Stopwatch();
-                Console.WriteLine("Updating {0}", server.Url);
                 sw.Start();
                 var serverInfo = await HandleUpdate(server, cancellationToken);
                 sw.Stop();
