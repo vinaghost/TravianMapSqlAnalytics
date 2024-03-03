@@ -21,7 +21,7 @@
             <select class="form-select" id="player_alliance" data-ajax--url="/alliances/search">
                 @if (Model is not null)
                 {
-                    <option value="@Model.Player.AllianceId">@(string.IsNullOrWhiteSpace(Model.Player.AllianceName) ? "No alliance" : Model.Player.AllianceName)</option>
+                    <option value="@Model.Player.AllianceId" selected="true">@(string.IsNullOrWhiteSpace(Model.Player.AllianceName) ? "No alliance" : Model.Player.AllianceName)</option>
                 }
             </select>
         </div>
