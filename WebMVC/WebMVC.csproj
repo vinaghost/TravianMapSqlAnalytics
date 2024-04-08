@@ -13,7 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="X.PagedList.Mvc.Bootstrap4" Version="8.1.0" />
-    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.4.7" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>
