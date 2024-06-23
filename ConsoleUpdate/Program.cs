@@ -1,5 +1,4 @@
-﻿using ConsoleUpdate.Commands;
-using ConsoleUpdate.Services;
+﻿using ConsoleUpdate.Services;
 using Core.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -15,15 +14,6 @@ builder.Services.AddMediatR(cfg =>
 {
     cfg.RegisterServicesFromAssembly(typeof(Program).Assembly);
 });
-
-builder.Services
-    .AddHttpClient<GetServerListCommand>()
-    .ConfigurePrimaryHttpMessageHandler(builder =>
-         new HttpClientHandler
-         {
-             ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
-         }
-    );
 
 builder.Services.AddHttpClient();
 
