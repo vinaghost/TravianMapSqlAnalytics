@@ -21,6 +21,7 @@ builder.Services
     .ConfigurePrimaryHttpMessageHandler(builder =>
          new HttpClientHandler
          {
+             ClientCertificateOptions = ClientCertificateOption.Manual
              ServerCertificateCustomValidationCallback = (m, c, ch, e) => true
          }
     );
