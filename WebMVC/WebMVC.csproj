@@ -17,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Core\Application.csproj" />
     <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 

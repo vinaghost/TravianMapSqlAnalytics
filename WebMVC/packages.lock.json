@@ -4,9 +4,9 @@
     "net8.0": {
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.6, )",
-        "resolved": "8.0.6",
-        "contentHash": "E+lDylsTeP4ZiDmnEkiJ5wobnGaIJzFhOgZppznJCb69UZgbh6G3cfv1pnLDLLBx6JAgl0kAlnINDeT3uCuczQ=="
+        "requested": "[8.0.7, )",
+        "resolved": "8.0.7",
+        "contentHash": "iI52ptEKby2ymQ6B7h4TWbFmm85T4VvLgc/HvS45Yr3lgi4IIFbQtjON3bQbX/Vc94jXNSLvrDOp5Kh7SJyFYQ=="
       },
       "X.PagedList.Mvc.Bootstrap4": {
         "type": "Direct",
@@ -264,7 +264,7 @@
         "resolved": "9.1.2",
         "contentHash": "qePK/lt+Y8PeQM9E/DkWY/AIyxDVEMX0XFCU5CfLP1+Y9SUThFyaY8/QgldOg9uOJLvse1i3oAQDJOrhb3usdw=="
       },
-      "core": {
+      "application": {
         "type": "Project",
         "dependencies": {
           "FluentValidation": "[11.9.2, )",
@@ -281,7 +281,7 @@
       "features": {
         "type": "Project",
         "dependencies": {
-          "Core": "[1.0.0, )",
+          "Application": "[1.0.0, )",
           "FluentResults": "[3.15.2, )"
         }
       }
