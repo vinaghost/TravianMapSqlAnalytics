@@ -13,3 +13,4 @@ namespace Infrastructure.DbContexts
         public DbSet<Village> Villages { get; set; }
         public DbSet<VillageHistory> VillagesHistory { get; set; }
     }
+}

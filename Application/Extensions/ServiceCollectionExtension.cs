@@ -1,5 +1,6 @@
-﻿using Application.Services;
-using Core.Config;
+﻿using Application.Models.Options;
+using Application.Services;
+using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -19,34 +20,31 @@ namespace Application.Extensions
 
         public static IServiceCollection AddDbContext(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddDbContext<ServerListDbContext>((serviceProvider, options) =>
+            serviceCollection.AddDbContext<ServerDbContext>((serviceProvider, options) =>
             {
-                var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
-
-                var connectionString = $"{option.Value.DataSource};Database={ServerListDbContext.DATABASE_NAME}";
+                var connectionStrings = serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value;
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
 #endif
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseMySql(connectionStrings.Server, ServerVersion.AutoDetect(connectionStrings.Server));
             });
 
             serviceCollection.AddDbContext<ServerDbContext>((serviceProvider, options) =>
             {
-                var option = serviceProvider.GetRequiredService<IOptions<ConnectionStringOption>>();
+                var connectionStrings = serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value;
                 var dataService = serviceProvider.GetRequiredService<DataService>();
 
-                var connectionString = $"{option.Value.DataSource};Database={dataService.Server}";
+                var connectionString = $"{connectionStrings.Village};Database={dataService.Server}";
                 options
 #if DEBUG
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
-                    //.LogTo(Console.WriteLine)
 #endif
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
+                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
             });
 
             return serviceCollection;
@@ -54,7 +52,7 @@ namespace Application.Extensions
 
         public static IServiceCollection AddServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.TryAddSingleton<ICacheService, CacheService>();
+            serviceCollection.TryAddSingleton<CacheService>();
             serviceCollection.TryAddScoped<DataService>();
             return serviceCollection;
         }
