@@ -1,4 +1,4 @@
-﻿using Core;
+﻿
 using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -14,9 +14,9 @@ namespace Features.GetServer
         public bool IsServerBased => false;
     }
 
-    public class GetServerCountQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerCountQuery, int>
+    public class GetServerCountQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetServerCountQuery, int>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<int> Handle(GetServerCountQuery request, CancellationToken cancellationToken)
         {

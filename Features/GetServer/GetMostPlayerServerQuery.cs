@@ -1,5 +1,4 @@
-﻿using Core;
-using Features.Shared.Query;
+﻿using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +13,9 @@ namespace Features.GetServer
         public bool IsServerBased => false;
     }
 
-    public class GetMostPlayerServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetMostPlayerServerQuery, string>
+    public class GetMostPlayerServerQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetMostPlayerServerQuery, string>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<string> Handle(GetMostPlayerServerQuery request, CancellationToken cancellationToken)
         {

@@ -1,4 +1,4 @@
-﻿using Core;
+﻿
 using Features.Shared.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +6,9 @@ using X.PagedList;
 
 namespace Features.SearchAlliance
 {
-    public class SearchAllianceQueryHandler(ServerDbContext dbContext) : IRequestHandler<SearchAllianceByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchAllianceByIdQuery, IList<SearchResult>>
+    public class SearchAllianceQueryHandler(VillageDbContext dbContext) : IRequestHandler<SearchAllianceByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchAllianceByIdQuery, IList<SearchResult>>
     {
-        private readonly ServerDbContext _dbContext = dbContext;
+        private readonly VillageDbContext _dbContext = dbContext;
 
         public async Task<IPagedList<SearchResult>> Handle(SearchAllianceByParametersQuery request, CancellationToken cancellationToken)
         {

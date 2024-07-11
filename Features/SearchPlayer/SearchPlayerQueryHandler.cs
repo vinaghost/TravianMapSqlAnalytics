@@ -1,4 +1,4 @@
-﻿using Core;
+﻿
 using Features.Shared.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -6,9 +6,9 @@ using X.PagedList;
 
 namespace Features.SearchPlayer
 {
-    public class SearchPlayerQueryHandler(ServerDbContext dbContext) : IRequestHandler<SearchPlayerByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchPlayerByAllianceIdQuery, IList<SearchResult>>
+    public class SearchPlayerQueryHandler(VillageDbContext dbContext) : IRequestHandler<SearchPlayerByParametersQuery, IPagedList<SearchResult>>, IRequestHandler<SearchPlayerByAllianceIdQuery, IList<SearchResult>>
     {
-        private readonly ServerDbContext _dbContext = dbContext;
+        private readonly VillageDbContext _dbContext = dbContext;
 
         public async Task<IPagedList<SearchResult>> Handle(SearchPlayerByParametersQuery request, CancellationToken cancellationToken)
         {

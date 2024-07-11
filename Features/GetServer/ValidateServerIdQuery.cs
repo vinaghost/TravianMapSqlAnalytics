@@ -1,4 +1,4 @@
-﻿using Core;
+﻿
 using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +23,9 @@ namespace Features.GetServer
         public bool IsServerBased => false;
     }
 
-    public class ValidateServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<ValidateServerIdQuery, bool>, IRequestHandler<ValidateServerUrlQuery, bool>
+    public class ValidateServerQueryHandler(ServerDbContext dbContext) : IRequestHandler<ValidateServerIdQuery, bool>, IRequestHandler<ValidateServerUrlQuery, bool>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<bool> Handle(ValidateServerIdQuery request, CancellationToken cancellationToken)
         {

@@ -1,18 +1,17 @@
-﻿using Core;
-using Features.Shared.Dtos;
+﻿using Features.Shared.Dtos;
 using Features.Shared.Parameters;
-using FluentResults;
+
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
 
 namespace Features.GetPlayerData
 {
-    public class GetPlayerDataQueryHandler(ServerDbContext DbContext) : IRequestHandler<GetPlayerDataQuery, Result<PlayerDataDto>>
+    public class GetPlayerDataQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetPlayerDataQuery, PlayerDataDto?>
     {
-        private readonly ServerDbContext _dbContext = DbContext;
+        private readonly VillageDbContext _dbContext = DbContext;
 
-        public async Task<Result<PlayerDataDto>> Handle(GetPlayerDataQuery request, CancellationToken cancellationToken)
+        public async Task<PlayerDataDto?> Handle(GetPlayerDataQuery request, CancellationToken cancellationToken)
         {
             var playerId = request.PlayerId;
             var playerData = await _dbContext.Players
@@ -30,12 +29,12 @@ namespace Features.GetPlayerData
                     ))
                 .FirstOrDefaultAsync(cancellationToken);
 
-            if (playerData is null) return Result.Fail("Not found");
+            if (playerData is null) return null;
 
             var villageData = await _dbContext.Villages
                 .Where(x => x.PlayerId == playerId)
                 .OrderByDescending(x => x.Population)
-                .GroupJoin(_dbContext.VillagePopulationHistory.Where(x => x.Date >= DefaultParameters.Date),
+                .GroupJoin(_dbContext.VillagesHistory.Where(x => x.Date >= DefaultParameters.Date),
                     x => x.Id,
                     x => x.VillageId,
                     (village, populations) => new VillageDto
@@ -49,7 +48,7 @@ namespace Features.GetPlayerData
                         village.Tribe,
                         populations
                             .OrderByDescending(x => x.Date)
-                            .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
+                            .Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation))
                             .ToList()
                     ))
                 .ToListAsync(cancellationToken);

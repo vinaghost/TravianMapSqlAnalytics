@@ -1,4 +1,4 @@
-﻿using Core;
+﻿
 using Features.Shared.Query;
 using MediatR;
 using X.PagedList;
@@ -14,9 +14,9 @@ namespace Features.GetServer
         public bool IsServerBased => false;
     }
 
-    public class GetServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerQuery, IPagedList<Server>>
+    public class GetServerQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetServerQuery, IPagedList<Server>>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<IPagedList<Server>> Handle(GetServerQuery request, CancellationToken cancellationToken)
         {

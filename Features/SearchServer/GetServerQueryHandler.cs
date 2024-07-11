@@ -1,13 +1,13 @@
-﻿using Core;
+﻿
 using Features.Shared.Models;
 using MediatR;
 using X.PagedList;
 
 namespace Features.SearchServer
 {
-    public class GetServerQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerQuery, IPagedList<SearchResult>>
+    public class GetServerQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetServerQuery, IPagedList<SearchResult>>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<IPagedList<SearchResult>> Handle(GetServerQuery request, CancellationToken cancellationToken)
         {

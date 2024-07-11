@@ -1,5 +1,5 @@
 ﻿using Features.GetServer;
-using Core.Services;
+
 using Features.Shared.Parameters;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

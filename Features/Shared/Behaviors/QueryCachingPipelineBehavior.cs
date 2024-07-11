@@ -1,21 +1,15 @@
-﻿using Core.Services;
+﻿using Application.Services;
 using Features.Shared.Query;
 using MediatR;
 
 namespace Features.Shared.Behaviors
 {
-    public sealed class QueryCachingPipelineBehavior<TRequest, TResponse>
+    public sealed class QueryCachingPipelineBehavior<TRequest, TResponse>(CacheService cacheService, DataService dataService)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICachedQuery
     {
-        private readonly ICacheService _cacheService;
-        private readonly DataService _dataService;
-
-        public QueryCachingPipelineBehavior(ICacheService cacheService, DataService dataService)
-        {
-            _cacheService = cacheService;
-            _dataService = dataService;
-        }
+        private readonly CacheService _cacheService = cacheService;
+        private readonly DataService _dataService = dataService;
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
@@ -26,11 +20,13 @@ namespace Features.Shared.Behaviors
                 cacheKey = $"{_dataService.Server}_{cacheKey}";
             }
 
-            return await _cacheService.GetOrCreateAsync(
+            var cachedValue = await _cacheService.GetOrCreateAsync(
                 cacheKey,
                 _ => next(),
                 request.Expiation,
                 cancellationToken);
+
+            return cachedValue!;
         }
     }
 }

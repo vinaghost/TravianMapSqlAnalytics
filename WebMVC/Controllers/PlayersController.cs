@@ -19,9 +19,9 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> Index(int playerId)
         {
             if (playerId == default) return View();
-            var result = await _mediator.Send(new GetPlayerDataQuery(playerId));
-            if (result.IsFailed) return View();
-            return View(result.Value);
+            var player = await _mediator.Send(new GetPlayerDataQuery(playerId));
+            if (player is null) return View();
+            return View(player);
         }
     }
 }

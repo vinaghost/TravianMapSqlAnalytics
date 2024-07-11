@@ -1,6 +1,4 @@
-﻿using Core;
-using Core.Entities;
-using Features.Shared.Dtos;
+﻿using Features.Shared.Dtos;
 using Features.Shared.Enums;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
@@ -9,9 +7,9 @@ using X.PagedList;
 
 namespace Features.Shared.Handler
 {
-    public abstract class VillageDataQueryHandler(ServerDbContext dbContext)
+    public abstract class VillageDataQueryHandler(VillageDbContext dbContext)
     {
-        protected readonly ServerDbContext _dbContext = dbContext;
+        protected readonly VillageDbContext _dbContext = dbContext;
 
         protected static async Task<IPagedList<VillageDataDto>> ToPagedList(IEnumerable<VillageDataDto> data, IPaginationParameters parameters)
         {
@@ -68,12 +66,12 @@ namespace Features.Shared.Handler
 
                 case Capital.OnlyCapital:
                     query = query
-                        .Where(x => x.IsCapital == true);
+                        .Where(x => x.IsCapital);
                     break;
 
                 case Capital.OnlyVillage:
                     query = query
-                        .Where(x => x.IsCapital == false);
+                        .Where(x => !x.IsCapital);
                     break;
 
                 default:
@@ -108,9 +106,9 @@ namespace Features.Shared.Handler
             return query;
         }
 
-        protected IQueryable<VillagePopulationHistory> GetPopulation()
+        protected IQueryable<VillageHistory> GetPopulation()
         {
-            var query = _dbContext.VillagePopulationHistory
+            var query = _dbContext.VillagesHistory
                 .AsExpandable()
                 .Where(x => x.Date >= DefaultParameters.Date);
             return query;

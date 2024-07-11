@@ -1,5 +1,5 @@
 ﻿using Features.GetServer;
-using Core.Services;
+
 using MediatR;
 
 namespace WebMVC.Middleware

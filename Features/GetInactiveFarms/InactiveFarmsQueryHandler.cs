@@ -1,7 +1,4 @@
-﻿using Core;
-using Core.Entities;
-
-using Features.Shared.Dtos;
+﻿using Features.Shared.Dtos;
 using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
@@ -10,9 +7,9 @@ using X.PagedList;
 
 namespace Features.GetInactiveFarms
 {
-    public class GetInactiveFarmsQueryHandler(ServerDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveFarmsQuery, IPagedList<VillageDataDto>>
+    public class InactiveFarmsQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<InactiveFarmsQuery, IPagedList<VillageDataDto>>
     {
-        public async Task<IPagedList<VillageDataDto>> Handle(GetInactiveFarmsQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDataDto>> Handle(InactiveFarmsQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -52,7 +49,7 @@ namespace Features.GetInactiveFarms
                         village.Village,
                         Populations = populations
                             .OrderByDescending(x => x.Date)
-                            .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
+                            .Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation))
                             .ToList(),
                     })
                 .AsEnumerable();
@@ -82,26 +79,26 @@ namespace Features.GetInactiveFarms
             if (IsPlayerFiltered(parameters))
             {
                 var query = GetPlayers(parameters)
-                    .Join(_dbContext.PlayerPopulationHistory
+                    .Join(_dbContext.PlayersHistory
                             .Where(x => x.Date >= date),
                         x => x.Id,
                         x => x.PlayerId,
                         (player, population) => new
                         {
                             player.Id,
-                            population.Change
+                            population.ChangePopulation
                         })
                     .GroupBy(x => x.Id)
-                    .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                    .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.ChangePopulation).Max() == 0 && x.Select(x => x.ChangePopulation).Min() == 0)
                     .Select(x => x.Key);
                 return query;
             }
             else
             {
-                var query = _dbContext.PlayerPopulationHistory
+                var query = _dbContext.PlayersHistory
                    .Where(x => x.Date >= date)
                    .GroupBy(x => x.PlayerId)
-                   .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.Change).Max() == 0 && x.Select(x => x.Change).Min() == 0)
+                   .Where(x => x.Count() >= parameters.InactiveDays && x.Select(x => x.ChangePopulation).Max() == 0 && x.Select(x => x.ChangePopulation).Min() == 0)
                    .Select(x => x.Key);
                 return query;
             }
@@ -110,9 +107,6 @@ namespace Features.GetInactiveFarms
         private IQueryable<Player> GetInactivePlayers(InactiveFarmParameters parameters)
         {
             var ids = GetInactivePlayerIds(parameters);
-
-            var loaded = ids.ToList();
-
             return _dbContext.Players
                 .Where(x => ids.Contains(x.Id));
         }

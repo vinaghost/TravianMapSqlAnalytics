@@ -1,5 +1,4 @@
-﻿using Core;
-using Features.Shared.Dtos;
+﻿using Features.Shared.Dtos;
 using Features.Shared.Handler;
 using Features.Shared.Models;
 using MediatR;
@@ -7,7 +6,7 @@ using X.PagedList;
 
 namespace Features.GetNeighbors
 {
-    public class GetNeighborsQueryHandler(ServerDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetNeighborsQuery, IPagedList<VillageDataDto>>
+    public class GetNeighborsQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetNeighborsQuery, IPagedList<VillageDataDto>>
     {
         public async Task<IPagedList<VillageDataDto>> Handle(GetNeighborsQuery request, CancellationToken cancellationToken)
         {
@@ -16,8 +15,6 @@ namespace Features.GetNeighbors
             var players = GetPlayers(parameters);
             var villages = GetVillages(parameters, parameters);
             var populations = GetPopulation();
-
-            var maxDistance = Math.Pow(parameters.Distance, 2);
 
             var data = players
                .Join(_dbContext.Alliances,
@@ -50,7 +47,7 @@ namespace Features.GetNeighbors
                         village.Village,
                         Populations = populations
                             .OrderByDescending(x => x.Date)
-                            .Select(x => new PopulationDto(x.Date, x.Population, x.Change))
+                            .Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation))
                             .ToList(),
                     })
                 .AsEnumerable();

@@ -1,9 +1,8 @@
 ﻿using Features.Shared.Query;
-using FluentResults;
 
 namespace Features.GetPlayerData
 {
-    public record GetPlayerDataQuery(int PlayerId) : ICachedQuery<Result<PlayerDataDto>>
+    public record GetPlayerDataQuery(int PlayerId) : ICachedQuery<PlayerDataDto?>
     {
         public string CacheKey => $"{nameof(GetPlayerDataQuery)}_{PlayerId}";
 

@@ -1,4 +1,4 @@
-using Core.Extensions;
+using Application.Extensions;
 using Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebMVC.Middleware;

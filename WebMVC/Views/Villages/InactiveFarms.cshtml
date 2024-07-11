@@ -35,7 +35,7 @@ else
 {
     if (ViewData.ModelState.IsValid)
     {
-        dto = await mediator.Send(new GetInactiveFarmsQuery(Model));            
+        dto = await mediator.Send(new InactiveFarmsQuery(Model));            
     }
 
     <div class="text-center">

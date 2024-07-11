@@ -1,5 +1,4 @@
-﻿using Core;
-using Features.Shared.Query;
+﻿using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,9 +13,9 @@ namespace Features.GetServer
         public bool IsServerBased => false;
     }
 
-    public class GetServerUrlQueryHandler(ServerListDbContext dbContext) : IRequestHandler<GetServerUrlQuery, string>
+    public class GetServerUrlQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetServerUrlQuery, string>
     {
-        private readonly ServerListDbContext _dbContext = dbContext;
+        private readonly ServerDbContext _dbContext = dbContext;
 
         public async Task<string> Handle(GetServerUrlQuery request, CancellationToken cancellationToken)
         {
