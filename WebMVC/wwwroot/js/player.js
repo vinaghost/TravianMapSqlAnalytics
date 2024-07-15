@@ -28,29 +28,30 @@ $(function () {
         theme: "bootstrap-5",
     })
 
-    alliance.on('select2:select', function (e) {
+    const newOptions = '<option value="">-- Select --</option>';
+
+    function loadPlayer() {
         player.prop("disabled", true);
 
-        const url = "/alliances/searchplayer?allianceId=:allaianceId:"
-        $.getJSON(url.replace(':allaianceId:', $(this).val()), function (result) {
-            let newOptions = '<option value="">-- Select --</option>';
-
-            let items = result.results;
-
-            for (var key in items) {
-                var item = items[key];
-                newOptions += '<option value="' + item['id'] + '">' + item['text'] + '</option>';
+        const url = "/players/searchAlliance?allianceId=:allaianceId:"
+        var val = alliance.val() | "-1";
+        $.getJSON(url.replace(':allaianceId:', val), function (result) {
+            var options = newOptions;
+            for (var key in result.results) {
+                var item = result.results[key];
+                options += '<option value="' + item['id'] + '">' + item['text'] + '</option>';
             }
 
-            console.log(newOptions);
-
             player.val(null);
-
-            player.html(newOptions);
-
+            player.html(options);
             player.trigger('change');
-
             player.prop("disabled", false);
         });
+    }
+
+    alliance.on('select2:select', function (e) {
+        loadPlayer();
     });
+
+    loadPlayer();
 });

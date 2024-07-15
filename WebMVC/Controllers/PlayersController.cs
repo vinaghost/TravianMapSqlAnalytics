@@ -23,5 +23,11 @@ namespace WebMVC.Controllers
             if (player is null) return View();
             return View(player);
         }
+
+        public async Task<IActionResult> SearchAlliance(int allianceId)
+        {
+            var players = await _mediator.Send(new SearchPlayerByAllianceIdQuery(allianceId));
+            return Json(new { results = players });
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-using Features.Shared.Models;
+﻿using Features.Shared.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -30,6 +29,13 @@ namespace Features.SearchPlayer
         public async Task<IList<SearchResult>> Handle(SearchPlayerByAllianceIdQuery request, CancellationToken cancellationToken)
         {
             var id = request.AllianceId;
+            if (id == -1)
+            {
+                return await _dbContext.Players
+                    .OrderBy(x => x.Name)
+                    .Select(x => new SearchResult(x.Id, x.Name))
+                    .ToListAsync(cancellationToken);
+            }
             return await _dbContext.Players
                 .Where(x => x.AllianceId == id)
                 .OrderBy(x => x.Name)
