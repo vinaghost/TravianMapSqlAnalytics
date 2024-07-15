@@ -1,6 +1,6 @@
 ﻿namespace Features.Shared.Query
 {
-    public interface ICachedQuery<TResponse> : IQuery<TResponse>, ICachedQuery;
+    public interface ICachedQuery<out TResponse> : IQuery<TResponse>, ICachedQuery;
 
     public interface ICachedQuery
     {

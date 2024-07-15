@@ -1,6 +1,14 @@
 ﻿@model Boolean?
+@{
+    var htmlAttributes = new Dictionary<string, object>();
+    htmlAttributes.Add("class", "form-check-input");
 
+    if (ViewData.ContainsKey("id"))
+    {
+        ViewData.TemplateInfo.HtmlFieldPrefix = ViewBag.id;
+    }
+}
 <div class="form-group">
-    @Html.CheckBox("", Model.HasValue && Model.Value, new { @class = "form-check-input" })
+    @Html.CheckBox("", Model.HasValue && Model.Value, htmlAttributes)
     @Html.LabelFor(m => m, new { @class = "form-check-label" })
 </div>

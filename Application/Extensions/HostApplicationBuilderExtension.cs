@@ -9,7 +9,6 @@ namespace Application.Extensions
         public static IHostApplicationBuilder BindConfiguration(this IHostApplicationBuilder builder)
         {
             builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
-            builder.Services.Configure<AppSettings>(builder.Configuration.GetSection(nameof(AppSettings)));
 
             return builder;
         }

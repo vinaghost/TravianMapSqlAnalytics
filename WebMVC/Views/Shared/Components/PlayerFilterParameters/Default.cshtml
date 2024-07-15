@@ -1,0 +1,9 @@
+﻿@using Features.Shared.Parameters
+@model IPlayerFilterParameters
+<div>
+    @Html.EditorFor(m => m.Alliances, "ListInt", "", new { Name = nameof(Model.Alliances), Url = "/alliances/search", Data = ViewData["Alliances"] })
+    @Html.EditorFor(m => m.ExcludeAlliances, "ListInt", "", new { Name = nameof(Model.ExcludeAlliances), Url = "/alliances/search", Data = ViewData["ExcludeAlliances"] })
+
+    @Html.EditorFor(m => m.MinPlayerPopulation)
+    @Html.EditorFor(m => m.MaxPlayerPopulation)
+</div>

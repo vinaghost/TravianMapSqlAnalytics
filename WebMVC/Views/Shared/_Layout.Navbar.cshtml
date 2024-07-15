@@ -1,17 +1,15 @@
 ﻿@using WebMVC.Controllers
-
 @{
     // controler, action, title
-    List<NavbarItem> dict = [        
+    List<NavbarItem> dict = new List<NavbarItem> {
         new("Home", nameof(HomeController.Index), "Home"),
         new("Villages", nameof(VillagesController.InactiveFarms), "Inactive farms"),
         new("Villages", nameof(VillagesController.Neighbors), "Neighbors"),
         new("Players", nameof(PlayersController.Index), "Players"),
         new("AboutUs", nameof(AboutUsController.Index), "About us"),
-    ];
-
-
+    };
 }
+
 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
     <ul class="navbar-nav flex-grow-1">
         @foreach (var (controller, action, title) in dict)
@@ -22,3 +20,4 @@
         }
     </ul>
 </div>
+

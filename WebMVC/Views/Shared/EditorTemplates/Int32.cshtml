@@ -1,22 +1,16 @@
 ﻿@model int?
 
 @{
-    var htmlAttributes = new RouteValueDictionary();
+    var htmlAttributes = new Dictionary<string, object>();
     htmlAttributes.Add("type", "number");
+    htmlAttributes.Add("class", "form-control");
 
-    if (ViewBag.@class != null)
+    if (ViewData.ContainsKey("id"))
     {
-        htmlAttributes.Add("class", "form-control " + ViewBag.@class);
-    }
-    else
-    {
-        htmlAttributes.Add("class", "form-control");
+        ViewData.TemplateInfo.HtmlFieldPrefix = ViewBag.id;
     }
 
-    if (ViewBag.placeholder != null)
-    {
-        htmlAttributes.Add("placeholder", ViewBag.placeholder);
-    }
+
 }
 <div class="input-group mt-3">
     <span class="input-group-text">@Html.LabelForModel(new { @class = "control-label" })</span>    

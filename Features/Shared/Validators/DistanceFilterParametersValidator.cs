@@ -17,7 +17,7 @@ namespace Features.Shared.Validators
 
             RuleFor(x => x.Distance)
                 .GreaterThanOrEqualTo(0)
-                .LessThanOrEqualTo(400);
+                .LessThanOrEqualTo(300);
         }
     }
 }

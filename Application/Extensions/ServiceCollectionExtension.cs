@@ -32,7 +32,7 @@ namespace Application.Extensions
                     .UseMySql(connectionStrings.Server, ServerVersion.AutoDetect(connectionStrings.Server));
             });
 
-            serviceCollection.AddDbContext<ServerDbContext>((serviceProvider, options) =>
+            serviceCollection.AddDbContext<VillageDbContext>((serviceProvider, options) =>
             {
                 var connectionStrings = serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value;
                 var dataService = serviceProvider.GetRequiredService<DataService>();

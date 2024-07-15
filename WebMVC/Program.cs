@@ -12,7 +12,8 @@ namespace WebMVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            builder.Services
+                .AddControllersWithViews();
             AddService(builder.Services);
 
             builder.BindConfiguration();
