@@ -4,9 +4,9 @@ using X.PagedList;
 
 namespace Features.GetInactiveFarms
 {
-    public record InactiveFarmsQuery(InactiveFarmParameters Parameters) : ICachedQuery<IPagedList<VillageDataDto>>
+    public record GetInactiveQuery(InactiveParameters Parameters) : ICachedQuery<IPagedList<VillageDataDto>>
     {
-        public string CacheKey => $"{nameof(InactiveFarmsQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetInactiveQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
 

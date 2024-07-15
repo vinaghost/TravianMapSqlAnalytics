@@ -1,10 +1,11 @@
 ﻿@using Features.GetNeighbors
 @using Features.Shared.Dtos
+@using WebMVC.ViewModels.Villages
 
 @inject IMediator mediator
 @inject DataService dataService
 
-@model NeighborsParameters
+@model NeighborViewModel
 
 @{
     ViewData["Title"] = "Neighbors";
@@ -13,9 +14,25 @@
 @using (Html.BeginForm(nameof(VillagesController.Neighbors), "Villages", FormMethod.Post))
 {
     <div class="container">
-        @await Html.PartialAsync("_ServerPickerPartial")
+        @await Html.PartialAsync("_ServerPickerPartial" )
 
-        @Html.EditorForModel()
+        @await Component.InvokeAsync(nameof(DistanceFilterParameters), new { parameter = Model.Parameters })
+
+        <div class="mt-3">
+            <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">
+                Advanced filters
+            </a>
+        </div>
+
+        <div class="collapse" id="filter-fields">
+            @await Component.InvokeAsync(nameof(VillageFilterParameters), new { parameter = Model.Parameters })
+            @await Component.InvokeAsync(nameof(PlayerFilterParameters), new { parameter = Model.Parameters })
+        </div>
+
+        <div>
+            @await Component.InvokeAsync(nameof(PaginationParameters), new { parameter = Model.Parameters })
+            @Html.Hidden(nameof(WebParameters.IsUserInput), "true")
+        </div>
 
         <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check neighbor" />
     </div>
@@ -23,9 +40,9 @@
 
 @{
     var dates = Enumerable.Range(0, Constants.DateAmount).Select(x => DateTime.Now.AddDays(-x)).ToList();
-    IPagedList<VillageDataDto>? dto = null;
 }
-@if (!Model.IsUserInput)
+
+@if (!Model.Parameters.IsUserInput)
 {
     <div class="text-center">
         <p>Enter your request and check!</p>
@@ -34,43 +51,33 @@
 else
 {
     <div class="text-center">
-        @if (ViewData.ModelState.IsValid)
-        {
-            dto = await mediator.Send(new GetNeighborsQuery(Model));
-            
-            <p>We found <b>@(dto?.TotalItemCount ?? 0) villages</b> fit your request</p>
-        }
-        else
-        {
-            <p>We found <b>0 villages</b> fit your request</p>
-        }
+        <p>We found <b>@(Model.Data?.TotalItemCount ?? 0) villages</b> fit your request</p>
     </div>
-}
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Distance)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Player)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Village)
-            </th>
-            @for (var i = 0; i < dates.Count; i++)
-            {
+    <table class="table">
+        <thead>
+            <tr>
                 <th>
-                    @dates[i].ToString("dd/MM")
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Distance)
                 </th>
-            }
-        </tr>
-    </thead>
-    <tbody>
-        @Html.DisplayFor(x => dto)
-    </tbody>
-</table>
+                <th>
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Player)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Village)
+                </th>
+                @for (var i = 0; i < dates.Count; i++)
+                {
+                    <th>
+                        @dates[i].ToString("dd/MM")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @Html.DisplayFor(x => x.Data)
+        </tbody>
+    </table>
 
-
-@await Html.PartialAsync("_PaginationPartial", dto)
+    @await Html.PartialAsync("_PaginationPartial", Model.Data)
+}

@@ -23,7 +23,6 @@
   <ItemGroup>
     <Folder Include="Views\Players\DisplayTemplates\" />
     <Folder Include="Views\Players\EditorTemplates\" />
-    <Folder Include="Views\Villages\DisplayTemplates\" />
   </ItemGroup>
 
 

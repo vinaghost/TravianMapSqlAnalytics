@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Features.GetInactiveFarms
 {
-    public record InactiveFarmParameters : WebParameters, IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record InactiveParameters : WebParameters, IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; set; } = DefaultParameters.PageNumber;
 
@@ -32,7 +32,7 @@ namespace Features.GetInactiveFarms
 
     public static class InactiveFarmParametersExtension
     {
-        public static string Key(this InactiveFarmParameters parameters)
+        public static string Key(this InactiveParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';

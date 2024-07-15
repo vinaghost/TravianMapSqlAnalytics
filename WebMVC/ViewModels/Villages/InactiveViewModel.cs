@@ -4,5 +4,5 @@ using X.PagedList;
 
 namespace WebMVC.ViewModels.Villages
 {
-    public class InactiveFarmViewModel : BaseViewModel<InactiveFarmParameters, IPagedList<VillageDataDto>>;
+    public class InactiveViewModel : BaseViewModel<InactiveParameters, IPagedList<VillageDataDto>>;
 }

@@ -14,19 +14,19 @@ namespace WebMVC.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        public async Task<IActionResult> InactiveFarms(InactiveFarmParameters parameters, [FromServices] IValidator<InactiveFarmParameters> validator)
+        public async Task<IActionResult> Inactives(InactiveParameters parameters, [FromServices] IValidator<InactiveParameters> validator)
         {
             var result = validator.Validate(parameters);
             result.AddToModelState(ModelState);
 
             IPagedList<VillageDataDto>? data = null;
 
-            if (ViewData.ModelState.IsValid)
+            if (ViewData.ModelState.IsValid && parameters.IsUserInput)
             {
-                data = await _mediator.Send(new InactiveFarmsQuery(parameters));
+                data = await _mediator.Send(new GetInactiveQuery(parameters));
             }
 
-            var viewModel = new InactiveFarmViewModel
+            var viewModel = new InactiveViewModel
             {
                 Parameters = parameters,
                 Data = data,
@@ -35,11 +35,25 @@ namespace WebMVC.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Neighbors(NeighborsParameters parameters, [FromServices] IValidator<NeighborsParameters> validator)
+        public async Task<IActionResult> Neighbors(NeighborsParameters parameters, [FromServices] IValidator<NeighborsParameters> validator)
         {
             var result = validator.Validate(parameters);
             result.AddToModelState(ModelState);
-            return View(parameters);
+
+            IPagedList<VillageDataDto>? data = null;
+
+            if (ViewData.ModelState.IsValid && parameters.IsUserInput)
+            {
+                data = await _mediator.Send(new GetNeighborsQuery(parameters));
+            }
+
+            var viewModel = new NeighborViewModel
+            {
+                Parameters = parameters,
+                Data = data,
+            };
+
+            return View(viewModel);
         }
     }
 }

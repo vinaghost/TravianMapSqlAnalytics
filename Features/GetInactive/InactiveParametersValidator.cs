@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Features.GetInactiveFarms
 {
-    public class InactiveFarmParametersValidator : AbstractValidator<InactiveFarmParameters>
+    public class InactiveParametersValidator : AbstractValidator<InactiveParameters>
     {
-        public InactiveFarmParametersValidator()
+        public InactiveParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());

@@ -4,13 +4,13 @@
 @inject IMediator mediator
 @inject DataService dataService
 
-@model InactiveFarmViewModel
+@model InactiveViewModel
 
 @{
     ViewData["Title"] = "Inactive farms";
 }
 
-@using (Html.BeginForm(nameof(VillagesController.InactiveFarms), "Villages", FormMethod.Post))
+@using (Html.BeginForm(nameof(VillagesController.Inactives), "Villages", FormMethod.Post))
 {
     <div class="container">
         @await Html.PartialAsync("_ServerPickerPartial" )
@@ -24,7 +24,7 @@
 
         </div>
         <div class="collapse" id="filter-fields">
-            @Html.EditorFor(m => m.Parameters.InactiveDays, new { id = nameof(InactiveFarmParameters.InactiveDays) })
+            @Html.EditorFor(m => m.Parameters.InactiveDays, new { id = nameof(InactiveParameters.InactiveDays) })
             @await Component.InvokeAsync(nameof(VillageFilterParameters), new { parameter = Model.Parameters })
             @await Component.InvokeAsync(nameof(PlayerFilterParameters), new { parameter = Model.Parameters })
 
@@ -53,32 +53,33 @@ else
     <div class="text-center">
         <p>We found <b>@(Model.Data?.TotalItemCount ?? 0) villages</b> fit your request</p>
     </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Distance)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Player)
+                </th>
+                <th>
+                    @Html.DisplayNameForInnerType((VillageDataDto village) => village.Village)
+                </th>
+                @for (var i = 0; i < dates.Count; i++)
+                {
+                    <th>
+                        @dates[i].ToString("dd/MM")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @Html.DisplayFor(x => x.Data)
+        </tbody>
+    </table>
+
+    @await Html.PartialAsync("_PaginationPartial", Model.Data)
+
 }
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Distance)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Player)
-            </th>
-            <th>
-                @Html.DisplayNameForInnerType((VillageDataDto village) => village.Village)
-            </th>
-            @for (var i = 0; i < dates.Count; i++)
-            {
-                <th>
-                    @dates[i].ToString("dd/MM")
-                </th>
-            }
-        </tr>
-    </thead>
-    <tbody>  
-        @Html.DisplayFor(x => x.Data)
-    </tbody>
-</table>
-
-
-@await Html.PartialAsync("_PaginationPartial", Model.Data)

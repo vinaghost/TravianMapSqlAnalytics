@@ -7,9 +7,9 @@ using X.PagedList;
 
 namespace Features.GetInactiveFarms
 {
-    public class InactiveFarmsQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<InactiveFarmsQuery, IPagedList<VillageDataDto>>
+    public class GetInactiveQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveQuery, IPagedList<VillageDataDto>>
     {
-        public async Task<IPagedList<VillageDataDto>> Handle(InactiveFarmsQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDataDto>> Handle(GetInactiveQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -73,7 +73,7 @@ namespace Features.GetInactiveFarms
             return false;
         }
 
-        private IQueryable<int> GetInactivePlayerIds(InactiveFarmParameters parameters)
+        private IQueryable<int> GetInactivePlayerIds(InactiveParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
             if (IsPlayerFiltered(parameters))
@@ -104,7 +104,7 @@ namespace Features.GetInactiveFarms
             }
         }
 
-        private IQueryable<Player> GetInactivePlayers(InactiveFarmParameters parameters)
+        private IQueryable<Player> GetInactivePlayers(InactiveParameters parameters)
         {
             var ids = GetInactivePlayerIds(parameters);
             return _dbContext.Players
