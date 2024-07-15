@@ -2,5 +2,5 @@
 
 namespace Features.GetAllianceData
 {
-    public record PlayerDto(int PlayerId, string PlayerName, int Population, int VillageCount, IList<PopulationDto> Populations);
+    public record PlayerDto(int PlayerId, string PlayerName, int VillageCount, IList<PopulationDto> Populations);
 }

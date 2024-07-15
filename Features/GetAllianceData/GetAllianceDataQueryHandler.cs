@@ -33,7 +33,6 @@ namespace Features.GetAllianceData
                     (
                         player.Id,
                         player.Name,
-                        player.Population,
                         player.VillageCount,
                         populations
                             .OrderByDescending(x => x.Date)

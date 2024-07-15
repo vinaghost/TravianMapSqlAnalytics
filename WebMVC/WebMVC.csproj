@@ -20,10 +20,5 @@
     <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\Players\DisplayTemplates\" />
-    <Folder Include="Views\Players\EditorTemplates\" />
-  </ItemGroup>
-
 
 </Project>
