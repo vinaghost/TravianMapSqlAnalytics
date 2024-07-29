@@ -1,56 +1,29 @@
-using Core.Extensions;
-using Microsoft.AspNetCore.HttpOverrides;
+using Application.Extensions;
+using FastEndpoints;
+using FastEndpoints.Swagger;
+using Features;
 using WebAPI.Extensions;
 using WebAPI.Middlewares;
 
-namespace WebAPI
-{
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 
-            builder.BindConfiguration();
-            // Add services to the container.
-            ConfigureServices(builder.Services);
+builder.BindConfiguration();
 
-            var app = builder.Build();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddMiddleware();
 
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
+builder.Services
+    .AddCore()
+    .AddFeatures();
 
-            app.UseAuthorization();
+builder.Services
+    .AddFastEndpoints()
+    .SwaggerDocument();
 
-            app.UseMiddleware<ServerMiddleware>();
+var app = builder.Build();
+app.UseMiddleware<ServerMiddleware>();
+app
+    .UseFastEndpoints()
+    .UseSwaggerGen();
 
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
-            //app.UseHttpsRedirection();
-
-            app.MapControllers();
-
-            app.Run();
-        }
-
-        private static void ConfigureServices(IServiceCollection services)
-        {
-            services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
-
-            services.AddHttpContextAccessor();
-
-            services.AddMiddleware();
-
-            services.AddCore();
-        }
-    }
-}
+await app.RunAsync();

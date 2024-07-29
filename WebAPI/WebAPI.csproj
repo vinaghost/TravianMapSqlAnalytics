@@ -4,7 +4,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <InvariantGlobalization>true</InvariantGlobalization>
+
 
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
 
@@ -13,11 +13,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+    <PackageReference Include="FastEndpoints" Version="5.27.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.27.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 
 </Project>

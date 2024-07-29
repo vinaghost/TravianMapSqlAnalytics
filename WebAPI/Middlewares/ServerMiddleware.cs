@@ -1,5 +1,7 @@
-﻿using Core.Features.GetServer;
-using Core.Services;
+﻿using Application.Services;
+using FastEndpoints;
+using Features.GetServer;
+using FluentValidation.Results;
 using MediatR;
 
 namespace WebAPI.Middlewares
@@ -15,10 +17,10 @@ namespace WebAPI.Middlewares
             if (value.ContainsKey("server"))
             {
                 var server = value["server"].ToString();
-                var isValid = await _mediator.Send(new ValidateServerQuery(server));
+                var isValid = await _mediator.Send(new ValidateServerUrlQuery(server));
                 if (!isValid)
                 {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                    await context.Response.SendErrorsAsync([new ValidationFailure("Server", "Server is not available in database")]);
                     return;
                 }
                 _dataService.Server = server;
