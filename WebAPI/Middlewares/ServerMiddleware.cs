@@ -3,6 +3,7 @@ using FastEndpoints;
 using Features.GetServer;
 using FluentValidation.Results;
 using MediatR;
+using WebAPI.Requests;
 
 namespace WebAPI.Middlewares
 {
@@ -13,17 +14,22 @@ namespace WebAPI.Middlewares
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            var value = context.Request.Query;
-            if (value.ContainsKey("server"))
+            var value = context.GetRouteData().Values;
+            if (value is not null && value.ContainsKey(nameof(IServerUrlRequest.ServerUrl)))
             {
-                var server = value["server"].ToString();
-                var isValid = await _mediator.Send(new ValidateServerUrlQuery(server));
-                if (!isValid)
+                var server = value[nameof(IServerUrlRequest.ServerUrl)];
+                if (server is not null)
                 {
-                    await context.Response.SendErrorsAsync([new ValidationFailure("Server", "Server is not available in database")]);
-                    return;
+                    var serverUrl = server.ToString() ?? "";
+
+                    var isValid = await _mediator.Send(new ValidateServerUrlQuery(serverUrl));
+                    if (!isValid)
+                    {
+                        await context.Response.SendErrorsAsync([new ValidationFailure("Server", $"Server {serverUrl} is not available in database")]);
+                        return;
+                    }
+                    _dataService.Server = serverUrl;
                 }
-                _dataService.Server = server;
             }
 
             await next(context);

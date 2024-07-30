@@ -23,7 +23,10 @@ builder.Services
 var app = builder.Build();
 app.UseMiddleware<ServerMiddleware>();
 app
-    .UseFastEndpoints()
+    .UseFastEndpoints(c =>
+    {
+        c.Endpoints.RoutePrefix = "servers/{ServerUrl}";
+    })
     .UseSwaggerGen();
 
 await app.RunAsync();
