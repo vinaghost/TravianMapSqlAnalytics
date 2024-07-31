@@ -5,7 +5,7 @@
         int MinPlayerPopulation { get; }
         int MaxPlayerPopulation { get; }
 
-        IList<int> Alliances { get; }
-        IList<int> ExcludeAlliances { get; }
+        IList<int>? Alliances { get; }
+        IList<int>? ExcludeAlliances { get; }
     }
 }

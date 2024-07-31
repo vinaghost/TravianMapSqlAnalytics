@@ -21,12 +21,13 @@ namespace Features.Shared.Handler
             var query = _dbContext.Players
                 .AsExpandable();
 
-            if (parameters.Alliances.Count > 0)
+            if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
             {
                 query = query
                     .Where(x => parameters.Alliances.Contains(x.AllianceId));
             }
-            else if (parameters.ExcludeAlliances.Count > 0)
+
+            if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
             {
                 query = query
                     .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
@@ -80,28 +81,28 @@ namespace Features.Shared.Handler
 
             if (distanceParameters.Distance != 0)
             {
-                var predicate = PredicateBuilder.New<Village>();
+                //var predicate = PredicateBuilder.New<Village>();
 
-                var center = new Coordinates(distanceParameters.X, distanceParameters.Y);
+                //var center = new Coordinates(distanceParameters.X, distanceParameters.Y);
 
-                var maxBBoxes = center.GetBoudingBoxes(distanceParameters.Distance);
+                //var maxBBoxes = center.GetBoudingBoxes(distanceParameters.Distance);
 
-                foreach (var box in maxBBoxes)
-                {
-                    var boxPredicate = PredicateBuilder.New<Village>()
-                        .And(x => x.X >= box.MinX)
-                        .And(x => x.X <= box.MaxX)
-                        .And(x => x.Y >= box.MinY)
-                        .And(x => x.Y <= box.MaxY);
+                //foreach (var box in maxBBoxes)
+                //{
+                //    var boxPredicate = PredicateBuilder.New<Village>()
+                //        .And(x => x.X >= box.MinX)
+                //        .And(x => x.X <= box.MaxX)
+                //        .And(x => x.Y >= box.MinY)
+                //        .And(x => x.Y <= box.MaxY);
 
-                    predicate = predicate.Or(boxPredicate);
-                }
+                //    predicate = predicate.Or(boxPredicate);
+                //}
+
+                //query = query
+                //    .Where(predicate);
 
                 query = query
-                    .Where(predicate);
-
-                query = query
-                    .Where(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
+                   .Where(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
             }
             return query;
         }

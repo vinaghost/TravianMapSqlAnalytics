@@ -7,7 +7,6 @@ namespace Features.GetInactiveFarms
     {
         public InactiveParametersValidator()
         {
-            Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());
             Include(new PlayerPopulationFilterParametersValidator());
             Include(new VillagePopulationFilterParametersValidator());

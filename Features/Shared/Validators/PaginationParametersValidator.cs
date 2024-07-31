@@ -8,7 +8,12 @@ namespace Features.Shared.Validators
         public PaginationParametersValidator()
         {
             RuleFor(x => x.PageSize)
-                .Equal(50);
+                .NotEmpty()
+                .GreaterThanOrEqualTo(10);
+
+            RuleFor(x => x.PageNumber)
+                .NotEmpty()
+                .GreaterThanOrEqualTo(1);
         }
     }
 }

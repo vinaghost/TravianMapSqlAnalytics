@@ -67,8 +67,8 @@ namespace Features.GetInactiveFarms
 
         private static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
         {
-            if (parameters.Alliances.Count > 0) return true;
-            if (parameters.ExcludeAlliances.Count > 0) return true;
+            if (parameters.Alliances is not null && parameters.Alliances.Count > 0) return true;
+            if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0) return true;
             if (parameters.MaxPlayerPopulation != 0) return true;
             return false;
         }

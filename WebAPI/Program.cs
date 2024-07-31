@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.BindConfiguration();
 
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddMiddleware();
 
 builder.Services
