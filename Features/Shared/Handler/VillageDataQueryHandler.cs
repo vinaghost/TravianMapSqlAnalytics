@@ -26,8 +26,7 @@ namespace Features.Shared.Handler
                 query = query
                     .Where(x => parameters.Alliances.Contains(x.AllianceId));
             }
-
-            if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
+            else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
             {
                 query = query
                     .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));

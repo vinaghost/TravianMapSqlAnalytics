@@ -7,39 +7,40 @@ using WebAPI.Requests;
 
 namespace WebAPI.Endpoints.Villages
 {
-    public record NeighborRequest(string ServerUrl) : NeighborsParameters, IServerUrlRequest;
+    public record InactiveRequest(string ServerUrl) : InactiveParameters, IServerUrlRequest;
 
-    public class NeighborResponse()
+    public class InactiveResponse()
     {
-        public required IList<NeighborDto> Data { get; set; }
+        public required IList<InactiveDto> Data { get; set; }
         public required int TotalItemCount { get; set; }
         public required int PageNumber { get; set; }
         public required int PageSize { get; set; }
         public required int PageCount { get; set; }
     }
 
-    public class NeighborRequestValidator : Validator<NeighborRequest>
+    public class InactiveRequestValidator : Validator<InactiveRequest>
     {
-        public NeighborRequestValidator()
+        public InactiveRequestValidator()
         {
-            Include(new NeighborsParametersValidator());
+            Include(new InactiveParametersValidator());
         }
     }
 
-    [HttpGet("/villages/neighbors"), AllowAnonymous]
-    public class NeighborEndpoint(IMediator mediator) :
-        Endpoint<NeighborRequest,
-                Results<Ok<NeighborResponse>, NotFound>>
+    [HttpGet("/villages/inactives"), AllowAnonymous]
+    public class InactiveEndpoint(IMediator mediator) :
+        Endpoint<InactiveRequest,
+                Results<Ok<InactiveResponse>, NotFound>>
     {
         private readonly IMediator _mediator = mediator;
 
         public override async Task<Results<
-            Ok<NeighborResponse>,
+            Ok<InactiveResponse>,
             NotFound>>
-            ExecuteAsync(NeighborRequest rq, CancellationToken ct)
+            ExecuteAsync(InactiveRequest rq, CancellationToken ct)
         {
-            var data = await _mediator.Send(new GetNeighborsQuery(rq), ct);
-            return TypedResults.Ok(new NeighborResponse()
+            var data = await _mediator.Send(new GetInactiveQuery(rq), ct);
+
+            return TypedResults.Ok(new InactiveResponse()
             {
                 Data = [.. data],
                 TotalItemCount = data.TotalItemCount,
