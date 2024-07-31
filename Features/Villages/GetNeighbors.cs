@@ -20,7 +20,7 @@ namespace Features.Villages
                               int X,
                               int Y,
                               bool IsCapital,
-                              int Tribe,
+                              Tribe Tribe,
                               int Population,
                               double Distance);
 
@@ -166,7 +166,7 @@ namespace Features.Villages
                                              x.X,
                                              x.Y,
                                              x.IsCapital,
-                                             x.Tribe,
+                                             (Tribe)x.Tribe,
                                              x.Population,
                                              centerCoordinate.Distance(x.X, x.Y)));
 
