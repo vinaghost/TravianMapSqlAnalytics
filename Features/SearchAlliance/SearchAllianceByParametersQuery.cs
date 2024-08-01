@@ -5,7 +5,7 @@ using X.PagedList;
 
 namespace Features.SearchAlliance
 {
-    public record SearchAllianceByParametersQuery(SearchParameters Parameters) : ICachedQuery<IPagedList<SearchResult>>
+    public record SearchAllianceByParametersQuery(NameFilterParameters Parameters) : ICachedQuery<IPagedList<SearchResult>>
     {
         public string CacheKey => $"{nameof(SearchAllianceByParametersQuery)}_{Parameters.Key}";
 

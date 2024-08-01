@@ -8,7 +8,7 @@ using WebAPI.Requests;
 namespace WebAPI.Endpoints.Alliances
 {
     [HttpGet("/alliances/{Id}/members"), AllowAnonymous]
-    public class AllianceMemberEndpoint(IMediator mediator) :
+    public class MemberEndpoint(IMediator mediator) :
         Endpoint<IdRequest,
                 Results<Ok<List<PlayerDto>>, NotFound>>
     {
@@ -19,7 +19,7 @@ namespace WebAPI.Endpoints.Alliances
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var members = await _mediator.Send(new GetAllianceMemberQuery(rq.Id), ct);
+            var members = await _mediator.Send(new GetMembersQuery(rq.Id), ct);
             if (members.Count == 0) return TypedResults.NotFound();
             return TypedResults.Ok(members);
         }

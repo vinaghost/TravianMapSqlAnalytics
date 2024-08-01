@@ -1,5 +1,4 @@
-﻿
-using Features.Shared.Models;
+﻿using Features.Shared.Models;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using X.PagedList;
@@ -15,10 +14,10 @@ namespace Features.SearchAlliance
             var query = _dbContext.Alliances
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(request.Parameters.SearchTerm))
+            if (!string.IsNullOrWhiteSpace(request.Parameters.Name))
             {
                 query = query
-                    .Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
+                    .Where(x => x.Name.StartsWith(request.Parameters.Name));
             }
 
             query = query
@@ -27,7 +26,7 @@ namespace Features.SearchAlliance
             var data = await query
                 .OrderBy(x => x.Name)
                 .Select(x => new SearchResult(x.Id, string.IsNullOrWhiteSpace(x.Name) ? "No alliance" : x.Name))
-                .ToPagedListAsync(request.Parameters.Page, request.Parameters.PageSize);
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
 
             return data;
         }

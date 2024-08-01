@@ -5,20 +5,20 @@ using Microsoft.EntityFrameworkCore;
 namespace Features.Alliances
 {
     public record AllianceDto(int AllianceId, string AllianceName, int PlayerCount);
-    public record GetAllianceInfoQuery(int AllianceId) : ICachedQuery<AllianceDto?>
+    public record GetAllianceQuery(int AllianceId) : ICachedQuery<AllianceDto?>
     {
-        public string CacheKey => $"{nameof(GetAllianceInfoQuery)}_{AllianceId}";
+        public string CacheKey => $"{nameof(GetAllianceQuery)}_{AllianceId}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetAllianceInfoQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetAllianceInfoQuery, AllianceDto?>
+    public class GetAllianceInfoQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetAllianceQuery, AllianceDto?>
     {
         private readonly VillageDbContext _dbContext = DbContext;
 
-        public async Task<AllianceDto?> Handle(GetAllianceInfoQuery request, CancellationToken cancellationToken)
+        public async Task<AllianceDto?> Handle(GetAllianceQuery request, CancellationToken cancellationToken)
         {
             var allianceId = request.AllianceId;
             var alliance = await _dbContext.Alliances

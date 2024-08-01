@@ -14,16 +14,16 @@ namespace Features.SearchPlayer
             var query = _dbContext.Players
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(request.Parameters.SearchTerm))
+            if (!string.IsNullOrWhiteSpace(request.Parameters.Name))
             {
                 query = query
-                    .Where(x => x.Name.StartsWith(request.Parameters.SearchTerm));
+                    .Where(x => x.Name.StartsWith(request.Parameters.Name));
             }
 
             return await query
                 .OrderBy(x => x.Name)
                 .Select(x => new SearchResult(x.Id, x.Name))
-                .ToPagedListAsync(request.Parameters.Page, request.Parameters.PageSize);
+                .ToPagedListAsync(request.Parameters.PageNumber, request.Parameters.PageSize);
         }
 
         public async Task<IList<SearchResult>> Handle(SearchPlayerByAllianceIdQuery request, CancellationToken cancellationToken)

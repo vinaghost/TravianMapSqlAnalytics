@@ -5,7 +5,7 @@ using X.PagedList;
 
 namespace Features.SearchServer
 {
-    public record GetServerQuery(SearchParameters Parameters) : ICachedQuery<IPagedList<SearchResult>>
+    public record GetServerQuery(NameFilterParameters Parameters) : ICachedQuery<IPagedList<SearchResult>>
     {
         public string CacheKey => $"{nameof(GetServerQuery)}_{Parameters.Key}";
 

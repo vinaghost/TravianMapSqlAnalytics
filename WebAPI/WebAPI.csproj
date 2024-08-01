@@ -21,4 +21,8 @@
     <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\" />
+  </ItemGroup>
+
 </Project>
