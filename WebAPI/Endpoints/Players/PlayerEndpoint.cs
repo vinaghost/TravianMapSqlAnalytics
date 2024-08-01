@@ -7,8 +7,8 @@ using WebAPI.Requests;
 
 namespace WebAPI.Endpoints.Players
 {
-    [HttpGet("/players/{Id}/info"), AllowAnonymous]
-    public class PlayerInfoEndpoint(IMediator mediator) :
+    [HttpGet("/players/{Id}"), AllowAnonymous]
+    public class PlayerEndpoint(IMediator mediator) :
         Endpoint<IdRequest,
                 Results<Ok<PlayerDto>, NotFound>>
     {
@@ -19,8 +19,7 @@ namespace WebAPI.Endpoints.Players
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var info = await _mediator.Send(new GetPlayerInfoQuery(rq.Id), ct);
-            if (info is null) return TypedResults.NotFound();
+            var info = await _mediator.Send(new GetPlayerQuery(rq.Id), ct);
             return TypedResults.Ok(info);
         }
     }

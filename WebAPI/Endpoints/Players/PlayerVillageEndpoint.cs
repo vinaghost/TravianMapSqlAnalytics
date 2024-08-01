@@ -19,7 +19,7 @@ namespace WebAPI.Endpoints.Players
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var villages = await _mediator.Send(new GetPlayerVillageQuery(rq.Id), ct);
+            var villages = await _mediator.Send(new GetVillagesQuery(rq.Id), ct);
             if (villages.Count == 0) return TypedResults.NotFound();
             return TypedResults.Ok(villages);
         }

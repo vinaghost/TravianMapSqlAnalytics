@@ -7,20 +7,20 @@ using Microsoft.EntityFrameworkCore;
 namespace Features.Players
 {
     public record VillageDto(int MapId, string VillageName, int X, int Y, int Population, bool IsCapital, int Tribe, IList<PopulationDto> Populations);
-    public record GetPlayerVillageQuery(int PlayerId) : ICachedQuery<List<VillageDto>>
+    public record GetVillagesQuery(int PlayerId) : ICachedQuery<List<VillageDto>>
     {
-        public string CacheKey => $"{nameof(GetPlayerVillageQuery)}_{PlayerId}";
+        public string CacheKey => $"{nameof(GetVillagesQuery)}_{PlayerId}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetPlayerVillageQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetPlayerVillageQuery, List<VillageDto>>
+    public class GetVillageQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetVillagesQuery, List<VillageDto>>
     {
         private readonly VillageDbContext _dbContext = DbContext;
 
-        public async Task<List<VillageDto>> Handle(GetPlayerVillageQuery request, CancellationToken cancellationToken)
+        public async Task<List<VillageDto>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
         {
             var playerId = request.PlayerId;
             var villages = await _dbContext.Villages

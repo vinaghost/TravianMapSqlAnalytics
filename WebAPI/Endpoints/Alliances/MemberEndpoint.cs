@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Alliances;
+using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -19,8 +20,7 @@ namespace WebAPI.Endpoints.Alliances
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var members = await _mediator.Send(new GetMembersQuery(rq.Id), ct);
-            if (members.Count == 0) return TypedResults.NotFound();
+            var members = await _mediator.Send(new GetPlayersQuery(rq.Id), ct);
             return TypedResults.Ok(members);
         }
     }
