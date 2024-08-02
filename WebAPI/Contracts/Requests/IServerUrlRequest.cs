@@ -1,4 +1,4 @@
-﻿namespace WebAPI.Requests
+﻿namespace WebAPI.Contracts.Requests
 {
     public interface IServerUrlRequest
     {

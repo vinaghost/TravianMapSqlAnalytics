@@ -3,7 +3,7 @@ using FastEndpoints;
 using Features.GetServer;
 using FluentValidation.Results;
 using MediatR;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 
 namespace WebAPI.Middlewares
 {

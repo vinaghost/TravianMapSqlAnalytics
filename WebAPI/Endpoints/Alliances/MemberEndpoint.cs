@@ -3,7 +3,7 @@ using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 
 namespace WebAPI.Endpoints.Alliances
 {
@@ -19,14 +19,14 @@ namespace WebAPI.Endpoints.Alliances
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var parameters = new PlayerParameters
+            var parameters = new GetPlayersParameters
             {
                 PageNumber = 1,
                 PageSize = 120,
                 Alliances = [rq.Id]
             };
 
-            var members = await _mediator.Send(new GetAllPlayerQuery(parameters), ct);
+            var members = await _mediator.Send(new GetPlayersQuery(parameters), ct);
             return TypedResults.Ok(members.ToList());
         }
     }

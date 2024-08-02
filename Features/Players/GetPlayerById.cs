@@ -4,21 +4,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Features.Players
 {
-    public record PlayerDto(int PlayerId, string PlayerName, int VillageCount, int Population);
-    public record GetPlayerQuery(int PlayerId) : ICachedQuery<PlayerDto?>
+    public record GetPlayerByIdQuery(int PlayerId) : ICachedQuery<PlayerDto?>
     {
-        public string CacheKey => $"{nameof(GetPlayerQuery)}_{PlayerId}";
+        public string CacheKey => $"{nameof(GetPlayerByIdQuery)}_{PlayerId}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetPlayerQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetPlayerQuery, PlayerDto?>
+    public class GetPlayerByIdQueryHandler(VillageDbContext DbContext) : IRequestHandler<GetPlayerByIdQuery, PlayerDto?>
     {
         private readonly VillageDbContext _dbContext = DbContext;
 
-        public async Task<PlayerDto?> Handle(GetPlayerQuery request, CancellationToken cancellationToken)
+        public async Task<PlayerDto?> Handle(GetPlayerByIdQuery request, CancellationToken cancellationToken)
         {
             var PlayerId = request.PlayerId;
             var Player = await _dbContext.Players

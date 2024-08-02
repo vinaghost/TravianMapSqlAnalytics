@@ -1,13 +1,15 @@
 ﻿using Features.Shared.Handler;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
+using Features.Shared.Validators;
+using FluentValidation;
 using MediatR;
 using System.Text;
 using X.PagedList;
 
 namespace Features.Players
 {
-    public record PlayerParameters : IPaginationParameters, IPlayerFilterParameters
+    public record GetPlayersParameters : IPaginationParameters, IPlayerFilterParameters
     {
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
@@ -19,9 +21,9 @@ namespace Features.Players
         public IList<int>? ExcludeAlliances { get; init; }
     }
 
-    public static class PlayerParametersExtension
+    public static class GetPlayersParametersExtension
     {
-        public static string Key(this PlayerParameters parameters)
+        public static string Key(this GetPlayersParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -50,17 +52,26 @@ namespace Features.Players
         }
     }
 
-    public record GetAllPlayerQuery(PlayerParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
+    public class GetPlayersParametersValidator : AbstractValidator<GetPlayersParameters>
     {
-        public string CacheKey => $"{nameof(GetPlayerQuery)}_{Parameters.Key()}";
+        public GetPlayersParametersValidator()
+        {
+            Include(new PaginationParametersValidator());
+            Include(new PlayerFilterParametersValidator());
+        }
+    }
+
+    public record GetPlayersQuery(GetPlayersParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
+    {
+        public string CacheKey => $"{nameof(GetPlayersQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetAllPlayerQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetAllPlayerQuery, IPagedList<PlayerDto>>
+    public class GetPlayersQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetPlayersQuery, IPagedList<PlayerDto>>
     {
-        public async Task<IPagedList<PlayerDto>> Handle(GetAllPlayerQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerDto>> Handle(GetPlayersQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
             var players = await GetPlayers(parameters)

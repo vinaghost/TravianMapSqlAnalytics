@@ -4,7 +4,7 @@ using Features.Shared.Parameters;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 using X.PagedList;
 
 namespace WebAPI.Endpoints.Alliances

@@ -3,7 +3,7 @@ using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 
 namespace WebAPI.Endpoints.Players
 {

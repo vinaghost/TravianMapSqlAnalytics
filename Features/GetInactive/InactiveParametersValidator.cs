@@ -8,8 +8,8 @@ namespace Features.GetInactiveFarms
         public InactiveParametersValidator()
         {
             Include(new DistanceFilterParametersValidator());
-            Include(new PlayerPopulationFilterParametersValidator());
-            Include(new VillagePopulationFilterParametersValidator());
+            Include(new IPlayerFilterParametersValidator());
+            Include(new VillageFilterParametersValidator());
 
             RuleFor(x => x.InactiveDays)
                 .GreaterThanOrEqualTo(3)

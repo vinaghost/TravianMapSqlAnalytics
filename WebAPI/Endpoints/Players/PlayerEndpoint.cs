@@ -3,7 +3,7 @@ using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 
 namespace WebAPI.Endpoints.Players
 {
@@ -19,7 +19,7 @@ namespace WebAPI.Endpoints.Players
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var info = await _mediator.Send(new GetPlayerQuery(rq.Id), ct);
+            var info = await _mediator.Send(new GetPlayerByIdQuery(rq.Id), ct);
             return TypedResults.Ok(info);
         }
     }

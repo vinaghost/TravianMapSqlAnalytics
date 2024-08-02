@@ -11,20 +11,7 @@ using X.PagedList;
 
 namespace Features.Villages
 {
-    public record NeighborDto(int PlayerId,
-                              string PlayerName,
-                              int AllianceId,
-                              string AllianceName,
-                              int MapId,
-                              string VillageName,
-                              int X,
-                              int Y,
-                              bool IsCapital,
-                              Tribe Tribe,
-                              int Population,
-                              double Distance);
-
-    public record NeighborsParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record GetVillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
@@ -47,9 +34,9 @@ namespace Features.Villages
         public IList<int>? ExcludeAlliances { get; init; }
     }
 
-    public static class NeighborsParametersExtension
+    public static class GetVillagesParametersExtension
     {
-        public static string Key(this NeighborsParameters parameters)
+        public static string Key(this GetVillagesParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -93,29 +80,29 @@ namespace Features.Villages
         }
     }
 
-    public class NeighborsParametersValidator : AbstractValidator<NeighborsParameters>
+    public class GetVillagesParametersValidator : AbstractValidator<GetVillagesParameters>
     {
-        public NeighborsParametersValidator()
+        public GetVillagesParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());
-            Include(new PlayerPopulationFilterParametersValidator());
-            Include(new VillagePopulationFilterParametersValidator());
+            Include(new PlayerFilterParametersValidator());
+            Include(new VillageFilterParametersValidator());
         }
     }
 
-    public record GetNeighborsQuery(NeighborsParameters Parameters) : ICachedQuery<IPagedList<NeighborDto>>
+    public record GetVillagesQuery(GetVillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
     {
-        public string CacheKey => $"{nameof(GetNeighborsQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetVillagesQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetNeighborsQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetNeighborsQuery, IPagedList<NeighborDto>>
+    public class GetVillagesQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetVillagesQuery, IPagedList<VillageDto>>
     {
-        public async Task<IPagedList<NeighborDto>> Handle(GetNeighborsQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDto>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -157,7 +144,7 @@ namespace Features.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new NeighborDto(x.PlayerId,
+                .Select(x => new VillageDto(x.PlayerId,
                                              x.PlayerName,
                                              x.AllianceId,
                                              x.AllianceName,

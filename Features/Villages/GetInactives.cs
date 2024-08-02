@@ -103,8 +103,8 @@ namespace Features.Villages
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());
-            Include(new PlayerPopulationFilterParametersValidator());
-            Include(new VillagePopulationFilterParametersValidator());
+            Include(new IPlayerFilterParametersValidator());
+            Include(new VillageFilterParametersValidator());
 
             RuleFor(x => x.InactiveDays)
                 .NotEmpty()

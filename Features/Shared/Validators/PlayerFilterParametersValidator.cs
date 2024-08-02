@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Features.Shared.Validators
 {
-    public class PlayerPopulationFilterParametersValidator : AbstractValidator<IPlayerFilterParameters>
+    public class PlayerFilterParametersValidator : AbstractValidator<IPlayerFilterParameters>
     {
-        public PlayerPopulationFilterParametersValidator()
+        public PlayerFilterParametersValidator()
         {
             RuleFor(x => x.MinPlayerPopulation)
                 .GreaterThanOrEqualTo(0);

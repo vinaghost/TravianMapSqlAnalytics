@@ -3,7 +3,7 @@ using Features.Alliances;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
-using WebAPI.Requests;
+using WebAPI.Contracts.Requests;
 
 namespace WebAPI.Endpoints.Alliances
 {
@@ -19,7 +19,7 @@ namespace WebAPI.Endpoints.Alliances
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var info = await _mediator.Send(new GetAllianceQuery(rq.Id), ct);
+            var info = await _mediator.Send(new GetAllianceByIdQuery(rq.Id), ct);
             if (info is null) return TypedResults.NotFound();
             return TypedResults.Ok(info);
         }

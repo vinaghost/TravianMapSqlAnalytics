@@ -8,8 +8,8 @@ namespace Features.GetNeighbors
         public NeighborsParametersValidator()
         {
             Include(new DistanceFilterParametersValidator());
-            Include(new PlayerPopulationFilterParametersValidator());
-            Include(new VillagePopulationFilterParametersValidator());
+            Include(new IPlayerFilterParametersValidator());
+            Include(new VillageFilterParametersValidator());
         }
     }
 }

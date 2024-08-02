@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace Features.Shared.Validators
 {
-    public class VillagePopulationFilterParametersValidator : AbstractValidator<IVillageFilterParameters>
+    public class VillageFilterParametersValidator : AbstractValidator<IVillageFilterParameters>
     {
-        public VillagePopulationFilterParametersValidator()
+        public VillageFilterParametersValidator()
         {
             RuleFor(x => x.MinVillagePopulation)
                 .GreaterThanOrEqualTo(0);
