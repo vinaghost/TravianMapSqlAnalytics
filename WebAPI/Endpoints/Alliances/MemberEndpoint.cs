@@ -1,5 +1,4 @@
 ﻿using FastEndpoints;
-using Features.Alliances;
 using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,8 +19,15 @@ namespace WebAPI.Endpoints.Alliances
             NotFound>>
             ExecuteAsync(IdRequest rq, CancellationToken ct)
         {
-            var members = await _mediator.Send(new GetPlayersQuery(rq.Id), ct);
-            return TypedResults.Ok(members);
+            var parameters = new PlayerParameters
+            {
+                PageNumber = 1,
+                PageSize = 120,
+                Alliances = [rq.Id]
+            };
+
+            var members = await _mediator.Send(new GetAllPlayerQuery(parameters), ct);
+            return TypedResults.Ok(members.ToList());
         }
     }
 }

@@ -23,13 +23,29 @@ namespace Features.Shared.Handler
 
             if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
             {
-                query = query
-                    .Where(x => parameters.Alliances.Contains(x.AllianceId));
+                if (parameters.Alliances.Count == 1)
+                {
+                    query = query
+                        .Where(x => x.AllianceId == parameters.Alliances[0]);
+                }
+                else
+                {
+                    query = query
+                        .Where(x => parameters.Alliances.Contains(x.AllianceId));
+                }
             }
             else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
             {
-                query = query
-                    .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+                if (parameters.ExcludeAlliances.Count == 1)
+                {
+                    query = query
+                        .Where(x => x.AllianceId != parameters.ExcludeAlliances[0]);
+                }
+                else
+                {
+                    query = query
+                        .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+                }
             }
 
             if (parameters.MaxPlayerPopulation != 0)
