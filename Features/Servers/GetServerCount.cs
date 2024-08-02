@@ -1,9 +1,8 @@
-﻿
-using Features.Shared.Query;
+﻿using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.GetServer
+namespace Features.Servers
 {
     public record GetServerCountQuery : ICachedQuery<int>
     {

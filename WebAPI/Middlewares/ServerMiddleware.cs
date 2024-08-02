@@ -1,6 +1,6 @@
 ﻿using Application.Services;
 using FastEndpoints;
-using Features.GetServer;
+using Features.Servers;
 using FluentValidation.Results;
 using MediatR;
 using WebAPI.Contracts.Requests;

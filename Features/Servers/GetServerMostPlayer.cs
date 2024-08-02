@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.GetServer
+namespace Features.Servers
 {
     public record GetMostPlayerServerQuery : ICachedQuery<string>
     {

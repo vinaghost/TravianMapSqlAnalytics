@@ -103,7 +103,7 @@ namespace Features.Villages
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());
-            Include(new IPlayerFilterParametersValidator());
+            Include(new PlayerFilterParametersValidator());
             Include(new VillageFilterParametersValidator());
 
             RuleFor(x => x.InactiveDays)
