@@ -4,27 +4,23 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
+using WebAPI.Contracts.Responses;
+using X.PagedList;
 
 namespace WebAPI.Endpoints.Villages
 {
     public record InactiveRequest(string ServerUrl) : InactiveParameters, IServerUrlRequest;
-
-    public class InactiveResponse()
-    {
-        public required IList<InactiveDto> Data { get; set; }
-        public required int TotalItemCount { get; set; }
-        public required int PageNumber { get; set; }
-        public required int PageSize { get; set; }
-        public required int PageCount { get; set; }
-    }
 
     public class InactiveRequestValidator : Validator<InactiveRequest>
     {
         public InactiveRequestValidator()
         {
             Include(new InactiveParametersValidator());
+            Include(new ServerUrlRequestValidator());
         }
     }
+
+    public class InactiveResponse(IPagedList<InactiveDto> pagedList) : PagedListResponse<InactiveDto>(pagedList);
 
     [HttpGet("/villages/inactives"), AllowAnonymous]
     public class InactiveEndpoint(IMediator mediator) :
@@ -34,20 +30,12 @@ namespace WebAPI.Endpoints.Villages
         private readonly IMediator _mediator = mediator;
 
         public override async Task<Results<
-            Ok<InactiveResponse>,
-            NotFound>>
+            Ok<InactiveResponse>, NotFound>>
             ExecuteAsync(InactiveRequest rq, CancellationToken ct)
         {
-            var data = await _mediator.Send(new GetInactiveQuery(rq), ct);
+            var inactives = await _mediator.Send(new GetInactiveQuery(rq), ct);
 
-            return TypedResults.Ok(new InactiveResponse()
-            {
-                Data = [.. data],
-                TotalItemCount = data.TotalItemCount,
-                PageNumber = data.PageNumber,
-                PageSize = data.PageSize,
-                PageCount = data.PageCount
-            });
+            return TypedResults.Ok(new InactiveResponse(inactives));
         }
     }
 }
