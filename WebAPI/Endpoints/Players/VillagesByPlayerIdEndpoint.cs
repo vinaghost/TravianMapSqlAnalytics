@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
 using Features.Shared.Parameters;
-using Features.Shared.Validators;
 using Features.Villages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

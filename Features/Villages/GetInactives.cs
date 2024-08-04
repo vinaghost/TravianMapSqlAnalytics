@@ -3,7 +3,6 @@ using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using Features.Shared.Validators;
 using FluentValidation;
 using MediatR;
 using System.Text;

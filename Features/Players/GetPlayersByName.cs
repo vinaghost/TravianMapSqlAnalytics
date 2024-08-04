@@ -1,6 +1,6 @@
-﻿using Features.Shared.Parameters;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Parameters;
 using Features.Shared.Query;
-using Features.Shared.Validators;
 using FluentValidation;
 using MediatR;
 using System.Text;
@@ -23,11 +23,9 @@ namespace Features.Players
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
 
-            sb.Append(parameters.PageNumber);
+            parameters.PaginationKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.PageSize);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.SearchTerm);
+            parameters.SearchTermKey(sb);
 
             return sb.ToString();
         }
@@ -38,6 +36,7 @@ namespace Features.Players
         public GetPlayersByNameParametersValidator()
         {
             Include(new PaginationParametersValidator());
+            Include(new SearchTermParametersValidator());
         }
     }
 
@@ -69,6 +68,7 @@ namespace Features.Players
             var data = await query
                 .OrderBy(x => x.Name)
                 .Select(x => new PlayerDto(
+                        x.AllianceId,
                         x.Id,
                         x.Name,
                         x.VillageCount,

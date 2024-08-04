@@ -1,7 +1,7 @@
-﻿using Features.Shared.Handler;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Handler;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using Features.Shared.Validators;
 using FluentValidation;
 using MediatR;
 using System.Text;
@@ -31,25 +31,9 @@ namespace Features.Players
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
 
-            sb.Append(parameters.PageNumber);
+            parameters.PaginationKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.PageSize);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MinPlayerPopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MaxPlayerPopulation);
-
-            if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
-            }
-            else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
-            }
+            parameters.PlayerFilterKey(sb);
 
             return sb.ToString();
         }
@@ -80,6 +64,7 @@ namespace Features.Players
             var players = await GetPlayers(parameters)
                 .OrderByDescending(x => x.VillageCount)
                 .Select(x => new PlayerDto(
+                        x.AllianceId,
                         x.Id,
                         x.Name,
                         x.VillageCount,

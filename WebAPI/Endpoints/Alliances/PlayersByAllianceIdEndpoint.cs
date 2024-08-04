@@ -1,7 +1,7 @@
 ﻿using FastEndpoints;
 using Features.Players;
+using Features.Shared.Dtos;
 using Features.Shared.Parameters;
-using Features.Shared.Validators;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;

@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Parameters;
-using Features.Shared.Validators;
 using FluentValidation;
 using System.Text;
 
@@ -16,14 +15,8 @@ namespace Features.Populations.Shared
         public static string Key(this PopulationParameters parameters)
         {
             var sb = new StringBuilder();
-            const char SEPARATOR = '_';
 
-            sb.Append(parameters.Days);
-            if (parameters.Ids is not null && parameters.Ids.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.Append(string.Join(',', parameters.Ids.Distinct().Order()));
-            }
+            parameters.PopulationFilterKey(sb);
 
             return sb.ToString();
         }

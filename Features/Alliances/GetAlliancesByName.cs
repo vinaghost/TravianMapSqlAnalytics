@@ -1,7 +1,6 @@
 ﻿using Features.Shared.Dtos;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using Features.Shared.Validators;
 using FluentValidation;
 using MediatR;
 using System.Text;
@@ -24,11 +23,9 @@ namespace Features.Alliances
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
 
-            sb.Append(parameters.PageNumber);
+            parameters.PaginationKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.PageSize);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.SearchTerm);
+            parameters.SearchTermKey(sb);
 
             return sb.ToString();
         }
@@ -39,6 +36,7 @@ namespace Features.Alliances
         public GetAllianceByNameParametersValidator()
         {
             Include(new PaginationParametersValidator());
+            Include(new SearchTermParametersValidator());
         }
     }
 
