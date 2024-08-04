@@ -20,21 +20,21 @@ namespace WebAPI.Endpoints.Players
         }
     }
 
-    public class PlayersRequestResponse(IPagedList<PlayerDto> pagedList) : PagedListResponse<PlayerDto>(pagedList);
+    public class PlayersResponse(IPagedList<PlayerDto> pagedList) : PagedListResponse<PlayerDto>(pagedList);
 
     [HttpGet("/players/"), AllowAnonymous]
     public class PlayersEnpoint(IMediator mediator) :
        Endpoint<PlayersRequest,
-               Results<Ok<PlayersRequestResponse>, NotFound>>
+               Results<Ok<PlayersResponse>, NotFound>>
     {
         private readonly IMediator _mediator = mediator;
 
         public override async Task<Results<
-            Ok<PlayersRequestResponse>, NotFound>>
+            Ok<PlayersResponse>, NotFound>>
             ExecuteAsync(PlayersRequest rq, CancellationToken ct)
         {
             var players = await _mediator.Send(new GetPlayersQuery(rq), ct);
-            return TypedResults.Ok(new PlayersRequestResponse(players));
+            return TypedResults.Ok(new PlayersResponse(players));
         }
     }
 }

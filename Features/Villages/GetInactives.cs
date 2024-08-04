@@ -47,6 +47,9 @@ namespace Features.Villages
 
         public IList<int>? Alliances { get; init; }
         public IList<int>? ExcludeAlliances { get; init; }
+
+        public IList<int>? Players { get; init; }
+        public IList<int>? ExcludePlayers { get; init; }
     }
 
     public static class InactiveFarmParametersExtension
@@ -56,42 +59,16 @@ namespace Features.Villages
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
 
-            sb.Append(parameters.PageNumber);
+            parameters.PaginationKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.PageSize);
+            parameters.PlayerFilterKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.X);
+            parameters.VillageFilterKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.Y);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Distance);
+            parameters.DistanceFilterKey(sb);
             sb.Append(SEPARATOR);
             sb.Append(parameters.InactiveDays);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.MinPlayerPopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MaxPlayerPopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MinVillagePopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MaxVillagePopulation);
-
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Capital);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Tribe);
-
-            if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
-            }
-            else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
-            }
 
             return sb.ToString();
         }
@@ -182,14 +159,6 @@ namespace Features.Villages
                 .OrderBy(x => x.Distance);
 
             return await orderDtos.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
-        }
-
-        private static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
-        {
-            if (parameters.Alliances is not null && parameters.Alliances.Count > 0) return true;
-            if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0) return true;
-            if (parameters.MaxPlayerPopulation != 0) return true;
-            return false;
         }
 
         private IQueryable<int> GetInactivePlayerIds(InactiveParameters parameters)

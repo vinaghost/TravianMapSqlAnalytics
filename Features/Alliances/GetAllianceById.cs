@@ -1,4 +1,5 @@
-﻿using Features.Shared.Query;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Query;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ namespace Features.Alliances
                 .Where(x => x.Id == allianceId)
                 .Select(x => new AllianceDto(
                         x.Id,
-                        x.Name,
+                        string.IsNullOrEmpty(x.Name) ? "No alliance" : x.Name,
                         x.PlayerCount
                     ))
                 .FirstOrDefaultAsync(cancellationToken);

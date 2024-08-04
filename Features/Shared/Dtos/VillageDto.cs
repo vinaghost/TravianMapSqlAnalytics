@@ -1,4 +1,15 @@
-﻿namespace Features.Shared.Dtos
+﻿using Features.Shared.Enums;
+
+namespace Features.Shared.Dtos
 {
-    public record VillageDto(int MapId, string VillageName, int X, int Y, int Population, bool IsCapital);
+    public record VillageDto(int PlayerId,
+                              int AllianceId,
+                              int MapId,
+                              string VillageName,
+                              int X,
+                              int Y,
+                              bool IsCapital,
+                              Tribe Tribe,
+                              int Population,
+                              double Distance);
 }

@@ -1,4 +1,5 @@
-﻿using Features.Shared.Parameters;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Parameters;
 using Features.Shared.Query;
 using FluentValidation;
 using MediatR;
@@ -12,7 +13,7 @@ namespace Features.Servers
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
 
-        public string? Name { get; init; }
+        public string? SearchTerm { get; init; }
     }
 
     public static class GetServersByNameParametersExtension
@@ -26,7 +27,7 @@ namespace Features.Servers
             sb.Append(SEPARATOR);
             sb.Append(parameters.PageSize);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.Name);
+            sb.Append(parameters.SearchTerm);
 
             return sb.ToString();
         }
@@ -53,10 +54,10 @@ namespace Features.Servers
             var query = _dbContext.Servers
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(parameters.Name))
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query
-                    .Where(x => x.Url.StartsWith(parameters.Name));
+                    .Where(x => x.Url.StartsWith(parameters.SearchTerm));
             }
 
             var data = await query

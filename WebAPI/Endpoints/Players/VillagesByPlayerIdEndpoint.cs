@@ -40,7 +40,7 @@ namespace WebAPI.Endpoints.Villages
             {
                 PageNumber = rq.PageNumber,
                 PageSize = rq.PageSize,
-                Alliances = [rq.Id]
+                Players = [rq.Id]
             };
 
             var villages = await _mediator.Send(new GetVillagesQuery(parameters), ct);

@@ -1,9 +1,7 @@
-﻿using Features.Shared.Dtos;
-using Features.Shared.Enums;
+﻿using Features.Shared.Enums;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
 using LinqKit;
-using X.PagedList;
 
 namespace Features.Shared.Handler
 {
@@ -11,9 +9,14 @@ namespace Features.Shared.Handler
     {
         protected readonly VillageDbContext _dbContext = dbContext;
 
-        protected static async Task<IPagedList<VillageDataDto>> ToPagedList(IEnumerable<VillageDataDto> data, IPaginationParameters parameters)
+        protected static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
         {
-            return await data.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+            if (parameters.Alliances is not null && parameters.Alliances.Count > 0) return true;
+            if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0) return true;
+            if (parameters.Players is not null && parameters.Players.Count > 0) return true;
+            if (parameters.ExcludePlayers is not null && parameters.ExcludePlayers.Count > 0) return true;
+            if (parameters.MaxPlayerPopulation != 0) return true;
+            return false;
         }
 
         protected IQueryable<Player> GetPlayers(IPlayerFilterParameters parameters)
@@ -21,30 +24,63 @@ namespace Features.Shared.Handler
             var query = _dbContext.Players
                 .AsExpandable();
 
-            if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
+            if (parameters.Players is not null && parameters.Players.Count > 0)
             {
-                if (parameters.Alliances.Count == 1)
+                if (parameters.Players.Count == 1)
                 {
                     query = query
-                        .Where(x => x.AllianceId == parameters.Alliances[0]);
+                        .Where(x => x.Id == parameters.Players[0]);
                 }
                 else
                 {
                     query = query
-                        .Where(x => parameters.Alliances.Contains(x.AllianceId));
+                        .Where(x => parameters.Players.Contains(x.Id));
                 }
             }
-            else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
+            else
             {
-                if (parameters.ExcludeAlliances.Count == 1)
+                if (parameters.ExcludePlayers is not null && parameters.ExcludePlayers.Count > 0)
                 {
-                    query = query
-                        .Where(x => x.AllianceId != parameters.ExcludeAlliances[0]);
+                    if (parameters.ExcludePlayers.Count == 1)
+                    {
+                        query = query
+                            .Where(x => x.Id != parameters.ExcludePlayers[0]);
+                    }
+                    else
+                    {
+                        query = query
+                            .Where(x => !parameters.ExcludePlayers.Contains(x.Id));
+                    }
+                }
+
+                if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
+                {
+                    if (parameters.Alliances.Count == 1)
+                    {
+                        query = query
+                            .Where(x => x.AllianceId == parameters.Alliances[0]);
+                    }
+                    else
+                    {
+                        query = query
+                            .Where(x => parameters.Alliances.Contains(x.AllianceId));
+                    }
                 }
                 else
                 {
-                    query = query
-                        .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+                    if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
+                    {
+                        if (parameters.ExcludeAlliances.Count == 1)
+                        {
+                            query = query
+                                .Where(x => x.AllianceId != parameters.ExcludeAlliances[0]);
+                        }
+                        else
+                        {
+                            query = query
+                                .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+                        }
+                    }
                 }
             }
 
@@ -99,14 +135,6 @@ namespace Features.Shared.Handler
                 query = query
                    .Where(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
             }
-            return query;
-        }
-
-        protected IQueryable<VillageHistory> GetPopulation()
-        {
-            var query = _dbContext.VillagesHistory
-                .AsExpandable()
-                .Where(x => x.Date >= DefaultParameters.Date);
             return query;
         }
     }

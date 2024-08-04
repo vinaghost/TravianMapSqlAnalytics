@@ -1,4 +1,5 @@
-﻿using Features.Shared.Parameters;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Parameters;
 using Features.Shared.Query;
 using Features.Shared.Validators;
 using FluentValidation;
@@ -13,7 +14,7 @@ namespace Features.Alliances
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
 
-        public string? Name { get; init; }
+        public string? SearchTerm { get; init; }
     }
 
     public static class GetAlliancesByNameParametersExtension
@@ -27,7 +28,7 @@ namespace Features.Alliances
             sb.Append(SEPARATOR);
             sb.Append(parameters.PageSize);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.Name);
+            sb.Append(parameters.SearchTerm);
 
             return sb.ToString();
         }
@@ -60,10 +61,10 @@ namespace Features.Alliances
             var query = _dbContext.Alliances
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(parameters.Name))
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
                 query = query
-                    .Where(x => x.Name.StartsWith(parameters.Name));
+                    .Where(x => x.Name.StartsWith(parameters.SearchTerm));
             }
 
             query = query

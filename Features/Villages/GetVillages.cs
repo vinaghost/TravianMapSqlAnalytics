@@ -32,6 +32,9 @@ namespace Features.Villages
 
         public IList<int>? Alliances { get; init; }
         public IList<int>? ExcludeAlliances { get; init; }
+
+        public IList<int>? Players { get; init; }
+        public IList<int>? ExcludePlayers { get; init; }
     }
 
     public static class GetVillagesParametersExtension

@@ -18,7 +18,7 @@ namespace WebAPI.Endpoints.Players
         }
     }
 
-    [HttpGet("/players/{Id}"), AllowAnonymous]
+    [HttpGet("/players/{Id:int}"), AllowAnonymous]
     public class PlayerByIdEndpoint(IMediator mediator) :
         Endpoint<PlayerByIdRequest,
                 Results<Ok<PlayerDto>, NotFound>>
