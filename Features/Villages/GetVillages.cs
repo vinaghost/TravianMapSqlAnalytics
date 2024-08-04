@@ -1,4 +1,5 @@
-﻿using Features.Shared.Enums;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Enums;
 using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
@@ -133,6 +134,7 @@ namespace Features.Villages
                         player.PlayerName,
                         player.AllianceId,
                         player.AllianceName,
+                        VillageId = village.Id,
                         village.MapId,
                         village.Name,
                         village.X,
@@ -146,18 +148,19 @@ namespace Features.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDto(x.PlayerId,
-                                             x.PlayerName,
-                                             x.AllianceId,
-                                             x.AllianceName,
-                                             x.MapId,
-                                             x.Name,
-                                             x.X,
-                                             x.Y,
-                                             x.IsCapital,
-                                             (Tribe)x.Tribe,
-                                             x.Population,
-                                             centerCoordinate.Distance(x.X, x.Y)));
+                .Select(x => new VillageDto(x.AllianceId,
+                                            x.AllianceName,
+                                            x.PlayerId,
+                                            x.PlayerName,
+                                            x.VillageId,
+                                            x.MapId,
+                                            x.Name,
+                                            x.X,
+                                            x.Y,
+                                            x.IsCapital,
+                                            (Tribe)x.Tribe,
+                                            x.Population,
+                                            centerCoordinate.Distance(x.X, x.Y)));
 
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);

@@ -66,11 +66,24 @@ namespace Features.Players
             }
 
             var data = await query
-                .OrderBy(x => x.Name)
+               .Join(_dbContext.Alliances,
+                   x => x.AllianceId,
+                   x => x.Id,
+                   (player, alliance) => new
+                   {
+                       PlayerId = player.Id,
+                       PlayerName = player.Name,
+                       AllianceId = alliance.Id,
+                       AllianceName = alliance.Name,
+                       player.Population,
+                       player.VillageCount
+                   })
+                .OrderBy(x => x.PlayerName)
                 .Select(x => new PlayerDto(
                         x.AllianceId,
-                        x.Id,
-                        x.Name,
+                        x.AllianceName,
+                        x.PlayerId,
+                        x.PlayerName,
                         x.VillageCount,
                         x.Population
                 ))

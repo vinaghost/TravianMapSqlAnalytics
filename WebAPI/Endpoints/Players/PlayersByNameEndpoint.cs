@@ -23,7 +23,7 @@ namespace WebAPI.Endpoints.Players
 
     public class PlayersByNameResponse(IPagedList<PlayerDto> pagedList) : PagedListResponse<PlayerDto>(pagedList);
 
-    [HttpGet("/players/{Name}"), AllowAnonymous]
+    [HttpGet("/players/{SearchTerm}"), AllowAnonymous]
     public class PlayersByNameEnpoint(IMediator mediator) :
        Endpoint<PlayersByNameRequest,
                Results<Ok<PlayersByNameResponse>, NotFound>>

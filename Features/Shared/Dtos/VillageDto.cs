@@ -2,8 +2,11 @@
 
 namespace Features.Shared.Dtos
 {
-    public record VillageDto(int PlayerId,
-                             int AllianceId,
+    public record VillageDto(int AllianceId,
+                             string AllianceName,
+                             int PlayerId,
+                             string PlayerName,
+                             int VillageId,
                              int MapId,
                              string VillageName,
                              int X,

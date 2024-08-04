@@ -23,7 +23,7 @@ namespace WebAPI.Endpoints.Alliances
 
     public class AlliancesByNameResponse(IPagedList<AllianceDto> pagedList) : PagedListResponse<AllianceDto>(pagedList);
 
-    [HttpGet("/alliances/"), AllowAnonymous]
+    [HttpGet("/alliances/{SearchTerm}"), AllowAnonymous]
     public class AlliancesByNameEnpoint(IMediator mediator) :
        Endpoint<AlliancesByNameRequest,
                Results<Ok<AlliancesByNameResponse>, NotFound>>

@@ -62,14 +62,27 @@ namespace Features.Players
         {
             var parameters = request.Parameters;
             var players = await GetPlayers(parameters)
+                .Join(_dbContext.Alliances,
+                   x => x.AllianceId,
+                   x => x.Id,
+                   (player, alliance) => new
+                   {
+                       PlayerId = player.Id,
+                       PlayerName = player.Name,
+                       AllianceId = alliance.Id,
+                       AllianceName = alliance.Name,
+                       player.Population,
+                       player.VillageCount
+                   })
                 .OrderByDescending(x => x.VillageCount)
                 .Select(x => new PlayerDto(
                         x.AllianceId,
-                        x.Id,
-                        x.Name,
+                        x.AllianceName,
+                        x.PlayerId,
+                        x.PlayerName,
                         x.VillageCount,
                         x.Population
-                    ))
+                ))
                 .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
             return players;
         }

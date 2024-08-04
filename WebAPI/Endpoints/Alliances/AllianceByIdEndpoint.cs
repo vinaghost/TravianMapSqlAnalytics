@@ -19,7 +19,7 @@ namespace WebAPI.Endpoints.Alliances
         }
     }
 
-    [HttpGet("/alliances/{Id}"), AllowAnonymous]
+    [HttpGet("/alliances/{Id:int}"), AllowAnonymous]
     public class AllianceByIdEndpoint(IMediator mediator) :
         Endpoint<AllianceByIdRequest,
                 Results<Ok<AllianceDto>, NotFound>>
