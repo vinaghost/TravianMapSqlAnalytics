@@ -4,8 +4,8 @@ namespace WebMVC.Models.ViewModel.Players
 {
     public class IndexViewModel
     {
-        public required PlayerDto Player { get; set; }
-        public required IList<VillageDto> Villages { get; set; }
-        public required IDictionary<int, IList<PopulationDto>> Population { get; set; }
+        public PlayerDto? Player { get; set; }
+        public IList<VillageDto> Villages { get; set; } = [];
+        public Dictionary<int, List<PopulationDto>> Population { get; set; } = [];
     }
 }

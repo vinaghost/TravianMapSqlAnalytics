@@ -4,5 +4,10 @@ using X.PagedList;
 
 namespace WebMVC.Models.ViewModel.Villages
 {
-    public class IndexViewModel : BaseViewModel<GetVillagesParameters, IPagedList<VillageDto>, IDictionary<int, PopulationDto>>;
+    public class IndexViewModel
+    {
+        public GetVillagesParameters? Parameters { get; set; }
+        public IPagedList<VillageDto>? Villages { get; set; }
+        public Dictionary<int, List<PopulationDto>>? Population { get; set; }
+    }
 }

@@ -1,4 +1,5 @@
-﻿using Features.Shared.Enums;
+﻿using Features.Shared.Dtos;
+using Features.Shared.Enums;
 using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
@@ -10,20 +11,7 @@ using X.PagedList;
 
 namespace Features.Villages
 {
-    public record InactiveDto(int PlayerId,
-                              string PlayerName,
-                              int AllianceId,
-                              string AllianceName,
-                              int MapId,
-                              string VillageName,
-                              int X,
-                              int Y,
-                              bool IsCapital,
-                              Tribe Tribe,
-                              int Population,
-                              double Distance);
-
-    public record InactiveParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record GetInactiveParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int InactiveDays { get; init; }
 
@@ -51,9 +39,9 @@ namespace Features.Villages
         public IList<int>? ExcludePlayers { get; init; }
     }
 
-    public static class InactiveFarmParametersExtension
+    public static class GetInactiveParametersExtension
     {
-        public static string Key(this InactiveParameters parameters)
+        public static string Key(this GetInactiveParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -73,9 +61,9 @@ namespace Features.Villages
         }
     }
 
-    public class InactiveParametersValidator : AbstractValidator<InactiveParameters>
+    public class GetInactiveParametersValidator : AbstractValidator<GetInactiveParameters>
     {
-        public InactiveParametersValidator()
+        public GetInactiveParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());
@@ -88,7 +76,7 @@ namespace Features.Villages
         }
     }
 
-    public record GetInactiveQuery(InactiveParameters Parameters) : ICachedQuery<IPagedList<InactiveDto>>
+    public record GetInactiveQuery(GetInactiveParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
     {
         public string CacheKey => $"{nameof(GetInactiveQuery)}_{Parameters.Key()}";
 
@@ -97,9 +85,9 @@ namespace Features.Villages
         public bool IsServerBased => true;
     }
 
-    public class GetInactiveQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveQuery, IPagedList<InactiveDto>>
+    public class GetInactiveQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveQuery, IPagedList<VillageDto>>
     {
-        public async Task<IPagedList<InactiveDto>> Handle(GetInactiveQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDto>> Handle(GetInactiveQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -128,6 +116,7 @@ namespace Features.Villages
                         player.PlayerName,
                         player.AllianceId,
                         player.AllianceName,
+                        VillageId = village.Id,
                         village.MapId,
                         village.Name,
                         village.X,
@@ -141,18 +130,19 @@ namespace Features.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new InactiveDto(x.PlayerId,
-                                             x.PlayerName,
-                                             x.AllianceId,
-                                             x.AllianceName,
-                                             x.MapId,
-                                             x.Name,
-                                             x.X,
-                                             x.Y,
-                                             x.IsCapital,
-                                             (Tribe)x.Tribe,
-                                             x.Population,
-                                             centerCoordinate.Distance(x.X, x.Y)));
+                .Select(x => new VillageDto(x.AllianceId,
+                                            x.AllianceName,
+                                            x.PlayerId,
+                                            x.PlayerName,
+                                            x.VillageId,
+                                            x.MapId,
+                                            x.Name,
+                                            x.X,
+                                            x.Y,
+                                            x.IsCapital,
+                                            (Tribe)x.Tribe,
+                                            x.Population,
+                                            centerCoordinate.Distance(x.X, x.Y)));
 
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);
@@ -160,7 +150,7 @@ namespace Features.Villages
             return await orderDtos.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
         }
 
-        private IQueryable<int> GetInactivePlayerIds(InactiveParameters parameters)
+        private IQueryable<int> GetInactivePlayerIds(GetInactiveParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
             if (IsPlayerFiltered(parameters))
@@ -191,7 +181,7 @@ namespace Features.Villages
             }
         }
 
-        private IQueryable<Player> GetInactivePlayers(InactiveParameters parameters)
+        private IQueryable<Player> GetInactivePlayers(GetInactiveParameters parameters)
         {
             var ids = GetInactivePlayerIds(parameters);
             return _dbContext.Players

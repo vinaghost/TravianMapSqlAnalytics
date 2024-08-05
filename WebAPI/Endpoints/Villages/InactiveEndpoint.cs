@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+using Features.Shared.Dtos;
 using Features.Villages;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -9,18 +10,18 @@ using X.PagedList;
 
 namespace WebAPI.Endpoints.Villages
 {
-    public record InactiveRequest(string ServerUrl) : InactiveParameters, IServerUrlRequest;
+    public record InactiveRequest(string ServerUrl) : GetInactiveParameters, IServerUrlRequest;
 
     public class InactiveRequestValidator : Validator<InactiveRequest>
     {
         public InactiveRequestValidator()
         {
-            Include(new InactiveParametersValidator());
+            Include(new GetInactiveParametersValidator());
             Include(new ServerUrlRequestValidator());
         }
     }
 
-    public class InactiveResponse(IPagedList<InactiveDto> pagedList) : PagedListResponse<InactiveDto>(pagedList);
+    public class InactiveResponse(IPagedList<VillageDto> pagedList) : PagedListResponse<VillageDto>(pagedList);
 
     [HttpGet("/villages/inactives"), AllowAnonymous]
     public class InactiveEndpoint(IMediator mediator) :
