@@ -9,7 +9,7 @@ $(function () {
                 data: function (params) {
                     var query = {
                         searchTerm: params.term,
-                        page: params.page || 1,
+                        pageNumber: params.page || 1,
                         pageSize: params.pageSize || 30
                     }
                     return query;

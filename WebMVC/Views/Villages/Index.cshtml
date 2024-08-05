@@ -1,15 +1,17 @@
-﻿@using WebMVC.Models.ViewModel.Villages
+﻿@using Features.GetNeighbors
+@using Features.Shared.Dtos
+@using WebMVC.ViewModels.Villages
 
 @inject IMediator mediator
 @inject DataService dataService
 
-@model InactiveViewModel
+@model NeighborViewModel
 
 @{
-    ViewData["Title"] = "Inactive farms";
+    ViewData["Title"] = "Villages";
 }
 
-@using (Html.BeginForm(nameof(VillagesController.Inactives), "Villages", FormMethod.Post))
+@using (Html.BeginForm(nameof(VillagesController.Index), "Villages", FormMethod.Post))
 {
     <div class="container">
         @await Html.PartialAsync("_ServerPickerPartial" )
@@ -20,25 +22,23 @@
             <a href="#" class="link-primary" data-bs-toggle="collapse" data-bs-target="#filter-fields">
                 Advanced filters
             </a>
-
         </div>
+
         <div class="collapse" id="filter-fields">
-            @Html.EditorFor(m => m.Parameters.InactiveDays, new { id = nameof(InactiveParameters.InactiveDays) })
             @await Component.InvokeAsync(nameof(VillageFilterParameters), new { parameter = Model.Parameters })
             @await Component.InvokeAsync(nameof(PlayerFilterParameters), new { parameter = Model.Parameters })
-
         </div>
 
         <div>
             @await Component.InvokeAsync(nameof(PaginationParameters), new { parameter = Model.Parameters })
         </div>
-        
-        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check inactive" />
+
+        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check neighbor" />
     </div>
 }
 
 <div class="text-center">
-    <p>We found <b>@(Model.Data.TotalItemCount) villages</b> fit your request</p>
+    <p>We found <b>@(Model.Data?.TotalItemCount ?? 0) villages</b> fit your request</p>
 </div>
 @{
     var dates = Model.Population.Values.MaxBy(x => x.Count).Select(x => x.Date).ToArray();
@@ -63,7 +63,7 @@
             }
         </tr>
     </thead>
-    
+
     <tbody>
         @foreach (var village in Model.Data)
         {
@@ -76,24 +76,24 @@
                         [@village.Tribe]
                     </span>
                     <a href="/players?playerId=@village.PlayerId"
-                        target="_blank"
-                        type="button"
-                        class="btn-link text-decoration-none">
+                       target="_blank"
+                       type="button"
+                       class="btn-link text-decoration-none">
                         @village.PlayerName
                     </a>
-                        
+
                     <a href="/alliances?allianceId=@village.AllianceId"
-                        target="_blank"
-                        type="button"
-                        class="btn-link text-decoration-none">
+                       target="_blank"
+                       type="button"
+                       class="btn-link text-decoration-none">
                         [@village.AllianceName]
                     </a>
                 </td>
                 <td>
                     <a href="https://@dataService.Server/karte.php?d=@village.MapId"
-                        target="_blank"
-                        type="button"
-                        class="btn-link text-decoration-none">
+                       target="_blank"
+                       type="button"
+                       class="btn-link text-decoration-none">
                         @if (village.IsCapital)
                         {
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
@@ -106,7 +106,7 @@
 
                     <span class="small text-muted">
                         (@village.X / @village.Y)
-                    </span>                        
+                    </span>
                 </td>
                 @if (Model.Population.ContainsKey(village.VillageId))
                 {
@@ -130,11 +130,11 @@
                 else
                 {
                     for (var i = 0; i < dates.Length; i++)
-					{
-						<td>
-							<p>~</p>
-						</td>
-					}
+                    {
+                        <td>
+                            <p>~</p>
+                        </td>
+                    }
                 }
             </tr>
         }
@@ -142,6 +142,4 @@
 </table>
 
 @await Html.PartialAsync("_PaginationPartial", Model.Data)
-
-
 

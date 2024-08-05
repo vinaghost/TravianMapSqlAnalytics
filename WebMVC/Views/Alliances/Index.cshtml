@@ -1,9 +1,10 @@
 ﻿@using Features.GetAllianceData
 @using Features.SearchPlayer
+@using WebMVC.Models.ViewModel.Alliances
 @inject DataService dataService
 @inject IMediator mediator
 
-@model AllianceDataDto
+@model IndexViewModel
 @{
     ViewData["Title"] = "Alliances";
 }
@@ -21,7 +22,7 @@
             <select class="form-select" id="player_alliance" name="AllianceId" data-ajax--url="/alliances/search">
                 @if (Model is not null)
                 {
-                    <option value="@Model.Alliance.AllianceId" selected="true">@(string.IsNullOrWhiteSpace(Model.Alliance.AllianceName) ? "No alliance" : Model.Alliance.AllianceName)</option>
+                    <option value="@Model.Alliance.AllianceId" selected="true">@Model.Alliance.AllianceName</option>
                 }
             </select>
         </div>
@@ -30,103 +31,114 @@
 }
 <br />
 <br />
-<div>
-    @if (Model is not null)
-    {
-        <div class="card">
-            <div class="container">
-                <div class="row">
-                    <div class="col-2">
-                        Alliance name:
-                    </div>
-                    <div class="col">
-                        @if (string.IsNullOrWhiteSpace(Model.Alliance.AllianceName))
-                        {
-                            <div>No alliance</div>
-                        }
-                        else
-                        {
-                            <a href="https://@dataService.Server/alliance/@Model.Alliance.AllianceId"
-                               target="_blank"
-                               type="button"
-                               class="btn-link text-decoration-none">
-                                @Model.Alliance.AllianceName
-                            </a>
-                        }
-
-                    </div>
+@if (Model is not null)
+{
+    <div class="card">
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    Alliance name:
                 </div>
-                <div class="row">
-                    <div class="col-2">
-                        Player count:
-                    </div>
-                    <div class="col">
-                        @Model.Alliance.PlayerCount
-                    </div>
+                <div class="col">
+                    @if (Model.Alliance.AllianceId == 0)
+                    {
+                        <div>@Model.Alliance.AllianceName</div>
+                    }
+                    else
+                    {
+                        <a href="https://@dataService.Server/alliance/@Model.Alliance.AllianceId"
+                            target="_blank"
+                            type="button"
+                            class="btn-link text-decoration-none">
+                            @Model.Alliance.AllianceName
+                        </a>
+                    }
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2">
+                    Player count:
+                </div>
+                <div class="col">
+                    @Model.Alliance.PlayerCount
                 </div>
             </div>
         </div>
+    </div>
+    
+    var dates = Model.Population.Values.MaxBy(x => x.Count).Select(x => x.Date).ToArray();
+    <br />
 
-        var dates = Enumerable.Range(0, Constants.DateAmount).Select(x => DateTime.Now.AddDays(-x)).ToList();
-        <br />
-
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th class="col-4">
-                        Player
-                    </th>
-                    <th class="col-4">
-                        Village count
-                    </th>
-                    @for (var i = 0; i < dates.Count; i++)
-                    {
-                        <th>
-                            @dates[i].ToString("dd/MM")
-                        </th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var player in Model.Players)
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th class="col-4">
+                    Player
+                </th>
+                <th class="col-4">
+                    Village count
+                </th>
+                @for (var i = 0; i < dates.Length; i++)
                 {
-                    <tr>
-                        <td>
-                            <a href="https://@dataService.Server/profile/@player.PlayerId"
-                               target="_blank"
-                               type="button"
-                               class="btn-link text-decoration-none">
-                                <span>@Html.DisplayFor(m => player.PlayerName)</span>
-                            </a>
-                        </td>
-                        <td>
-                            @Html.DisplayFor(m => player.VillageCount)
-                        </td>
-                        @for (var pos = 0; pos < Constants.DateAmount; pos++)
+                    <th>
+                        @dates[i].ToString("dd/MM")
+                    </th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var player in Model.Players)
+            {
+                <tr>
+                    <td>
+                        <a href="/players?playerId=@player.PlayerId"
+                            target="_blank"
+                            type="button"
+                            class="btn-link text-decoration-none">
+                            <span>@Html.DisplayFor(m => player.PlayerName)</span>
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(m => player.VillageCount)
+                    </td>
+
+                    @if (Model.Population.ContainsKey(player.PlayerId))
+                    {
+                        var populations = Model.Population[player.PlayerId];
+						for (var i = 0; i < dates.Length; i++)
+						{
+							<td>
+								@if (i >= populations.Count)
+								{
+									<p>~</p>
+								}
+								else
+								{
+									<p>
+										@Html.DisplayFor(m => populations[i])
+									</p>
+								}
+							</td>
+						}
+                    }
+                    else
+                    {
+                        for (var i = 0; i < dates.Length; i++)
                         {
                             <td>
-                                @if (pos >= player.Populations.Count)
-                                {
-                                    <p>~</p>
-                                }
-                                else
-                                {
-                                    <p>
-                                        @Html.DisplayFor(m => player.Populations[pos])
-                                    </p>
-                                }
+                                <p>~</p>
                             </td>
                         }
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-    else
-    {
-        <div>Choose alliances and check</div>
-    }
-</div>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div>Choose alliances and check</div>
+}
 
 
 @section Scripts

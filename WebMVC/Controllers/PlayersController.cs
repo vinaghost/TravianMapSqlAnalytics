@@ -1,6 +1,4 @@
-﻿using Features.GetPlayerData;
-using Features.SearchPlayer;
-using Features.Shared.Parameters;
+﻿using Features.Players;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +8,9 @@ namespace WebMVC.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        public async Task<IActionResult> Search(SearchParameters parameters)
+        public async Task<IActionResult> Search(GetPlayersByNameParameters parameters)
         {
-            var players = await _mediator.Send(new SearchPlayerByParametersQuery(parameters));
+            var players = await _mediator.Send(new GetPlayersByNameQuery(parameters));
             return Json(new { results = players, pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
         }
 
@@ -26,7 +24,8 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> SearchAlliance(int allianceId)
         {
-            var players = await _mediator.Send(new SearchPlayerByAllianceIdQuery(allianceId));
+            var parameters = new GetPlayersParameters { AllianceId = allianceId };
+            var players = await _mediator.Send(new GetPlayersByAllianceId(allianceId));
             return Json(new { results = players });
         }
     }

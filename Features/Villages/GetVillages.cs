@@ -44,41 +44,13 @@ namespace Features.Villages
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
 
-            sb.Append(parameters.PageNumber);
+            parameters.PaginationKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.PageSize);
+            parameters.PlayerFilterKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.X);
+            parameters.VillageFilterKey(sb);
             sb.Append(SEPARATOR);
-            sb.Append(parameters.Y);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Distance);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MinPlayerPopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MaxPlayerPopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MinVillagePopulation);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.MaxVillagePopulation);
-
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Capital);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.Tribe);
-
-            if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.Alliances.Distinct().Order());
-            }
-            else if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
-            {
-                sb.Append(SEPARATOR);
-                sb.Append(SEPARATOR);
-                sb.AppendJoin(',', parameters.ExcludeAlliances.Distinct().Order());
-            }
-
+            parameters.DistanceFilterKey(sb);
             return sb.ToString();
         }
     }
