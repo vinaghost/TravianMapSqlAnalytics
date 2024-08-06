@@ -31,7 +31,7 @@ namespace Features.Populations
 
             var date = DateTime.Today.AddDays(-request.Parameters.Days);
             var population = await _dbContext.PlayersHistory
-                .Where(x => ids.Contains(x.PlayerId))
+                .Where(x => ids.Distinct().Contains(x.PlayerId))
                 .Where(x => x.Date >= date)
                 .Select(x => new
                 {

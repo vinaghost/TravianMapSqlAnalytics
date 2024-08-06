@@ -15,44 +15,18 @@
 
         <div class="input-group mt-3">
             <span class="input-group-text">
-                Alliances
-            </span>
-
-            <select class="form-select" id="player_alliance" data-ajax--url="/alliances/search">
-                @if (Model?.Player is not null)
-                {
-                    <option value="@Model.Player.AllianceId" selected="true">@Model.Player.AllianceName</option>
-                }
-            </select>
-        </div>
-
-
-        <div class="input-group mt-3">
-            <span class="input-group-text">
                 Players
             </span>
 
-            <select class="form-select" id="player_player" name="PlayerId">
+            <select class="form-select @Constants.Select2Combox" name="PlayerId" data-ajax--url="/players/names">
                 @if (Model?.Player is not null)
                 {
-                    var parameters = new GetPlayersParameters
-                    {
-                        PageNumber = 1,
-                        PageSize = 60,
-                        Alliances = [Model.Player.AllianceId]
-                    };
-
-                    var players = await mediator.Send(new GetPlayersQuery(parameters));
-
-                    foreach (var player in players)
-                    {
-                        <option value="@player.PlayerId" selected="@(player.PlayerId == Model.Player.PlayerId)">@player.PlayerName</option>
-                    }
+                    <option value="@Model.Player.PlayerId" selected="true">@Model.Player.PlayerName</option>
                 }
             </select>
 
         </div>
-        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check players" />
+        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check player" />
     </div>
 }
 
@@ -214,8 +188,3 @@ else
         }
     }
 }
-@section Scripts
-{
-    <script src="~/js/player.js" asp-append-version="true"></script>
-}
-

@@ -17,7 +17,7 @@
                 Alliances
             </span>
 
-            <select class="form-select" id="player_alliance" name="AllianceId" data-ajax--url="/alliances/search">
+            <select class="form-select @Constants.Select2Combox" name="AllianceId" data-ajax--url="/alliances/names">
                 @if (Model?.Alliance is not null)
                 {
                     <option value="@Model.Alliance.AllianceId" selected="true">@Model.Alliance.AllianceName</option>
@@ -155,10 +155,4 @@ else
             </table>
         }
     }
-
 }
-@section Scripts
-{
-    <script src="~/js/player.js" asp-append-version="true"></script>
-}
-

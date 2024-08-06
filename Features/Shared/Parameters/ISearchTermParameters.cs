@@ -23,8 +23,6 @@ namespace Features.Shared.Parameters
     {
         public SearchTermParametersValidator()
         {
-            RuleFor(x => x.SearchTerm)
-                .NotEmpty();
         }
     }
 }

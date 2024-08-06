@@ -30,7 +30,7 @@ namespace Features.Populations
             var date = DateTime.Today.AddDays(-request.Parameters.Days);
 
             var population = await _dbContext.VillagesHistory
-                .Where(x => ids.Contains(x.VillageId))
+                .Where(x => ids.Distinct().Contains(x.VillageId))
                 .Where(x => x.Date >= date)
                 .Select(x => new
                 {

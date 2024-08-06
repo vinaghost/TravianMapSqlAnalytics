@@ -3,6 +3,7 @@ using Features.Populations;
 using Features.Populations.Shared;
 using Features.Villages;
 using Features.Villages.Shared;
+using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Players;
@@ -13,32 +14,26 @@ namespace WebMVC.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
-        public async Task<IActionResult> Search(GetPlayersByNameParameters parameters)
+        public async Task<IResult> Names(GetPlayersByNameParameters parameters, [FromServices] IValidator<GetPlayersByNameParameters> validator)
         {
-            var players = await _mediator.Send(new GetPlayersByNameQuery(parameters));
-            return Json(new { results = players.Select(x => new { Id = x.PlayerId, Text = x.PlayerName }), pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
-        }
-
-        public async Task<IActionResult> SearchAlliance(int allianceId)
-        {
-            var playerParameters = new GetPlayersParameters()
+            var result = validator.Validate(parameters);
+            if (!result.IsValid)
             {
-                Alliances = [allianceId],
-                PageSize = 60,
-                PageNumber = 1
-            };
-            var players = await _mediator.Send(new GetPlayersQuery(playerParameters));
-            return Json(new { results = players, pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
+                return Results.ValidationProblem(result.ToDictionary());
+            }
+
+            var players = await _mediator.Send(new GetPlayersByNameQuery(parameters));
+            return Results.Json(new { results = players.Select(x => new { Id = x.PlayerId, Text = x.PlayerName }), pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int playerId = -1)
         {
-            ViewBag.IsInput = false;
-            return View();
-        }
+            if (playerId == -1)
+            {
+                ViewBag.IsInput = false;
+                return View();
+            }
 
-        public async Task<IActionResult> Index(int playerId)
-        {
             ViewBag.IsInput = true;
             var player = await _mediator.Send(new GetPlayerByIdQuery(playerId));
             if (player is null) return View();
@@ -58,10 +53,10 @@ namespace WebMVC.Controllers
 
             var populationParameters = new PopulationParameters()
             {
-                Ids = villages.Select(p => p.PlayerId).ToList(),
+                Ids = villages.Select(p => p.VillageId).ToList(),
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetPlayersPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
             return View(new IndexViewModel { Player = player, Villages = [.. villages], Population = population });
         }
     }

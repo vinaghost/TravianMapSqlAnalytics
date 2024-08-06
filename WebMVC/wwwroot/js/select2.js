@@ -1,5 +1,8 @@
 $(function () {
     let el = $('.select2-tmsa');
+    if (!el) {
+        return;
+    }
     el.select2({
         theme: "bootstrap-5",
         ajax: {
