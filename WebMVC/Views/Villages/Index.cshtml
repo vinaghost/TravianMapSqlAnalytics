@@ -1,11 +1,10 @@
-﻿@using Features.GetNeighbors
-@using Features.Shared.Dtos
-@using WebMVC.ViewModels.Villages
+﻿@using Features.Shared.Dtos
+@using WebMVC.Models.ViewModel.Villages
 
 @inject IMediator mediator
 @inject DataService dataService
 
-@model NeighborViewModel
+@model IndexViewModel
 
 @{
     ViewData["Title"] = "Villages";
@@ -37,109 +36,126 @@
     </div>
 }
 
-<div class="text-center">
-    <p>We found <b>@(Model.Data?.TotalItemCount ?? 0) villages</b> fit your request</p>
-</div>
-@{
-    var dates = Model.Population.Values.MaxBy(x => x.Count).Select(x => x.Date).ToArray();
+@if (!ViewBag.IsInput)
+{
+    <div>Choose player and check</div>
+
 }
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Distance
-            </th>
-            <th>
-                Player
-            </th>
-            <th>
-                Village
-            </th>
-            @for (var i = 0; i < dates.Length; i++)
-            {
-                <th>
-                    @dates[i].ToString("dd/MM")
-                </th>
-            }
-        </tr>
-    </thead>
+else
+{
+    var villages = Model?.Villages;
+    @if (villages is null)
+    {
+        <div>Input is not valid</div>
+    }
+    else
+    {   
+        <div class="text-center">
+            <p>We found <b>@villages.TotalItemCount villages</b> fit your request</p>
+        </div>
 
-    <tbody>
-        @foreach (var village in Model.Data)
-        {
-            <tr>
-                <td>
-                    @village.Distance
-                </td>
-                <td>
-                    <span class="small text-muted">
-                        [@village.Tribe]
-                    </span>
-                    <a href="/players?playerId=@village.PlayerId"
-                       target="_blank"
-                       type="button"
-                       class="btn-link text-decoration-none">
-                        @village.PlayerName
-                    </a>
+        var dates = Model?.Population.Values.MaxBy(x => x.Count)?.Select(x => x.Date).ToArray() ?? [];
 
-                    <a href="/alliances?allianceId=@village.AllianceId"
-                       target="_blank"
-                       type="button"
-                       class="btn-link text-decoration-none">
-                        [@village.AllianceName]
-                    </a>
-                </td>
-                <td>
-                    <a href="https://@dataService.Server/karte.php?d=@village.MapId"
-                       target="_blank"
-                       type="button"
-                       class="btn-link text-decoration-none">
-                        @if (village.IsCapital)
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Distance
+                    </th>
+                    <th>
+                        Player
+                    </th>
+                    <th>
+                        Village
+                    </th>
+                    @for (var i = 0; i < dates.Length; i++)
+                    {
+                        <th>
+                            @dates[i].ToString("dd/MM")
+                        </th>
+                    }
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var village in villages)
+                {
+                    <tr>
+                        <td>
+                            @village.Distance
+                        </td>
+                        <td>
+                            <span class="small text-muted">
+                                [@village.Tribe]
+                            </span>
+                            <a href="/players?playerId=@village.PlayerId"
+                               target="_blank"
+                               type="button"
+                               class="btn-link text-decoration-none">
+                                @village.PlayerName
+                            </a>
+
+                            <a href="/alliances?allianceId=@village.AllianceId"
+                               target="_blank"
+                               type="button"
+                               class="btn-link text-decoration-none">
+                                [@village.AllianceName]
+                            </a>
+                        </td>
+                        <td>
+                            <a href="https://@dataService.Server/karte.php?d=@village.MapId"
+                               target="_blank"
+                               type="button"
+                               class="btn-link text-decoration-none">
+                                @if (village.IsCapital)
+                                {
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
+                                        <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
+                                    </svg>
+                                }
+
+                                <span>@village.VillageName</span>
+                            </a>
+
+                            <span class="small text-muted">
+                                (@village.X / @village.Y)
+                            </span>
+                        </td>
+                        @if (Model?.Population.ContainsKey(village.VillageId) ?? false)
                         {
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-house-door-fill" viewBox="0 0 16 16">
-                                <path d="M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5" />
-                            </svg>
+                            var populations = Model.Population[village.VillageId];
+                            for (var i = 0; i < dates.Length; i++)
+                            {
+                                <td>
+                                    @if (i >= populations.Count)
+                                    {
+                                        <p>~</p>
+                                    }
+                                    else
+                                    {
+                                        <p>
+                                            @Html.DisplayFor(m => populations[i])
+                                        </p>
+                                    }
+                                </td>
+                            }
                         }
-
-                        <span>@village.VillageName</span>
-                    </a>
-
-                    <span class="small text-muted">
-                        (@village.X / @village.Y)
-                    </span>
-                </td>
-                @if (Model.Population.ContainsKey(village.VillageId))
-                {
-                    var populations = Model.Population[village.VillageId];
-                    for (var i = 0; i < dates.Length; i++)
-                    {
-                        <td>
-                            @if (i >= populations.Count)
+                        else
+                        {
+                            for (var i = 0; i < dates.Length; i++)
                             {
-                                <p>~</p>
+                                <td>
+                                    <p>~</p>
+                                </td>
                             }
-                            else
-                            {
-                                <p>
-                                    @Html.DisplayFor(m => populations[i])
-                                </p>
-                            }
-                        </td>
-                    }
+                        }
+                    </tr>
                 }
-                else
-                {
-                    for (var i = 0; i < dates.Length; i++)
-                    {
-                        <td>
-                            <p>~</p>
-                        </td>
-                    }
-                }
-            </tr>
-        }
-    </tbody>
-</table>
+            </tbody>
+        </table>
 
-@await Html.PartialAsync("_PaginationPartial", Model.Data)
+        @await Html.PartialAsync("_PaginationPartial", villages)
+    }
+}
+
 

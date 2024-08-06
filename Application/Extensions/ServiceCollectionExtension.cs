@@ -44,7 +44,11 @@ namespace Application.Extensions
                     .EnableDetailedErrors()
 #endif
                     .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), x =>
+                    {
+                        x.EnableIndexOptimizedBooleanColumns();
+                        x.EnablePrimitiveCollectionsSupport();
+                    });
             });
 
             return serviceCollection;

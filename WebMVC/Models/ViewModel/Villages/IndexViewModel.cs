@@ -6,8 +6,8 @@ namespace WebMVC.Models.ViewModel.Villages
 {
     public class IndexViewModel
     {
-        public GetVillagesParameters? Parameters { get; set; }
-        public IPagedList<VillageDto>? Villages { get; set; }
-        public Dictionary<int, List<PopulationDto>>? Population { get; set; }
+        public GetVillagesParameters Parameters { get; init; } = new();
+        public IPagedList<VillageDto>? Villages { get; init; }
+        public Dictionary<int, List<PopulationDto>> Population { get; init; } = [];
     }
 }

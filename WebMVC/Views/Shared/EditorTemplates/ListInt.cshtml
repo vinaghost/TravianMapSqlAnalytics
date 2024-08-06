@@ -5,7 +5,7 @@
 
 @{
     var name = ViewData["Name"] as string;
-    var data = ViewData["Data"] as IList<SearchResult> ?? [];
+    var data = ViewData["Data"] as IList<AllianceDto> ?? [];
 
     var htmlAttributes = new Dictionary<string, object>
     {
@@ -19,6 +19,6 @@
         @Html.Label(name, name, new { @class = "control-label", style = "width: 100%", })
     </span>
 
-    @Html.ListBox(name, data.Select(x => new SelectListItem(x.Text, x.Id.ToString(), true)), htmlAttributes)
+    @Html.ListBox(name, data.Select(x => new SelectListItem(x.AllianceName, x.AllianceId.ToString(), true)), htmlAttributes)
 </div>
 

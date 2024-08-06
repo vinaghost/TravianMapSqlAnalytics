@@ -13,10 +13,10 @@ namespace Features.Villages
 {
     public record GetInactiveParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
-        public int InactiveDays { get; init; }
+        public int InactiveDays { get; init; } = 3;
 
-        public int PageNumber { get; init; }
-        public int PageSize { get; init; }
+        public int PageNumber { get; init; } = 1;
+        public int PageSize { get; init; } = 20;
 
         public int X { get; init; }
         public int Y { get; init; }

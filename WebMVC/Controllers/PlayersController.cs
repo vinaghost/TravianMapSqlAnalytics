@@ -15,7 +15,7 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> Search(GetPlayersByNameParameters parameters)
         {
             var players = await _mediator.Send(new GetPlayersByNameQuery(parameters));
-            return Json(new { results = players, pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
+            return Json(new { results = players.Select(x => new { Id = x.PlayerId, Text = x.PlayerName }), pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
         }
 
         public async Task<IActionResult> SearchAlliance(int allianceId)

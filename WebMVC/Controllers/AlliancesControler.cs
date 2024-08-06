@@ -15,7 +15,7 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> Search(GetAlliancesByNameParameters parameters)
         {
             var alliances = await _mediator.Send(new GetAlliancesByNameQuery(parameters));
-            return Json(new { results = alliances, pagination = new { more = alliances.PageNumber * alliances.PageSize < alliances.TotalItemCount } });
+            return Json(new { results = alliances.Select(x => new { Id = x.AllianceId, Text = x.AllianceName }), pagination = new { more = alliances.PageNumber * alliances.PageSize < alliances.TotalItemCount } });
         }
 
         public IActionResult Index()

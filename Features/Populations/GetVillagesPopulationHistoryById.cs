@@ -21,25 +21,35 @@ namespace Features.Populations
 
         public async Task<Dictionary<int, List<PopulationDto>>> Handle(GetVillagesPopulationHistoryByIdQuery request, CancellationToken cancellationToken)
         {
-            if (request.Parameters.Ids is null || request.Parameters.Ids.Count == 0)
+            var ids = request.Parameters.Ids;
+            if (ids is null || ids.Count == 0)
             {
                 return [];
             }
 
-            var date = DateTime.Now.AddDays(-request.Parameters.Days);
+            var date = DateTime.Today.AddDays(-request.Parameters.Days);
 
             var population = await _dbContext.VillagesHistory
-                .Where(x => request.Parameters.Ids.Contains(x.VillageId))
+                .Where(x => ids.Contains(x.VillageId))
                 .Where(x => x.Date >= date)
+                .Select(x => new
+                {
+                    x.VillageId,
+                    x.Date,
+                    x.Population,
+                    x.ChangePopulation,
+                })
+                .ToListAsync(cancellationToken);
+
+            return population
                 .GroupBy(x => x.VillageId)
+                .AsParallel()
                 .Select(x => new
                 {
                     VillageId = x.Key,
-                    Population = x.Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation)),
+                    Population = x.Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation)).ToList(),
                 })
-                .ToDictionaryAsync(x => x.VillageId, x => x.Population.ToList(), cancellationToken);
-
-            return population;
+                .ToDictionary(x => x.VillageId, x => x.Population);
         }
     }
 }

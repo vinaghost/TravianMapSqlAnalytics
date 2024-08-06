@@ -14,12 +14,14 @@ namespace WebMVC.Controllers
     {
         private readonly IMediator _mediator = mediator;
 
+        [HttpGet]
         public IActionResult Inactives()
         {
             ViewBag.IsInput = false;
-            return View();
+            return View(new InactiveViewModel());
         }
 
+        [HttpPost]
         public async Task<IActionResult> Inactives(GetInactiveParameters parameters, [FromServices] IValidator<GetInactiveParameters> validator)
         {
             ViewBag.IsInput = true;
@@ -41,19 +43,21 @@ namespace WebMVC.Controllers
 
             var populationParameters = new PopulationParameters()
             {
-                Ids = [.. villages.Select(p => p.PlayerId)],
+                Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetPlayersPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
             return View(new InactiveViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
 
+        [HttpGet]
         public IActionResult Index()
         {
             ViewBag.IsInput = false;
-            return View();
+            return View(new IndexViewModel());
         }
 
+        [HttpPost]
         public async Task<IActionResult> Index(GetVillagesParameters parameters, [FromServices] IValidator<GetVillagesParameters> validator)
         {
             ViewBag.IsInput = true;
@@ -75,10 +79,10 @@ namespace WebMVC.Controllers
 
             var populationParameters = new PopulationParameters()
             {
-                Ids = [.. villages.Select(p => p.PlayerId)],
+                Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetPlayersPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
             return View(new IndexViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
     }

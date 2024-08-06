@@ -23,24 +23,34 @@ namespace Features.Populations
 
         public async Task<Dictionary<int, List<PopulationDto>>> Handle(GetPlayersPopulationHistoryByIdQuery request, CancellationToken cancellationToken)
         {
-            if (request.Parameters.Ids is null || request.Parameters.Ids.Count == 0)
+            var ids = request.Parameters.Ids;
+            if (ids is null || ids.Count == 0)
             {
                 return [];
             }
 
-            var date = DateTime.Now.AddDays(-request.Parameters.Days);
+            var date = DateTime.Today.AddDays(-request.Parameters.Days);
             var population = await _dbContext.PlayersHistory
-                .Where(x => request.Parameters.Ids.Contains(x.PlayerId))
+                .Where(x => ids.Contains(x.PlayerId))
                 .Where(x => x.Date >= date)
+                .Select(x => new
+                {
+                    x.PlayerId,
+                    x.Date,
+                    x.Population,
+                    x.ChangePopulation,
+                })
+                .ToListAsync(cancellationToken);
+
+            return population
                 .GroupBy(x => x.PlayerId)
+                .AsParallel()
                 .Select(x => new
                 {
                     PlayerId = x.Key,
-                    Population = x.Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation)),
+                    Population = x.Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation)).ToList(),
                 })
-                .ToDictionaryAsync(x => x.PlayerId, x => x.Population.ToList(), cancellationToken);
-
-            return population;
+                .ToDictionary(x => x.PlayerId, x => x.Population);
         }
     }
 }

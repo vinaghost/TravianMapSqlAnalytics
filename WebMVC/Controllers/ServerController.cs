@@ -28,12 +28,10 @@ namespace WebMVC.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> ServerList(GetServersByNameParameters parameters)
+        public async Task<IActionResult> Index(GetServersByNameParameters parameters)
         {
             var servers = await _mediator.Send(new GetServersByNameQuery(parameters));
-            var serverList = servers
-                .Select(x => new { Id = x.Url, x.Url });
-            return Json(new { results = serverList, pagination = new { more = servers.PageNumber * servers.PageSize < servers.TotalItemCount } });
+            return Json(new { results = servers.Select(x => new { Id = x.Url, Text = x.Url }), pagination = new { more = servers.PageNumber * servers.PageSize < servers.TotalItemCount } });
         }
     }
 }
