@@ -32,14 +32,13 @@
             @await Component.InvokeAsync(nameof(PaginationParameters), new { parameter = Model.Parameters })
         </div>
 
-        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check neighbor" />
+        <input type="submit" id="Check" class="btn btn-primary mt-2" value="Check villages" />
     </div>
 }
 
 @if (!ViewBag.IsInput)
 {
-    <div>Choose player and check</div>
-
+    <div>Fill the form to start</div>
 }
 else
 {

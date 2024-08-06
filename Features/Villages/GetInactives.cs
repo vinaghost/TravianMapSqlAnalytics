@@ -2,62 +2,24 @@
 using Features.Shared.Enums;
 using Features.Shared.Handler;
 using Features.Shared.Models;
-using Features.Shared.Parameters;
 using Features.Shared.Query;
+using Features.Villages.Shared;
 using FluentValidation;
 using MediatR;
-using System.Text;
 using X.PagedList;
 
 namespace Features.Villages
 {
-    public record GetInactiveParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record GetInactiveParameters : GetVillagesParameters
     {
         public int InactiveDays { get; init; } = 3;
-
-        public int PageNumber { get; init; } = 1;
-        public int PageSize { get; init; } = 20;
-
-        public int X { get; init; }
-        public int Y { get; init; }
-
-        public int Distance { get; init; }
-
-        public int MinPlayerPopulation { get; init; }
-        public int MaxPlayerPopulation { get; init; }
-
-        public int MinVillagePopulation { get; init; }
-        public int MaxVillagePopulation { get; init; }
-
-        public Capital Capital { get; init; }
-        public Tribe Tribe { get; init; }
-
-        public IList<int>? Alliances { get; init; }
-        public IList<int>? ExcludeAlliances { get; init; }
-
-        public IList<int>? Players { get; init; }
-        public IList<int>? ExcludePlayers { get; init; }
     }
 
     public static class GetInactiveParametersExtension
     {
         public static string Key(this GetInactiveParameters parameters)
         {
-            var sb = new StringBuilder();
-            const char SEPARATOR = '_';
-
-            parameters.PaginationKey(sb);
-            sb.Append(SEPARATOR);
-            parameters.PlayerFilterKey(sb);
-            sb.Append(SEPARATOR);
-            parameters.VillageFilterKey(sb);
-            sb.Append(SEPARATOR);
-            parameters.DistanceFilterKey(sb);
-            sb.Append(SEPARATOR);
-            sb.Append(parameters.InactiveDays);
-            sb.Append(SEPARATOR);
-
-            return sb.ToString();
+            return $"{parameters.KeyParent()}_{parameters.InactiveDays}";
         }
     }
 
@@ -65,10 +27,7 @@ namespace Features.Villages
     {
         public GetInactiveParametersValidator()
         {
-            Include(new PaginationParametersValidator());
-            Include(new DistanceFilterParametersValidator());
-            Include(new PlayerFilterParametersValidator());
-            Include(new VillageFilterParametersValidator());
+            Include(new GetVillagesParametersValidator());
 
             RuleFor(x => x.InactiveDays)
                 .NotEmpty()
