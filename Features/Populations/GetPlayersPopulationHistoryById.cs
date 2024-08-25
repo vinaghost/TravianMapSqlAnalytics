@@ -29,10 +29,25 @@ namespace Features.Populations
                 return [];
             }
 
+            var query = _dbContext.PlayersHistory
+               .AsQueryable();
+
+            if (ids.Count == 1)
+            {
+                query
+                    .Where(x => x.Id == ids[0]);
+            }
+            else
+            {
+                query
+                    .Where(x => ids.Contains(x.Id));
+            }
+
             var date = DateTime.Today.AddDays(-request.Parameters.Days);
-            var population = await _dbContext.PlayersHistory
-                .Where(x => ids.Distinct().Contains(x.PlayerId))
+
+            var population = await query
                 .Where(x => x.Date >= date)
+                .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {
                     x.PlayerId,
@@ -44,7 +59,6 @@ namespace Features.Populations
 
             return population
                 .GroupBy(x => x.PlayerId)
-                .AsParallel()
                 .Select(x => new
                 {
                     PlayerId = x.Key,

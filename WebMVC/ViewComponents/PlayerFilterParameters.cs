@@ -11,8 +11,8 @@ namespace WebMVC.ViewComponents
 
         public override async Task<IViewComponentResult> InvokeAsync(IPlayerFilterParameters parameter)
         {
-            ViewData["Alliances"] = await _mediator.Send(new GetAlliancesQuery(new GetAlliancesParameters(parameter.Alliances ?? [])));
-            ViewData["ExcludeAlliances"] = await _mediator.Send(new GetAlliancesQuery(new GetAlliancesParameters(parameter.Alliances ?? [])));
+            ViewData["Alliances"] = await _mediator.Send(new GetAlliancesByIdQuery(new GetAlliancesByIdParameters(parameter.Alliances ?? [])));
+            ViewData["ExcludeAlliances"] = await _mediator.Send(new GetAlliancesByIdQuery(new GetAlliancesByIdParameters(parameter.Alliances ?? [])));
             return View(parameter);
         }
     }

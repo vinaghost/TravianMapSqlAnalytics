@@ -81,7 +81,7 @@ namespace WebMVC.Controllers
             var populationParameters = new PopulationParameters()
             {
                 Ids = [.. villages.Select(p => p.VillageId)],
-                Days = 7,
+                Days = 14,
             };
             var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
             return View(new IndexViewModel { Parameters = parameters, Villages = villages, Population = population });

@@ -27,11 +27,24 @@ namespace Features.Populations
                 return [];
             }
 
+            var query = _dbContext.VillagesHistory
+               .AsQueryable();
+
+            if (ids.Count == 1)
+            {
+                query
+                    .Where(x => x.Id == ids[0]);
+            }
+            else
+            {
+                query
+                    .Where(x => ids.Contains(x.Id));
+            }
             var date = DateTime.Today.AddDays(-request.Parameters.Days);
 
-            var population = await _dbContext.VillagesHistory
-                .Where(x => ids.Distinct().Contains(x.VillageId))
+            var population = await query
                 .Where(x => x.Date >= date)
+                .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {
                     x.VillageId,
@@ -43,7 +56,6 @@ namespace Features.Populations
 
             return population
                 .GroupBy(x => x.VillageId)
-                .AsParallel()
                 .Select(x => new
                 {
                     VillageId = x.Key,
