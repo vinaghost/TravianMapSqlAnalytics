@@ -4,13 +4,13 @@
     "net8.0": {
       "FastEndpoints": {
         "type": "Direct",
-        "requested": "[5.28.0, )",
-        "resolved": "5.28.0",
-        "contentHash": "Kywwp761488R7MDhzqtWJ2F4JKuuvvdVPYA+5d+LMiENlOIq8H5RwhcxRDLkQMI0XsxONIQTlhJyvLSlb3W56g==",
+        "requested": "[5.30.0, )",
+        "resolved": "5.30.0",
+        "contentHash": "jL1tSR3J8WXvk4xzr/bJw8XfWct1Nw+/Ah9gR3YMabFngvJmAxl6GwI9VixGJr0yayp2dDyt4myDYfJ8XMRd0w==",
         "dependencies": {
-          "FastEndpoints.Attributes": "5.28.0",
-          "FastEndpoints.Messaging.Core": "5.28.0",
-          "FluentValidation": "11.9.2"
+          "FastEndpoints.Attributes": "5.30.0",
+          "FastEndpoints.Messaging.Core": "5.30.0",
+          "FluentValidation": "11.10.0"
         }
       },
       "FastEndpoints.Swagger": {
@@ -31,18 +31,18 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "5.28.0",
-        "contentHash": "zhcDVE2/KLwIrweJAuOHVCMLPbZm6VrQKL+orgWR7QckT2jaf8L6xIN8wKbM2J6fCMH3Wp9Mx7Gbn8yREou7GQ=="
+        "resolved": "5.30.0",
+        "contentHash": "0FB/0mVDOHoQKbpZXUiJnh+w9apoh676IYeViHqhCq3GEwx9T9phrIawBXUNyaMyM1u2/hmtYPzPr2e+Qc09Rg=="
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "5.28.0",
-        "contentHash": "eoo9m5bKfzh/7pB5UBj+pb+8uYYYsWHxMGKCGRXiwezLMrKg8EwetUX+Dbgpvep5pgdD1YUTFEtP9WU9tZTVxw=="
+        "resolved": "5.30.0",
+        "contentHash": "Cvx/61JSG6WaNbdS7ypImTJygC7p0lftpg1IzE+vs5BLhkSIxYUfYyPck/P/Mw4Re2TcrWor+Ly5cbRTFcZP6g=="
       },
       "FluentValidation": {
         "type": "Transitive",
-        "resolved": "11.9.2",
-        "contentHash": "XeHp9LvFvu1fsQ/NvDCymV02GOCB1nz7ZUhfpI3uMhCcHTkV1K5bMkv+Nc/kuNYyAsX5+5bcmUanIEMd5QN+Eg=="
+        "resolved": "11.10.0",
+        "contentHash": "qsJGSJDdZ8qiG+lVJ70PZfJHcEdq8UQZ/tZDXoj78/iHKG6lVKtMJsD11zyyv/IPc7rwqGqnFoFLTNzpo3IPYg=="
       },
       "FluentValidation.AspNetCore": {
         "type": "Transitive",
