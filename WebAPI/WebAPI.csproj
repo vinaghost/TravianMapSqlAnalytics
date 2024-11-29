@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FastEndpoints" Version="5.28.0" />
-    <PackageReference Include="FastEndpoints.Swagger" Version="5.28.0" />
+    <PackageReference Include="FastEndpoints" Version="5.31.0" />
+    <PackageReference Include="FastEndpoints.Swagger" Version="5.31.0" />
   </ItemGroup>
 
   <ItemGroup>
