@@ -53,7 +53,7 @@ namespace WebMVC.Controllers
                 Ids = players.Select(p => p.PlayerId).ToList(),
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetPlayersPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetPlayersPopulationHistoryByParametersQuery(populationParameters));
             return View(new IndexViewModel { Alliance = alliance, Players = [.. players], Population = population });
         }
     }
