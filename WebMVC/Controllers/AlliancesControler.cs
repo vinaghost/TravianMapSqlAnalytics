@@ -35,13 +35,13 @@ namespace WebMVC.Controllers
             var alliance = await _mediator.Send(new GetAllianceByIdQuery(allianceId));
             if (alliance is null) return View(new IndexViewModel { Alliance = alliance });
 
-            var playerParameters = new GetPlayersParameters()
+            var playerParameters = new PlayersParameters()
             {
                 Alliances = [allianceId],
                 PageSize = 60,
                 PageNumber = 1
             };
-            var players = await _mediator.Send(new GetPlayersQuery(playerParameters));
+            var players = await _mediator.Send(new GetPlayersByParametersQuery(playerParameters));
 
             if (players.Count <= 0)
             {

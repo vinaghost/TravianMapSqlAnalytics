@@ -25,23 +25,14 @@ namespace Features.Players
                 .Join(_dbContext.Alliances,
                     x => x.AllianceId,
                     x => x.Id,
-                    (player, alliance) => new
-                    {
-                        PlayerId = player.Id,
-                        PlayerName = player.Name,
-                        AllianceId = alliance.Id,
-                        AllianceName = alliance.Name,
-                        player.Population,
-                        player.VillageCount
-                    })
-                .Select(x => new PlayerDto(
-                        x.AllianceId,
-                        x.AllianceName,
-                        x.PlayerId,
-                        x.PlayerName,
-                        x.VillageCount,
-                        x.Population
-                ))
+                    (player, alliance) => new PlayerDto(
+                        alliance.Id,
+                        alliance.Name,
+                        player.Id,
+                        player.Name,
+                        player.VillageCount,
+                        player.Population
+                    ))
                 .FirstOrDefaultAsync(cancellationToken);
             return Player;
         }

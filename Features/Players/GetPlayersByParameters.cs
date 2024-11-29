@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Features.Players
 {
-    public record GetPlayersParameters : IPaginationParameters, IPlayerFilterParameters
+    public record PlayersParameters : IPaginationParameters, IPlayerFilterParameters
     {
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
@@ -21,9 +21,9 @@ namespace Features.Players
         public IList<int>? ExcludePlayers { get; init; }
     }
 
-    public static class GetPlayersParametersExtension
+    public static class PlayersParametersExtension
     {
-        public static string Key(this GetPlayersParameters parameters)
+        public static string Key(this PlayersParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -36,55 +36,47 @@ namespace Features.Players
         }
     }
 
-    public class GetPlayersParametersValidator : AbstractValidator<GetPlayersParameters>
+    public class PlayersParametersValidator : AbstractValidator<PlayersParameters>
     {
-        public GetPlayersParametersValidator()
+        public PlayersParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new PlayerFilterParametersValidator());
         }
     }
 
-    public record GetPlayersQuery(GetPlayersParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
+    public record GetPlayersByParametersQuery(PlayersParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
     {
-        public string CacheKey => $"{nameof(GetPlayersQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetPlayersByParametersQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
         public bool IsServerBased => true;
     }
 
-    public class GetPlayersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetPlayersQuery, IPagedList<PlayerDto>>
+    public class GetPlayersByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetPlayersByParametersQuery, IPagedList<PlayerDto>>
     {
         private readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<PlayerDto>> Handle(GetPlayersQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<PlayerDto>> Handle(GetPlayersByParametersQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
             var predicate = VillageDataQuery.PlayerPredicate(parameters);
             var players = _dbContext.Players
                 .AsExpandable()
                 .Where(predicate)
+                .OrderByDescending(x => x.VillageCount)
                 .Join(_dbContext.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
-                   (player, alliance) => new
-                   {
-                       PlayerId = player.Id,
-                       PlayerName = player.Name,
-                       AllianceId = alliance.Id,
-                       AllianceName = alliance.Name,
-                       player.Population,
-                       player.VillageCount
-                   })
-                .OrderByDescending(x => x.VillageCount)
-                .Select(x => new PlayerDto(
-                        x.AllianceId,
-                        x.AllianceName,
-                        x.PlayerId,
-                        x.PlayerName,
-                        x.VillageCount,
-                        x.Population
-                ))
+                   (player, alliance) => new PlayerDto
+                   (
+                       alliance.Id,
+                       alliance.Name,
+                       player.Id,
+                       player.Name,
+                       player.VillageCount,
+                       player.Population
+                       ))
                 .ToPagedList(parameters.PageNumber, parameters.PageSize);
             return players;
         }
