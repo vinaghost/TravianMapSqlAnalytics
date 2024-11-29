@@ -7,22 +7,22 @@ using Features.Villages.Shared;
 
 namespace Features.Villages
 {
-    public record GetInactiveParameters : GetVillagesParameters
+    public record GetInactiveVillagesParameters : GetVillagesParameters
     {
         public int InactiveDays { get; init; } = 3;
     }
 
-    public static class GetInactiveParametersExtension
+    public static class GetInactiveVillagesParametersExtension
     {
-        public static string Key(this GetInactiveParameters parameters)
+        public static string Key(this GetInactiveVillagesParameters parameters)
         {
             return $"{parameters.KeyParent()}_{parameters.InactiveDays}";
         }
     }
 
-    public class GetInactiveParametersValidator : AbstractValidator<GetInactiveParameters>
+    public class GetInactiveVillagesParametersValidator : AbstractValidator<GetInactiveVillagesParameters>
     {
-        public GetInactiveParametersValidator()
+        public GetInactiveVillagesParametersValidator()
         {
             Include(new GetVillagesParametersValidator());
 
@@ -32,20 +32,20 @@ namespace Features.Villages
         }
     }
 
-    public record GetInactiveQuery(GetInactiveParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
+    public record GetInactiveVillagesQuery(GetInactiveVillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
     {
-        public string CacheKey => $"{nameof(GetInactiveQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetInactiveVillagesQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetInactiveQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetInactiveQuery, IPagedList<VillageDto>>
+    public class GetInactiveVillagesQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetInactiveVillagesQuery, IPagedList<VillageDto>>
     {
         private readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<VillageDto>> Handle(GetInactiveQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDto>> Handle(GetInactiveVillagesQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -110,7 +110,7 @@ namespace Features.Villages
             return orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize);
         }
 
-        private IQueryable<int> GetInactivePlayerIds(GetInactiveParameters parameters)
+        private IQueryable<int> GetInactivePlayerIds(GetInactiveVillagesParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
             if (VillageDataQuery.IsPlayerFiltered(parameters))
@@ -143,7 +143,7 @@ namespace Features.Villages
             }
         }
 
-        private IQueryable<Player> GetInactivePlayers(GetInactiveParameters parameters)
+        private IQueryable<Player> GetInactivePlayers(GetInactiveVillagesParameters parameters)
         {
             var ids = GetInactivePlayerIds(parameters);
             return _dbContext.Players

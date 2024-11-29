@@ -48,19 +48,19 @@ namespace Features.Servers
         public async Task<IPagedList<ServerDto>> Handle(GetServersByNameQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
-            var query = _dbContext.Servers
-                .AsQueryable();
 
+            var predicate = PredicateBuilder.New<Server>(true);
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query = query
-                    .Where(x => x.Url.StartsWith(parameters.SearchTerm));
+                predicate = predicate.And(x => x.Url.StartsWith(parameters.SearchTerm));
             }
 
-            var data = query
-               .OrderBy(x => x.Url)
-               .Select(x => new ServerDto(x.Id, x.Url))
-               .ToPagedList(parameters.PageNumber, parameters.PageSize);
+            var data = _dbContext.Servers
+                .AsQueryable()
+                .Where(predicate)
+                .OrderBy(x => x.Url)
+                .Select(x => new ServerDto(x.Id, x.Url))
+                .ToPagedList(parameters.PageNumber, parameters.PageSize);
             return data;
         }
     }

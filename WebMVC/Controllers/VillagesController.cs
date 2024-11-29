@@ -22,7 +22,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Inactives(GetInactiveParameters parameters, [FromServices] IValidator<GetInactiveParameters> validator)
+        public async Task<IActionResult> Inactives(GetInactiveVillagesParameters parameters, [FromServices] IValidator<GetInactiveVillagesParameters> validator)
         {
             ViewBag.IsInput = true;
 
@@ -34,7 +34,7 @@ namespace WebMVC.Controllers
                 return View(new InactiveViewModel { Parameters = parameters });
             }
 
-            var villages = await _mediator.Send(new GetInactiveQuery(parameters));
+            var villages = await _mediator.Send(new GetInactiveVillagesQuery(parameters));
 
             if (villages.Count <= 0)
             {

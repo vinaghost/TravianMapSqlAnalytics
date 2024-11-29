@@ -23,7 +23,7 @@
 
         </div>
         <div class="collapse" id="filter-fields">
-            @Html.EditorFor(m => m.Parameters.InactiveDays, new { id = nameof(GetInactiveParameters.InactiveDays) })
+            @Html.EditorFor(m => m.Parameters.InactiveDays, new { id = nameof(GetInactiveVillagesParameters.InactiveDays) })
             @await Component.InvokeAsync(nameof(VillageFilterParameters), new { parameter = Model.Parameters })
             @await Component.InvokeAsync(nameof(PlayerFilterParameters), new { parameter = Model.Parameters })
 
