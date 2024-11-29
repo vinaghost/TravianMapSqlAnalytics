@@ -5,20 +5,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Features.Populations
 {
-    public record GetVillagesPopulationHistoryByIdQuery(PopulationParameters Parameters) : ICachedQuery<Dictionary<int, List<PopulationDto>>>
+    public record GetVillagesPopulationHistoryByParametersQuery(PopulationParameters Parameters) : ICachedQuery<Dictionary<int, List<PopulationDto>>>
     {
-        public string CacheKey => $"{nameof(GetVillagesPopulationHistoryByIdQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetVillagesPopulationHistoryByParametersQuery)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetVillagesPopulationHistoryByIdQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesPopulationHistoryByIdQuery, Dictionary<int, List<PopulationDto>>>
+    public class GetVillagesPopulationHistoryByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesPopulationHistoryByParametersQuery, Dictionary<int, List<PopulationDto>>>
     {
         protected readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<Dictionary<int, List<PopulationDto>>> Handle(GetVillagesPopulationHistoryByIdQuery request, CancellationToken cancellationToken)
+        public async Task<Dictionary<int, List<PopulationDto>>> Handle(GetVillagesPopulationHistoryByParametersQuery request, CancellationToken cancellationToken)
         {
             var ids = request.Parameters.Ids;
             if (ids is null || ids.Count == 0)
@@ -26,23 +26,23 @@ namespace Features.Populations
                 return [];
             }
 
-            var query = _dbContext.VillagesHistory
-               .AsQueryable();
+            var predicate = PredicateBuilder.New<VillageHistory>(true);
 
             if (ids.Count == 1)
             {
-                query
-                    .Where(x => x.Id == ids[0]);
+                predicate = predicate.And(x => x.Id == ids[0]);
             }
             else
             {
-                query
-                    .Where(x => ids.Contains(x.Id));
+                predicate = predicate.And(x => ids.Contains(x.Id));
             }
-            var date = DateTime.Today.AddDays(-request.Parameters.Days);
 
-            var population = await query
-                .Where(x => x.Date >= date)
+            var date = DateTime.Today.AddDays(-request.Parameters.Days);
+            predicate = predicate.And(x => x.Date >= date);
+
+            var population = await _dbContext.VillagesHistory
+                .AsQueryable()
+                .Where(predicate)
                 .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {

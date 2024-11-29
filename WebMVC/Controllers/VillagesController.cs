@@ -46,7 +46,7 @@ namespace WebMVC.Controllers
                 Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
             return View(new InactiveViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
 
@@ -82,7 +82,7 @@ namespace WebMVC.Controllers
                 Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 14,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
             return View(new IndexViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
     }

@@ -56,7 +56,7 @@ namespace WebMVC.Controllers
                 Ids = villages.Select(p => p.VillageId).ToList(),
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByIdQuery(populationParameters));
+            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
             return View(new IndexViewModel { Player = player, Villages = [.. villages], Population = population });
         }
     }
