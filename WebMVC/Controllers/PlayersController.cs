@@ -38,13 +38,13 @@ namespace WebMVC.Controllers
             var player = await _mediator.Send(new GetPlayerByIdQuery(playerId));
             if (player is null) return View();
 
-            var villageParameters = new GetVillagesParameters()
+            var villageParameters = new VillagesParameters()
             {
                 Players = [playerId],
                 PageSize = 60,
                 PageNumber = 1
             };
-            var villages = await _mediator.Send(new GetVillagesQuery(villageParameters));
+            var villages = await _mediator.Send(new GetVillagesByParameters(villageParameters));
 
             if (villages.Count <= 0)
             {

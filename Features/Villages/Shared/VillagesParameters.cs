@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Features.Villages.Shared
 {
-    public record GetVillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record VillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 20;
@@ -32,7 +32,7 @@ namespace Features.Villages.Shared
 
     public static class GetVillagesParametersExtension
     {
-        private static string GenerateKey(this GetVillagesParameters parameters)
+        private static string GenerateKey(this VillagesParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -47,18 +47,18 @@ namespace Features.Villages.Shared
             return sb.ToString();
         }
 
-        public static string Key(this GetVillagesParameters parameters)
+        public static string Key(this VillagesParameters parameters)
         {
             return GenerateKey(parameters);
         }
 
-        public static string KeyParent(this GetVillagesParameters parameters)
+        public static string KeyParent(this VillagesParameters parameters)
         {
             return GenerateKey(parameters);
         }
     }
 
-    public class GetVillagesParametersValidator : AbstractValidator<GetVillagesParameters>
+    public class GetVillagesParametersValidator : AbstractValidator<VillagesParameters>
     {
         public GetVillagesParametersValidator()
         {

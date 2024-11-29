@@ -7,20 +7,20 @@ using Features.Villages.Shared;
 
 namespace Features.Villages
 {
-    public record GetVillagesQuery(GetVillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
+    public record GetVillagesByParameters(VillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
     {
-        public string CacheKey => $"{nameof(GetVillagesQuery)}_{Parameters.Key()}";
+        public string CacheKey => $"{nameof(GetVillagesByParameters)}_{Parameters.Key()}";
 
         public TimeSpan? Expiation => null;
 
         public bool IsServerBased => true;
     }
 
-    public class GetVillagesQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesQuery, IPagedList<VillageDto>>
+    public class GetVillagesByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesByParameters, IPagedList<VillageDto>>
     {
         private readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<VillageDto>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDto>> Handle(GetVillagesByParameters request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 

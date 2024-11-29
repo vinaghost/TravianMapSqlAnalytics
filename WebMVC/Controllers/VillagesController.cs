@@ -58,7 +58,7 @@ namespace WebMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(GetVillagesParameters parameters, [FromServices] IValidator<GetVillagesParameters> validator)
+        public async Task<IActionResult> Index(VillagesParameters parameters, [FromServices] IValidator<VillagesParameters> validator)
         {
             ViewBag.IsInput = true;
 
@@ -70,7 +70,7 @@ namespace WebMVC.Controllers
                 return View(new IndexViewModel { Parameters = parameters });
             }
 
-            var villages = await _mediator.Send(new GetVillagesQuery(parameters));
+            var villages = await _mediator.Send(new GetVillagesByParameters(parameters));
 
             if (villages.Count <= 0)
             {

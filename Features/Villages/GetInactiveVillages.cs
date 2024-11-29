@@ -7,7 +7,7 @@ using Features.Villages.Shared;
 
 namespace Features.Villages
 {
-    public record GetInactiveVillagesParameters : GetVillagesParameters
+    public record GetInactiveVillagesParameters : VillagesParameters
     {
         public int InactiveDays { get; init; } = 3;
     }
