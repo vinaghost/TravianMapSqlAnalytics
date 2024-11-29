@@ -1,10 +1,7 @@
 ﻿using Features.Shared.Dtos;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using FluentValidation;
-using MediatR;
 using System.Text;
-using X.PagedList;
 
 namespace Features.Players
 {
@@ -65,7 +62,7 @@ namespace Features.Players
                     .Where(x => x.Name.StartsWith(parameters.SearchTerm));
             }
 
-            var data = await query
+            var data = query
                .Join(_dbContext.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
@@ -87,7 +84,7 @@ namespace Features.Players
                         x.VillageCount,
                         x.Population
                 ))
-                .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+                .ToPagedList(parameters.PageNumber, parameters.PageSize);
 
             return data;
         }

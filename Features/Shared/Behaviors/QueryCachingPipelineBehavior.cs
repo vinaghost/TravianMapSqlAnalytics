@@ -1,6 +1,5 @@
 ﻿using Application.Services;
 using Features.Shared.Query;
-using MediatR;
 
 namespace Features.Shared.Behaviors
 {

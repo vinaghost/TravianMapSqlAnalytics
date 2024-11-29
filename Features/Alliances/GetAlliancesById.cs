@@ -1,7 +1,5 @@
 ﻿using Features.Shared.Dtos;
 using Features.Shared.Query;
-using FluentValidation;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Alliances

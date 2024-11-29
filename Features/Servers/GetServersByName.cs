@@ -1,10 +1,7 @@
 ﻿using Features.Shared.Dtos;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using FluentValidation;
-using MediatR;
 using System.Text;
-using X.PagedList;
 
 namespace Features.Servers
 {
@@ -60,10 +57,10 @@ namespace Features.Servers
                     .Where(x => x.Url.StartsWith(parameters.SearchTerm));
             }
 
-            var data = await query
+            var data = query
                .OrderBy(x => x.Url)
                .Select(x => new ServerDto(x.Id, x.Url))
-               .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+               .ToPagedList(parameters.PageNumber, parameters.PageSize);
             return data;
         }
     }

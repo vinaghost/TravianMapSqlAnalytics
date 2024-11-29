@@ -2,10 +2,7 @@
 using Features.Shared.Handler;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using FluentValidation;
-using MediatR;
 using System.Text;
-using X.PagedList;
 
 namespace Features.Players
 {
@@ -56,12 +53,17 @@ namespace Features.Players
         public bool IsServerBased => true;
     }
 
-    public class GetPlayersQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetPlayersQuery, IPagedList<PlayerDto>>
+    public class GetPlayersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetPlayersQuery, IPagedList<PlayerDto>>
     {
+        private readonly VillageDbContext _dbContext = dbContext;
+
         public async Task<IPagedList<PlayerDto>> Handle(GetPlayersQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
-            var players = await GetPlayers(parameters)
+            var predicate = VillageDataQuery.PlayerPredicate(parameters);
+            var players = _dbContext.Players
+                .AsExpandable()
+                .Where(predicate)
                 .Join(_dbContext.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
@@ -83,7 +85,7 @@ namespace Features.Players
                         x.VillageCount,
                         x.Population
                 ))
-                .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+                .ToPagedList(parameters.PageNumber, parameters.PageSize);
             return players;
         }
     }

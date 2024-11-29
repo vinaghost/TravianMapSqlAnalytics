@@ -4,9 +4,6 @@ using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Query;
 using Features.Villages.Shared;
-using FluentValidation;
-using MediatR;
-using X.PagedList;
 
 namespace Features.Villages
 {
@@ -44,14 +41,18 @@ namespace Features.Villages
         public bool IsServerBased => true;
     }
 
-    public class GetInactiveQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetInactiveQuery, IPagedList<VillageDto>>
+    public class GetInactiveQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetInactiveQuery, IPagedList<VillageDto>>
     {
+        private readonly VillageDbContext _dbContext = dbContext;
+
         public async Task<IPagedList<VillageDto>> Handle(GetInactiveQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
             var players = GetInactivePlayers(parameters);
-            var villages = GetVillages(parameters, parameters);
+            var villages = _dbContext.Villages
+                .AsExpandable()
+                .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
 
             var data = players
                 .Join(_dbContext.Alliances,
@@ -106,15 +107,17 @@ namespace Features.Villages
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);
 
-            return await orderDtos.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+            return orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize);
         }
 
         private IQueryable<int> GetInactivePlayerIds(GetInactiveParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
-            if (IsPlayerFiltered(parameters))
+            if (VillageDataQuery.IsPlayerFiltered(parameters))
             {
-                var query = GetPlayers(parameters)
+                var query = _dbContext.Villages
+                    .AsExpandable()
+                    .Where(VillageDataQuery.VillagePredicate(parameters, parameters))
                     .Join(_dbContext.PlayersHistory
                             .Where(x => x.Date >= date),
                         x => x.Id,

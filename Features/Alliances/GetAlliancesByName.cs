@@ -1,10 +1,7 @@
 ﻿using Features.Shared.Dtos;
 using Features.Shared.Parameters;
 using Features.Shared.Query;
-using FluentValidation;
-using MediatR;
 using System.Text;
-using X.PagedList;
 
 namespace Features.Alliances
 {
@@ -56,26 +53,25 @@ namespace Features.Alliances
         public async Task<IPagedList<AllianceDto>> Handle(GetAlliancesByNameQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
-            var query = _dbContext.Alliances
-                .AsQueryable();
+
+            var predicate = PredicateBuilder.New<Alliance>(true);
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query = query
-                    .Where(x => x.Name.StartsWith(parameters.SearchTerm));
+                predicate = predicate.And(x => x.Name.StartsWith(parameters.SearchTerm));
             }
 
-            query = query
-                .Where(x => x.Players.Count > 0);
+            predicate = predicate.And(x => x.Players.Count > 0);
 
-            var data = await query
+            var data = _dbContext.Alliances
+                .Where(predicate)
                 .OrderBy(x => x.Name)
                 .Select(x => new AllianceDto(
                         x.Id,
                         string.IsNullOrWhiteSpace(x.Name) ? "No alliance" : x.Name,
                         x.PlayerCount
                 ))
-                .ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+                .ToPagedList(parameters.PageNumber, parameters.PageSize);
 
             return data;
         }

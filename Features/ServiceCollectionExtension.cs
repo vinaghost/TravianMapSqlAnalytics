@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Behaviors;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Features

@@ -1,7 +1,6 @@
 ﻿using Features.Populations.Shared;
 using Features.Shared.Dtos;
 using Features.Shared.Query;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Populations

@@ -7,7 +7,6 @@ using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Villages;
-using X.PagedList;
 
 namespace WebMVC.Controllers
 {

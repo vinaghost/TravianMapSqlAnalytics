@@ -1,15 +1,12 @@
 ﻿using Features.Shared.Enums;
 using Features.Shared.Models;
 using Features.Shared.Parameters;
-using LinqKit;
 
 namespace Features.Shared.Handler
 {
-    public abstract class VillageDataQueryHandler(VillageDbContext dbContext)
+    public static class VillageDataQuery
     {
-        protected readonly VillageDbContext _dbContext = dbContext;
-
-        protected static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
+        public static bool IsPlayerFiltered(IPlayerFilterParameters parameters)
         {
             if (parameters.Alliances is not null && parameters.Alliances.Count > 0) return true;
             if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0) return true;
@@ -19,22 +16,21 @@ namespace Features.Shared.Handler
             return false;
         }
 
-        protected IQueryable<Player> GetPlayers(IPlayerFilterParameters parameters)
+        public static ExpressionStarter<Player> PlayerPredicate(IPlayerFilterParameters parameters)
         {
-            var query = _dbContext.Players
-                .AsExpandable();
+            var predicate = PredicateBuilder.New<Player>(true);
 
             if (parameters.Players is not null && parameters.Players.Count > 0)
             {
                 if (parameters.Players.Count == 1)
                 {
-                    query = query
-                        .Where(x => x.Id == parameters.Players[0]);
+                    predicate = predicate
+                        .And(x => x.Id == parameters.Players[0]);
                 }
                 else
                 {
-                    query = query
-                        .Where(x => parameters.Players.Contains(x.Id));
+                    predicate = predicate
+                        .And(x => parameters.Players.Contains(x.Id));
                 }
             }
             else
@@ -43,13 +39,13 @@ namespace Features.Shared.Handler
                 {
                     if (parameters.ExcludePlayers.Count == 1)
                     {
-                        query = query
-                            .Where(x => x.Id != parameters.ExcludePlayers[0]);
+                        predicate = predicate
+                            .And(x => x.Id != parameters.ExcludePlayers[0]);
                     }
                     else
                     {
-                        query = query
-                            .Where(x => !parameters.ExcludePlayers.Contains(x.Id));
+                        predicate = predicate
+                            .And(x => !parameters.ExcludePlayers.Contains(x.Id));
                     }
                 }
 
@@ -57,13 +53,13 @@ namespace Features.Shared.Handler
                 {
                     if (parameters.Alliances.Count == 1)
                     {
-                        query = query
-                            .Where(x => x.AllianceId == parameters.Alliances[0]);
+                        predicate = predicate
+                            .And(x => x.AllianceId == parameters.Alliances[0]);
                     }
                     else
                     {
-                        query = query
-                            .Where(x => parameters.Alliances.Contains(x.AllianceId));
+                        predicate = predicate
+                            .And(x => parameters.Alliances.Contains(x.AllianceId));
                     }
                 }
                 else
@@ -72,13 +68,13 @@ namespace Features.Shared.Handler
                     {
                         if (parameters.ExcludeAlliances.Count == 1)
                         {
-                            query = query
-                                .Where(x => x.AllianceId != parameters.ExcludeAlliances[0]);
+                            predicate = predicate
+                                .And(x => x.AllianceId != parameters.ExcludeAlliances[0]);
                         }
                         else
                         {
-                            query = query
-                                .Where(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
+                            predicate = predicate
+                                .And(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
                         }
                     }
                 }
@@ -86,29 +82,34 @@ namespace Features.Shared.Handler
 
             if (parameters.MaxPlayerPopulation != 0)
             {
-                query = query
-                    .Where(x => x.Population >= parameters.MinPlayerPopulation)
-                    .Where(x => x.Population <= parameters.MaxPlayerPopulation);
+                predicate = predicate
+                    .And(x => x.Population >= parameters.MinPlayerPopulation)
+                    .And(x => x.Population <= parameters.MaxPlayerPopulation);
             }
-            return query;
+
+            return predicate;
         }
 
-        protected IQueryable<Village> GetVillages(IVillageFilterParameters parameters, IDistanceFilterParameters distanceParameters)
+        public static ExpressionStarter<Village> VillagePredicate(IVillageFilterParameters parameters, IDistanceFilterParameters distanceParameters)
         {
-            var query = _dbContext.Villages
-               .AsExpandable();
+            var predicate = PredicateBuilder.New<Village>(true);
+
+            if (parameters.MinVillagePopulation != 0)
+            {
+                predicate = predicate
+                    .And(x => x.Population >= parameters.MinVillagePopulation);
+            }
 
             if (parameters.MaxVillagePopulation != 0)
             {
-                query = query
-                    .Where(x => x.Population >= parameters.MinVillagePopulation)
-                    .Where(x => x.Population <= parameters.MaxVillagePopulation);
+                predicate = predicate
+                    .And(x => x.Population <= parameters.MaxVillagePopulation);
             }
 
             if (parameters.Tribe != Tribe.All)
             {
-                query = query
-                    .Where(x => x.Tribe == (int)parameters.Tribe);
+                predicate = predicate
+                    .And(x => x.Tribe == (int)parameters.Tribe);
             }
 
             switch (parameters.Capital)
@@ -117,13 +118,13 @@ namespace Features.Shared.Handler
                     break;
 
                 case Capital.OnlyCapital:
-                    query = query
-                        .Where(x => x.IsCapital);
+                    predicate = predicate
+                        .And(x => x.IsCapital);
                     break;
 
                 case Capital.OnlyVillage:
-                    query = query
-                        .Where(x => !x.IsCapital);
+                    predicate = predicate
+                        .And(x => !x.IsCapital);
                     break;
 
                 default:
@@ -132,10 +133,11 @@ namespace Features.Shared.Handler
 
             if (distanceParameters.Distance != 0)
             {
-                query = query
-                   .Where(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
+                predicate = predicate
+                    .And(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
             }
-            return query;
+
+            return predicate;
         }
     }
 }

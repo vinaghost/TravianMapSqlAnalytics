@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Enums;
-using FluentValidation;
 using System.Text;
 
 namespace Features.Shared.Parameters

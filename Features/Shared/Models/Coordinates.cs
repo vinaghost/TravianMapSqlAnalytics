@@ -1,5 +1,4 @@
-﻿using LinqKit;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 
 namespace Features.Shared.Models
 {

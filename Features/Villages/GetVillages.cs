@@ -4,8 +4,6 @@ using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Query;
 using Features.Villages.Shared;
-using MediatR;
-using X.PagedList;
 
 namespace Features.Villages
 {
@@ -18,14 +16,21 @@ namespace Features.Villages
         public bool IsServerBased => true;
     }
 
-    public class GetVillagesQueryHandler(VillageDbContext dbContext) : VillageDataQueryHandler(dbContext), IRequestHandler<GetVillagesQuery, IPagedList<VillageDto>>
+    public class GetVillagesQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesQuery, IPagedList<VillageDto>>
     {
+        private readonly VillageDbContext _dbContext = dbContext;
+
         public async Task<IPagedList<VillageDto>> Handle(GetVillagesQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
-            var players = GetPlayers(parameters);
-            var villages = GetVillages(parameters, parameters);
+            var players = _dbContext.Players
+                .AsExpandable()
+                .Where(VillageDataQuery.PlayerPredicate(parameters));
+
+            var villages = _dbContext.Villages
+                .AsExpandable()
+                .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
 
             var data = players
                .Join(_dbContext.Alliances,
@@ -80,7 +85,7 @@ namespace Features.Villages
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);
 
-            return await orderDtos.ToPagedListAsync(parameters.PageNumber, parameters.PageSize);
+            return orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize);
         }
     }
 }

@@ -2,9 +2,7 @@
 using Features.Shared.Dtos;
 using Features.Shared.Query;
 using Features.Villages;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
-using X.PagedList;
 
 namespace Features.Populations
 {

@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Query;
-using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Servers
