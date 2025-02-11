@@ -2,14 +2,10 @@ using Application.Extensions;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Features;
-using WebAPI.Extensions;
-using WebAPI.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.BindConfiguration();
-
-builder.Services.AddMiddleware();
 
 builder.Services
     .AddCore()
@@ -20,12 +16,9 @@ builder.Services
     .SwaggerDocument();
 
 var app = builder.Build();
-app.UseMiddleware<ServerMiddleware>();
+
 app
-    .UseFastEndpoints(c =>
-    {
-        c.Endpoints.RoutePrefix = "servers/{ServerUrl}";
-    })
+    .UseFastEndpoints()
     .UseSwaggerGen();
 
 await app.RunAsync();

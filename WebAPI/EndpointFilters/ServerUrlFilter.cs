@@ -1,20 +1,18 @@
 ﻿using Application.Services;
-using FastEndpoints;
 using Features.Servers;
-using FluentValidation.Results;
 using MediatR;
 using WebAPI.Contracts.Requests;
 
-namespace WebAPI.Middlewares
+namespace WebAPI.EndpointFilters
 {
-    public class ServerMiddleware(DataService dataService, IMediator mediator) : IMiddleware
+    public class ServerUrlFilter(DataService dataService, IMediator mediator) : IEndpointFilter
     {
         private readonly DataService _dataService = dataService;
         private readonly IMediator _mediator = mediator;
 
-        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
+        public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
         {
-            var value = context.GetRouteData().Values;
+            var value = context.HttpContext.GetRouteData().Values;
             if (value is not null && value.ContainsKey(nameof(IServerUrlRequest.ServerUrl)))
             {
                 var server = value[nameof(IServerUrlRequest.ServerUrl)];
@@ -25,14 +23,13 @@ namespace WebAPI.Middlewares
                     var isValid = await _mediator.Send(new ValidateServerUrlQuery(serverUrl));
                     if (!isValid)
                     {
-                        await context.Response.SendErrorsAsync([new ValidationFailure("Server", $"Server {serverUrl} is not available in database")]);
-                        return;
+                        return Results.Problem($"Server {serverUrl} is not available in database", statusCode: 404);
                     }
                     _dataService.Server = serverUrl;
                 }
             }
 
-            await next(context);
+            return await next(context);
         }
     }
 }
