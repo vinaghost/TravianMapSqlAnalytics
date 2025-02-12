@@ -28,4 +28,8 @@
     <ProjectReference Include="..\Features\Features.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Contracts\Responses\" />
+  </ItemGroup>
+
 </Project>

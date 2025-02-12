@@ -4,8 +4,8 @@ using Features.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
+using WebAPI.Contracts.Responses;
 using WebAPI.Groups;
-using X.PagedList;
 
 namespace WebAPI.Endpoints
 {
@@ -20,7 +20,7 @@ namespace WebAPI.Endpoints
         }
     }
 
-    public class AlliancesEndpoint(IMediator mediator) : Endpoint<AlliancesRequest, Results<Ok<IPagedList<AllianceDto>>, NotFound>>
+    public class AlliancesEndpoint(IMediator mediator) : Endpoint<AlliancesRequest, Results<Ok<PagedListResponse<AllianceDto>>, NotFound>>
     {
         private readonly IMediator _mediator = mediator;
 
@@ -31,10 +31,10 @@ namespace WebAPI.Endpoints
             Group<Alliance>();
         }
 
-        public override async Task<Results<Ok<IPagedList<AllianceDto>>, NotFound>> ExecuteAsync(AlliancesRequest rq, CancellationToken ct)
+        public override async Task<Results<Ok<PagedListResponse<AllianceDto>>, NotFound>> ExecuteAsync(AlliancesRequest rq, CancellationToken ct)
         {
             var result = await _mediator.Send(new GetAlliancesByNameQuery(rq), ct);
-            return TypedResults.Ok(result);
+            return TypedResults.Ok(new PagedListResponse<AllianceDto>(result));
         }
     }
 }
