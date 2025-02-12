@@ -1,5 +1,4 @@
-﻿using Features.Shared.Dtos;
-using Features.Shared.Enums;
+﻿using Features.Shared.Enums;
 using Features.Shared.Handler;
 using Features.Shared.Models;
 using Features.Shared.Query;
@@ -32,7 +31,7 @@ namespace Features.Villages
         }
     }
 
-    public record GetInactiveVillagesQuery(GetInactiveVillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
+    public record GetInactiveVillagesQuery(GetInactiveVillagesParameters Parameters) : ICachedQuery<IPagedList<Features.Shared.Dtos.VillageDto>>
     {
         public string CacheKey => $"{nameof(GetInactiveVillagesQuery)}_{Parameters.Key()}";
 
@@ -41,11 +40,11 @@ namespace Features.Villages
         public bool IsServerBased => true;
     }
 
-    public class GetInactiveVillagesQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetInactiveVillagesQuery, IPagedList<VillageDto>>
+    public class GetInactiveVillagesQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetInactiveVillagesQuery, IPagedList<Features.Shared.Dtos.VillageDto>>
     {
         private readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<VillageDto>> Handle(GetInactiveVillagesQuery request, CancellationToken cancellationToken)
+        public async Task<IPagedList<Features.Shared.Dtos.VillageDto>> Handle(GetInactiveVillagesQuery request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -90,7 +89,7 @@ namespace Features.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDto(x.AllianceId,
+                .Select(x => new Features.Shared.Dtos.VillageDto(x.AllianceId,
                                             x.AllianceName,
                                             x.PlayerId,
                                             x.PlayerName,

@@ -7,7 +7,7 @@ namespace WebMVC.Models.ViewModel.Villages
     public class InactiveViewModel
     {
         public GetInactiveVillagesParameters Parameters { get; init; } = new();
-        public IPagedList<VillageDto>? Villages { get; init; }
+        public IPagedList<Features.Shared.Dtos.VillageDto>? Villages { get; init; }
         public Dictionary<int, List<PopulationDto>> Population { get; init; } = [];
     }
 }
