@@ -31,11 +31,11 @@ namespace Features.Populations
 
             if (ids.Count == 1)
             {
-                predicate = predicate.And(x => x.Id == ids[0]);
+                predicate = predicate.And(x => x.PlayerId == ids[0]);
             }
             else
             {
-                predicate = predicate.And(x => ids.Contains(x.Id));
+                predicate = predicate.And(x => ids.Contains(x.PlayerId));
             }
 
             var date = DateTime.Today.AddDays(-request.Parameters.Days);
