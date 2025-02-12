@@ -2,7 +2,7 @@
 using Features.Shared.Query;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.Villages
+namespace Features.Villages.ByPlayerId
 {
     public record VillageDto(int MapId,
                              int VillageId,

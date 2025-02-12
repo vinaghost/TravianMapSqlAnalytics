@@ -23,7 +23,7 @@ namespace Features.Villages
     {
         public GetInactiveVillagesParametersValidator()
         {
-            Include(new GetVillagesParametersValidator());
+            Include(new VillagesParametersValidator());
 
             RuleFor(x => x.InactiveDays)
                 .NotEmpty()

@@ -58,9 +58,9 @@ namespace Features.Villages.Shared
         }
     }
 
-    public class GetVillagesParametersValidator : AbstractValidator<VillagesParameters>
+    public class VillagesParametersValidator : AbstractValidator<VillagesParameters>
     {
-        public GetVillagesParametersValidator()
+        public VillagesParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new DistanceFilterParametersValidator());

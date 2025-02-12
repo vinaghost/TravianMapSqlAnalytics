@@ -9,31 +9,31 @@ using WebAPI.Groups;
 
 namespace WebAPI.Endpoints.Populations
 {
-    public record VillagesRequest(string ServerUrl) : PopulationParameters, IServerUrlRequest;
+    public record PlayersRequest(string ServerUrl) : PopulationParameters, IServerUrlRequest;
 
-    public class VillagesRequestValidator : Validator<VillagesRequest>
+    public class PlayersRequestValidator : Validator<PlayersRequest>
     {
-        public VillagesRequestValidator()
+        public PlayersRequestValidator()
         {
             Include(new ServerUrlRequestValidator());
             Include(new PopulationParametersValidator());
         }
     }
 
-    public class VillagesEndpoint(IMediator mediator) : Endpoint<VillagesRequest, Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>>
+    public class PlayersEndpoint(IMediator mediator) : Endpoint<PlayersRequest, Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>>
     {
         private readonly IMediator _mediator = mediator;
 
         public override void Configure()
         {
-            Get("villages");
+            Get("players");
             AllowAnonymous();
             Group<Population>();
         }
 
-        public override async Task<Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>> ExecuteAsync(VillagesRequest rq, CancellationToken ct)
+        public override async Task<Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>> ExecuteAsync(PlayersRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(rq), ct);
+            var result = await _mediator.Send(new GetPlayersPopulationHistoryByParametersQuery(rq), ct);
             return TypedResults.Ok(result);
         }
     }

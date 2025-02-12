@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Features.Villages;
+using Features.Villages.ByPlayerId;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;

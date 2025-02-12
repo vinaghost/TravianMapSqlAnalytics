@@ -4,9 +4,22 @@ using Features.Shared.Models;
 using Features.Shared.Query;
 using Features.Villages.Shared;
 
-namespace Features.Villages
+namespace Features.Villages.ByDistance
 {
-    public record GetVillagesByParameters(VillagesParameters Parameters) : ICachedQuery<IPagedList<Features.Shared.Dtos.VillageDto>>
+    public record VillageDto(int AllianceId,
+                             string AllianceName,
+                             int PlayerId,
+                             string PlayerName,
+                             int VillageId,
+                             int MapId,
+                             string VillageName,
+                             int X,
+                             int Y,
+                             bool IsCapital,
+                             Tribe Tribe,
+                             int Population,
+                             double Distance);
+    public record GetVillagesByParameters(VillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
     {
         public string CacheKey => $"{nameof(GetVillagesByParameters)}_{Parameters.Key()}";
 
@@ -15,11 +28,11 @@ namespace Features.Villages
         public bool IsServerBased => true;
     }
 
-    public class GetVillagesByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesByParameters, IPagedList<Features.Shared.Dtos.VillageDto>>
+    public class GetVillagesByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesByParameters, IPagedList<VillageDto>>
     {
         private readonly VillageDbContext _dbContext = dbContext;
 
-        public async Task<IPagedList<Features.Shared.Dtos.VillageDto>> Handle(GetVillagesByParameters request, CancellationToken cancellationToken)
+        public async Task<IPagedList<VillageDto>> Handle(GetVillagesByParameters request, CancellationToken cancellationToken)
         {
             var parameters = request.Parameters;
 
@@ -67,7 +80,7 @@ namespace Features.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new Features.Shared.Dtos.VillageDto(x.AllianceId,
+                .Select(x => new VillageDto(x.AllianceId,
                                             x.AllianceName,
                                             x.PlayerId,
                                             x.PlayerName,
