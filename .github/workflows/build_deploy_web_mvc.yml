@@ -7,7 +7,7 @@
 # REGISTRY_USERNAME
 # REGISTRY_PASSWORD
 
-name: Build and push Web MVC image
+name: Build and deploy Web MVC
 on:
   workflow_dispatch:
 jobs:
