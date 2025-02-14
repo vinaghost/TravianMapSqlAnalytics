@@ -12,6 +12,9 @@ RUN dotnet restore WebMVC/WebMVC.csproj --locked-mode
 
 # copy source code, add more if required other project
 COPY WebMVC/ WebMVC/
+COPY Application/ Application/
+COPY Features/ Features/
+COPY Infrastructure/ Infrastructure/
 RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
