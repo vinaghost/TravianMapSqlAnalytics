@@ -30,6 +30,7 @@ jobs:
       - name: Build and push update image
         uses: docker/build-push-action@v6
         with:
+          platforms: linux/arm64
           file: ./WebMVC/Dockerfile
           context: .
           push: true
