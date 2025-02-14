@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS prepare-restore-files
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS prepare-restore-files
 ENV PATH="${PATH}:/root/.dotnet/tools"
 RUN dotnet tool install --global --no-cache dotnet-subset --version 0.3.2
 WORKDIR /source
@@ -15,7 +15,7 @@ COPY WebMVC/ WebMVC/
 COPY Application/ Application/
 COPY Features/ Features/
 COPY Infrastructure/ Infrastructure/
-RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore
+RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore -a $TARGETARCH
 
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
