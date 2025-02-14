@@ -5,7 +5,7 @@ WORKDIR /source
 COPY . .
 RUN dotnet subset restore WebMVC/WebMVC.csproj --root-directory /source --output restore_subset/
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
 WORKDIR /src
 COPY --from=prepare-restore-files /source/restore_subset .
 RUN dotnet restore WebMVC/WebMVC.csproj --locked-mode
@@ -17,7 +17,7 @@ COPY Features/ Features/
 COPY Infrastructure/ Infrastructure/
 RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore -a $TARGETARCH
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 COPY --from=publish /app/publish .
 RUN ["chmod", "+x", "WebMVC"]
