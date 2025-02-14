@@ -15,7 +15,7 @@ COPY WebMVC/ WebMVC/
 COPY Application/ Application/
 COPY Features/ Features/
 COPY Infrastructure/ Infrastructure/
-RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore -a $TARGETARCH
+RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
