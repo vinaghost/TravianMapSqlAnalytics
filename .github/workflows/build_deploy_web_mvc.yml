@@ -33,7 +33,7 @@ jobs:
           file: ./WebMVC/Dockerfile
           context: .
           push: true
-          tags: ${{ secrets.REGISTRY_HOST }}/WebMVC:latest
+          tags: ${{ secrets.REGISTRY_HOST }}/webmvc:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           
