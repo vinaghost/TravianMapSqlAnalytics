@@ -255,6 +255,8 @@
           "Pomelo.EntityFrameworkCore.MySql": "[8.0.2, )"
         }
       }
-    }
+    },
+    "net8.0/linux-arm64": {},
+    "net8.0/win-x64": {}
   }
 }

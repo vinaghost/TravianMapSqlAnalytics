@@ -124,6 +124,8 @@
           "Microsoft.Extensions.Logging.Abstractions": "7.0.1"
         }
       }
-    }
+    },
+    "net8.0/linux-arm64": {},
+    "net8.0/win-x64": {}
   }
 }
