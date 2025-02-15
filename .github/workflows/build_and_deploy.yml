@@ -75,7 +75,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: [webmvc, webapi]
-    if: !failure() && !cancelled()
+    if: ${{ !failure() && !cancelled() }}
     steps:  
       - name: Execute update command on Server
         uses: appleboy/ssh-action@v1.2.0
