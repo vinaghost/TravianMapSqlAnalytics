@@ -10,9 +10,15 @@
 name: Build and deploy Web MVC
 on:
   workflow_dispatch:
+    inputs:
+      webmvc:
+        type: boolean
+      webapi:
+        type: boolean
 jobs:
-  release:
+  webmvc:
     runs-on: ubuntu-latest
+    if: github.event.inputs.webmvc == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,7 +43,39 @@ jobs:
           tags: ${{ secrets.REGISTRY_HOST }}/webmvc:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          
+
+  webapi:
+    runs-on: ubuntu-latest
+    if: github.event.inputs.webapi == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+     
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ secrets.REGISTRY_HOST }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      - name: Build and push update image
+        uses: docker/build-push-action@v6
+        with:
+          platforms: linux/arm64
+          file: ./WebApi/Dockerfile
+          context: .
+          push: true
+          tags: ${{ secrets.REGISTRY_HOST }}/webapi:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+ 
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [webmvc, webapi]
+    steps:  
       - name: Execute update command on Server
         uses: appleboy/ssh-action@v1.2.0
         with:
