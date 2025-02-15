@@ -65,7 +65,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           platforms: linux/arm64
-          file: ./WebApi/Dockerfile
+          file: ./WebAPI/Dockerfile
           context: .
           push: true
           tags: ${{ secrets.REGISTRY_HOST }}/webapi:latest
