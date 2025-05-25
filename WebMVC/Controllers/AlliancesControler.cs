@@ -1,30 +1,34 @@
-﻿using Features.Alliances;
-using Features.Players;
-using Features.Populations;
-using Features.Populations.Shared;
+﻿using Features.Queries.Alliances;
+using Features.Queries.Players;
+using Features.Queries.Populations;
+using Features.Queries.Populations.Shared;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Alliances;
 
 namespace WebMVC.Controllers
 {
-    public class AlliancesController(IMediator mediator) : Controller
+    public class AlliancesController : Controller
     {
-        private readonly IMediator _mediator = mediator;
-
-        public async Task<IResult> Names(GetAlliancesByNameParameters parameters, [FromServices] IValidator<GetAlliancesByNameParameters> validator)
+        public async Task<IResult> Names(
+            GetAlliancesByNameParameters parameters,
+            [FromServices] GetAlliancesByNameQuery.Handler getAlliancesByNameQuery,
+            [FromServices] IValidator<GetAlliancesByNameParameters> validator)
         {
             var result = validator.Validate(parameters);
             if (!result.IsValid)
             {
                 return Results.ValidationProblem(result.ToDictionary());
             }
-            var alliances = await _mediator.Send(new GetAlliancesByNameQuery(parameters));
+            var alliances = await getAlliancesByNameQuery.HandleAsync(new(parameters));
             return Results.Json(new { results = alliances.Select(x => new { Id = x.AllianceId, Text = x.AllianceName }), pagination = new { more = alliances.PageNumber * alliances.PageSize < alliances.TotalItemCount } });
         }
 
-        public async Task<IActionResult> Index(int allianceId = -1)
+        public async Task<IActionResult> Index(
+            [FromServices] GetAllianceByIdQuery.Handler getAllianceByIdQuery,
+            [FromServices] GetPlayersByParametersQuery.Handler getPlayersByParametersQuery,
+            [FromServices] GetPlayersPopulationHistoryByParametersQuery.Handler getPlayersPopulationHistoryByParametersQuery,
+            int allianceId = -1)
         {
             if (allianceId == -1)
             {
@@ -32,7 +36,7 @@ namespace WebMVC.Controllers
                 return View();
             }
             ViewBag.IsInput = true;
-            var alliance = await _mediator.Send(new GetAllianceByIdQuery(allianceId));
+            var alliance = await getAllianceByIdQuery.HandleAsync(new(allianceId));
             if (alliance is null) return View(new IndexViewModel { Alliance = alliance });
 
             var playerParameters = new PlayersParameters()
@@ -41,7 +45,7 @@ namespace WebMVC.Controllers
                 PageSize = 60,
                 PageNumber = 1
             };
-            var players = await _mediator.Send(new GetPlayersByParametersQuery(playerParameters));
+            var players = await getPlayersByParametersQuery.HandleAsync(new(playerParameters));
 
             if (players.Count <= 0)
             {
@@ -53,8 +57,8 @@ namespace WebMVC.Controllers
                 Ids = players.Select(p => p.PlayerId).ToList(),
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetPlayersPopulationHistoryByParametersQuery(populationParameters));
-            return View(new IndexViewModel { Alliance = alliance, Players = [.. players], Population = population });
+            var population = await getPlayersPopulationHistoryByParametersQuery.HandleAsync(new(populationParameters));
+            return View(new IndexViewModel { Alliance = alliance, Players = players.ToList(), Population = population });
         }
     }
 }

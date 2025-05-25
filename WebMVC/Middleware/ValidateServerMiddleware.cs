@@ -1,28 +1,35 @@
-﻿using Features.Servers;
+﻿using Features.Queries.Servers;
 using Infrastructure.Services;
-using MediatR;
 
 namespace WebMVC.Middleware
 {
-    public class ValidateServerMiddleware(IMediator mediator, IServerCache serverCache) : IMiddleware
+    public class ValidateServerMiddleware : IMiddleware
     {
-        private readonly IMediator _mediator = mediator;
-        private readonly IServerCache _serverCache = serverCache;
+        private readonly IServerCache _serverCache;
+        private readonly GetMostPlayerServerQuery.Handler _getMostPlayerServerQuery;
+        private readonly IsValidServerUrlQuery.Handler _isValidServerUrlQuery;
+
+        public ValidateServerMiddleware(IServerCache serverCache, GetMostPlayerServerQuery.Handler getMostPlayerServerQuery, IsValidServerUrlQuery.Handler isValidServerUrlQuery)
+        {
+            _serverCache = serverCache;
+            _getMostPlayerServerQuery = getMostPlayerServerQuery;
+            _isValidServerUrlQuery = isValidServerUrlQuery;
+        }
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             var server = context.Request.Cookies["TMSA_server"];
             if (string.IsNullOrEmpty(server))
             {
-                server = await _mediator.Send(new GetMostPlayerServerQuery());
+                server = await _getMostPlayerServerQuery.HandleAsync(new());
                 SetCookie(context, server);
             }
             else
             {
-                var valid = await _mediator.Send(new IsValidServerUrlQuery(server));
+                var valid = await _isValidServerUrlQuery.HandleAsync(new(server));
                 if (!valid)
                 {
-                    server = await _mediator.Send(new GetMostPlayerServerQuery());
+                    server = await _getMostPlayerServerQuery.HandleAsync(new());
                     SetCookie(context, server);
                 }
             }

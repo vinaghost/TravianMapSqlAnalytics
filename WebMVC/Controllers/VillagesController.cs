@@ -1,20 +1,17 @@
-﻿using Features.Populations.Shared;
-using Features.Queries.Populations;
+﻿using Features.Queries.Populations;
+using Features.Queries.Populations.Shared;
+using Features.Queries.Villages;
+using Features.Queries.Villages.ByDistance;
 using Features.Queries.Villages.Shared;
-using Features.Villages;
-using Features.Villages.ByDistance;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Extensions;
 using WebMVC.Models.ViewModel.Villages;
 
 namespace WebMVC.Controllers
 {
-    public class VillagesController(IMediator mediator) : Controller
+    public class VillagesController : Controller
     {
-        private readonly IMediator _mediator = mediator;
-
         [HttpGet]
         public IActionResult Inactives()
         {
@@ -23,7 +20,11 @@ namespace WebMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Inactives(GetInactiveVillagesParameters parameters, [FromServices] IValidator<GetInactiveVillagesParameters> validator)
+        public async Task<IActionResult> Inactives(
+            GetInactiveVillagesParameters parameters,
+            [FromServices] GetInactiveVillagesQuery.Handler getInactiveVillagesQuery,
+            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            [FromServices] IValidator<GetInactiveVillagesParameters> validator)
         {
             ViewBag.IsInput = true;
 
@@ -35,7 +36,7 @@ namespace WebMVC.Controllers
                 return View(new InactiveViewModel { Parameters = parameters });
             }
 
-            var villages = await _mediator.Send(new GetInactiveVillagesQuery(parameters));
+            var villages = await getInactiveVillagesQuery.HandleAsync(new(parameters));
 
             if (villages.Count <= 0)
             {
@@ -47,7 +48,7 @@ namespace WebMVC.Controllers
                 Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
+            var population = await getVillagesPopulationHistoryByParametersQuery.HandleAsync(new(populationParameters));
             return View(new InactiveViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
 
@@ -59,7 +60,11 @@ namespace WebMVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index(VillagesParameters parameters, [FromServices] IValidator<VillagesParameters> validator)
+        public async Task<IActionResult> Index(
+            VillagesParameters parameters,
+            [FromServices] GetVillagesByParametersQuery.Handler getVillagesByParametersQuery,
+            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            [FromServices] IValidator<VillagesParameters> validator)
         {
             ViewBag.IsInput = true;
 
@@ -70,8 +75,7 @@ namespace WebMVC.Controllers
             {
                 return View(new IndexViewModel { Parameters = parameters });
             }
-
-            var villages = await _mediator.Send(new GetVillagesByParameters(parameters));
+            var villages = await getVillagesByParametersQuery.HandleAsync(new(parameters));
 
             if (villages.Count <= 0)
             {
@@ -83,7 +87,7 @@ namespace WebMVC.Controllers
                 Ids = [.. villages.Select(p => p.VillageId)],
                 Days = 14,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
+            var population = await getVillagesPopulationHistoryByParametersQuery.HandleAsync(new(populationParameters));
             return View(new IndexViewModel { Parameters = parameters, Villages = villages, Population = population });
         }
     }

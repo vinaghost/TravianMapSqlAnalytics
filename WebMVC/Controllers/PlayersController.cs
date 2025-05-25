@@ -1,20 +1,20 @@
-﻿using Features.Players;
-using Features.Populations.Shared;
+﻿using Features.Queries.Players;
 using Features.Queries.Populations;
-using Features.Villages.ByDistance;
-using Features.Villages.Shared;
+using Features.Queries.Populations.Shared;
+using Features.Queries.Villages.ByDistance;
+using Features.Queries.Villages.Shared;
 using FluentValidation;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Players;
 
 namespace WebMVC.Controllers
 {
-    public class PlayersController(IMediator mediator) : Controller
+    public class PlayersController : Controller
     {
-        private readonly IMediator _mediator = mediator;
-
-        public async Task<IResult> Names(GetPlayersByNameParameters parameters, [FromServices] IValidator<GetPlayersByNameParameters> validator)
+        public async Task<IResult> Names(
+            GetPlayersByNameParameters parameters,
+            [FromServices] GetPlayersByNameQuery.Handler getPlayersByNameQuery,
+            [FromServices] IValidator<GetPlayersByNameParameters> validator)
         {
             var result = validator.Validate(parameters);
             if (!result.IsValid)
@@ -22,11 +22,16 @@ namespace WebMVC.Controllers
                 return Results.ValidationProblem(result.ToDictionary());
             }
 
-            var players = await _mediator.Send(new GetPlayersByNameQuery(parameters));
+            var players = await getPlayersByNameQuery.HandleAsync(new(parameters));
             return Results.Json(new { results = players.Select(x => new { Id = x.PlayerId, Text = x.PlayerName }), pagination = new { more = players.PageNumber * players.PageSize < players.TotalItemCount } });
         }
 
-        public async Task<IActionResult> Index(int playerId = -1)
+        public async Task<IActionResult> Index(
+            [FromServices] GetPlayerByIdQuery.Handler getPlayerByIdQuery,
+            [FromServices] GetVillagesByParametersQuery.Handler getVillagesByParametersQuery,
+            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            int playerId = -1
+            )
         {
             if (playerId == -1)
             {
@@ -35,7 +40,7 @@ namespace WebMVC.Controllers
             }
 
             ViewBag.IsInput = true;
-            var player = await _mediator.Send(new GetPlayerByIdQuery(playerId));
+            var player = await getPlayerByIdQuery.HandleAsync(new(playerId));
             if (player is null) return View();
 
             var villageParameters = new VillagesParameters()
@@ -44,7 +49,7 @@ namespace WebMVC.Controllers
                 PageSize = 60,
                 PageNumber = 1
             };
-            var villages = await _mediator.Send(new GetVillagesByParameters(villageParameters));
+            var villages = await getVillagesByParametersQuery.HandleAsync(new(villageParameters));
 
             if (villages.Count <= 0)
             {
@@ -56,7 +61,7 @@ namespace WebMVC.Controllers
                 Ids = villages.Select(p => p.VillageId).ToList(),
                 Days = 7,
             };
-            var population = await _mediator.Send(new GetVillagesPopulationHistoryByParametersQuery(populationParameters));
+            var population = await getVillagesPopulationHistoryByParametersQuery.HandleAsync(new(populationParameters));
             return View(new IndexViewModel { Player = player, Villages = [.. villages], Population = population });
         }
     }

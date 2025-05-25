@@ -1,18 +1,22 @@
-﻿using Features.Alliances;
+﻿using Features.Queries.Alliances;
 using Features.Shared.Parameters;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.ViewComponents
 {
-    public class PlayerFilterParameters(IMediator mediator) : ParametersViewComponent<IPlayerFilterParameters>
+    public class PlayerFilterParameters : ParametersViewComponent<IPlayerFilterParameters>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetAlliancesByIdQuery.Handler _getAlliancesByIdQuery;
+
+        public PlayerFilterParameters(GetAlliancesByIdQuery.Handler getAlliancesByIdQuery)
+        {
+            _getAlliancesByIdQuery = getAlliancesByIdQuery;
+        }
 
         public override async Task<IViewComponentResult> InvokeAsync(IPlayerFilterParameters parameter)
         {
-            ViewData["Alliances"] = await _mediator.Send(new GetAlliancesByIdQuery(new GetAlliancesByIdParameters(parameter.Alliances ?? [])));
-            ViewData["ExcludeAlliances"] = await _mediator.Send(new GetAlliancesByIdQuery(new GetAlliancesByIdParameters(parameter.Alliances ?? [])));
+            ViewData["Alliances"] = await _getAlliancesByIdQuery.HandleAsync(new(new GetAlliancesByIdParameters(parameter.Alliances ?? [])));
+            ViewData["ExcludeAlliances"] = await _getAlliancesByIdQuery.HandleAsync(new(new GetAlliancesByIdParameters(parameter.ExcludeAlliances ?? [])));
             return View(parameter);
         }
     }

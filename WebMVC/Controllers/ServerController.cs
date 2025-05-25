@@ -1,18 +1,24 @@
-﻿using Features.Servers;
+﻿using Features.Queries.Servers;
 using Infrastructure.Services;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers
 {
-    public class ServersController(IMediator mediator, IServerCache serverCache) : Controller
+    public class ServersController : Controller
     {
-        private readonly IMediator _mediator = mediator;
-        private readonly IServerCache _serverCache = serverCache;
+        private readonly IServerCache _serverCache;
 
-        public async Task<IActionResult> Change(string server)
+        public ServersController(IServerCache serverCache)
         {
-            var isValid = await _mediator.Send(new IsValidServerUrlQuery(server));
+            _serverCache = serverCache;
+        }
+
+        public async Task<IActionResult> Change(
+            string server,
+            [FromServices] IsValidServerUrlQuery.Handler isValidServerUrlQuery
+            )
+        {
+            var isValid = await isValidServerUrlQuery.HandleAsync(new(server));
             if (isValid)
             {
                 _serverCache.Server = server;
@@ -29,9 +35,12 @@ namespace WebMVC.Controllers
             return NotFound();
         }
 
-        public async Task<IActionResult> Index(GetServersByNameParameters parameters)
+        public async Task<IActionResult> Index(
+            [FromServices] GetServersByNameQuery.Handler getServersByNameQuery,
+            GetServersByNameParameters parameters
+        )
         {
-            var servers = await _mediator.Send(new GetServersByNameQuery(parameters));
+            var servers = await getServersByNameQuery.HandleAsync(new(parameters));
             return Json(new { results = servers.Select(x => new { Id = x.Url, Text = x.Url }), pagination = new { more = servers.PageNumber * servers.PageSize < servers.TotalItemCount } });
         }
     }

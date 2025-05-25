@@ -1,16 +1,15 @@
-﻿@using Features.Servers
+﻿@using Features.Queries.Servers
 @using Infrastructure.Services
 
-@inject IMediator mediator
 @inject IServerCache serverCache
-
+@inject GetServerCountQuery.Handler getServerCountQuery
 @{
     ViewData["Title"] = "Home";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p> We have @await mediator.Send(new GetServerCountQuery()) servers in our database</p>
+    <p> We have @await getServerCountQuery.HandleAsync(new ()) servers in our database</p>
     @await Html.PartialAsync("_ServerPickerPartial")
 
 </div>
