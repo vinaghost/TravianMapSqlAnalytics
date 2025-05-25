@@ -1,8 +1,9 @@
-﻿@inject DataService dataService
+﻿@using Infrastructure.Services
+@inject IServerCache serverCache
 
 @{
     const string expression = "server-select";
-    var server = dataService.Server;
+    var server = serverCache.Server;
     var servers = new List<SelectListItem>()
     {
         new SelectListItem(server, server, true),

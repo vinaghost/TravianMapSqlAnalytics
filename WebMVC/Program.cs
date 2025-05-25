@@ -1,5 +1,5 @@
-using Application.Extensions;
 using Features;
+using Infrastructure;
 using Microsoft.AspNetCore.HttpOverrides;
 using WebMVC.Middleware;
 
@@ -11,12 +11,11 @@ namespace WebMVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services
-                .AddControllersWithViews();
-            AddService(builder.Services);
+            builder.ConfigureInfrastructure();
+            builder.ConfigureFeatures();
 
-            builder.BindConfiguration();
+            builder.Services.AddControllersWithViews();
+            builder.Services.AddScoped<ValidateServerMiddleware>();
 
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
@@ -45,18 +44,11 @@ namespace WebMVC
             app.Run();
         }
 
-        private static void AddService(IServiceCollection services)
+        private static void UseMiddleware(IApplicationBuilder builder)
         {
-            services.AddCore();
-            services.AddFeatures();
-            services.AddScoped<ValidateServerMiddleware>();
-        }
+            builder.UseMiddleware<ValidateServerMiddleware>();
 
-        private static void UseMiddleware(IApplicationBuilder app)
-        {
-            app.UseMiddleware<ValidateServerMiddleware>();
-
-            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            builder.UseForwardedHeaders(new ForwardedHeadersOptions
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
             });

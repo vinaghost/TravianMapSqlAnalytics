@@ -4,9 +4,9 @@ using Features.Villages;
 using Features.Villages.ByDistance;
 using Features.Villages.Shared;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using WebMVC.Extensions;
 using WebMVC.Models.ViewModel.Villages;
 
 namespace WebMVC.Controllers

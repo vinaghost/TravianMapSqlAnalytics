@@ -1,12 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace Infrastructure.Entities
+﻿namespace Infrastructure.Entities
 {
-    [Index(nameof(Name))]
     public class Player
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         public int AllianceId { get; set; }

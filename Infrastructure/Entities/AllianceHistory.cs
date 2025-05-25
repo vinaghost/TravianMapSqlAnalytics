@@ -1,9 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Entities
+﻿namespace Infrastructure.Entities
 {
-    [Index(nameof(AllianceId), nameof(Date))]
-    [Index(nameof(AllianceId), nameof(ChangePlayerCount))]
     public class AllianceHistory
     {
         public int Id { get; set; }

@@ -1,12 +1,13 @@
 ﻿using Features.Servers;
+using Infrastructure.Services;
 using MediatR;
 
 namespace WebMVC.Middleware
 {
-    public class ValidateServerMiddleware(IMediator mediator, DataService dataService) : IMiddleware
+    public class ValidateServerMiddleware(IMediator mediator, IServerCache serverCache) : IMiddleware
     {
         private readonly IMediator _mediator = mediator;
-        private readonly DataService _dataService = dataService;
+        private readonly IServerCache _serverCache = serverCache;
 
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
@@ -26,7 +27,7 @@ namespace WebMVC.Middleware
                 }
             }
 
-            _dataService.Server = server;
+            _serverCache.Server = server;
 
             await next(context);
         }

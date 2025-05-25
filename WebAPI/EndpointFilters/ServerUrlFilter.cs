@@ -1,13 +1,13 @@
-﻿using Application.Services;
-using Features.Servers;
+﻿using Features.Servers;
+using Infrastructure.Services;
 using MediatR;
 using WebAPI.Contracts.Requests;
 
 namespace WebAPI.EndpointFilters
 {
-    public class ServerUrlFilter(DataService dataService, IMediator mediator) : IEndpointFilter
+    public class ServerUrlFilter(IServerCache serverCache, IMediator mediator) : IEndpointFilter
     {
-        private readonly DataService _dataService = dataService;
+        private readonly IServerCache _serverCache = serverCache;
         private readonly IMediator _mediator = mediator;
 
         public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
@@ -25,7 +25,7 @@ namespace WebAPI.EndpointFilters
                     {
                         return Results.Problem($"Server {serverUrl} is not available in database", statusCode: 404);
                     }
-                    _dataService.Server = serverUrl;
+                    _serverCache.Server = serverUrl;
                 }
             }
 

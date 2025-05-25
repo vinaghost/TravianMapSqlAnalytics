@@ -1,15 +1,12 @@
-using Application.Extensions;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using Features;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.BindConfiguration();
-
-builder.Services
-    .AddCore()
-    .AddFeatures();
+builder.ConfigureInfrastructure();
+builder.ConfigureFeatures();
 
 builder.Services
     .AddFastEndpoints()

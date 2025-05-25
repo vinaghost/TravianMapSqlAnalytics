@@ -1,7 +1,8 @@
 ﻿@using Features.Servers
+@using Infrastructure.Services
 
 @inject IMediator mediator
-@inject DataService dataService
+@inject IServerCache serverCache
 
 @{
     ViewData["Title"] = "Home";

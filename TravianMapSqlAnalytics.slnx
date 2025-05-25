@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="Features/Features.csproj" />
+  <Project Path="Infrastructure/Infrastructure.csproj" />
+  <Project Path="WebAPI/WebAPI.csproj" />
+  <Project Path="WebMVC/WebMVC.csproj" />
+</Solution>

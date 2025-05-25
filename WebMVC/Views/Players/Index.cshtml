@@ -1,6 +1,7 @@
 ﻿@using Features.Players
+@using Infrastructure.Services
 @using WebMVC.Models.ViewModel.Players
-@inject DataService dataService
+@inject IServerCache serverCache
 @inject IMediator mediator
 
 @model IndexViewModel
@@ -55,7 +56,7 @@ else
                     </div>
                     <div class="col">
                         <a 
-                            href="https://@dataService.Server/profile/@Model.Player.PlayerId"
+                            href="https://@serverCache.Server/profile/@Model.Player.PlayerId"
                             target="_blank"
                             type="button"
                             class="btn-link text-decoration-none">
@@ -135,7 +136,7 @@ else
                     {
                         <tr>
                             <td>
-                                <a href="https://@dataService.Server/karte.php?d=@village.MapId"
+                                <a href="https://@serverCache.Server/karte.php?d=@village.MapId"
                                     target="_blank"
                                     type="button"
                                     class="btn-link text-decoration-none">

@@ -1,14 +1,15 @@
-﻿using Application.Services;
+﻿using Features.Services;
 using Features.Shared.Query;
+using Infrastructure.Services;
 
 namespace Features.Shared.Behaviors
 {
-    public sealed class QueryCachingPipelineBehavior<TRequest, TResponse>(CacheService cacheService, DataService dataService)
+    public sealed class QueryCachingPipelineBehavior<TRequest, TResponse>(CacheService cacheService, IServerCache serverCache)
         : IPipelineBehavior<TRequest, TResponse>
         where TRequest : ICachedQuery
     {
         private readonly CacheService _cacheService = cacheService;
-        private readonly DataService _dataService = dataService;
+        private readonly IServerCache _serverCache = serverCache;
 
         public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
         {
@@ -16,7 +17,7 @@ namespace Features.Shared.Behaviors
 
             if (request.IsServerBased)
             {
-                cacheKey = $"{_dataService.Server}_{cacheKey}";
+                cacheKey = $"{_serverCache.Server}_{cacheKey}";
             }
 
             var cachedValue = await _cacheService.GetOrCreateAsync(

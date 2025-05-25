@@ -1,20 +1,21 @@
 ﻿using Features.Servers;
+using Infrastructure.Services;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers
 {
-    public class ServersController(IMediator mediator, DataService dataService) : Controller
+    public class ServersController(IMediator mediator, IServerCache serverCache) : Controller
     {
         private readonly IMediator _mediator = mediator;
-        private readonly DataService _dataService = dataService;
+        private readonly IServerCache _serverCache = serverCache;
 
         public async Task<IActionResult> Change(string server)
         {
             var isValid = await _mediator.Send(new ValidateServerUrlQuery(server));
             if (isValid)
             {
-                _dataService.Server = server;
+                _serverCache.Server = server;
 
                 var options = new CookieOptions()
                 {

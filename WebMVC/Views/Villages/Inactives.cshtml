@@ -1,7 +1,8 @@
-﻿@using WebMVC.Models.ViewModel.Villages
+﻿@using Infrastructure.Services
+@using WebMVC.Models.ViewModel.Villages
 @using Features.Villages
 @inject IMediator mediator
-@inject DataService dataService
+@inject IServerCache serverCache
 
 @model InactiveViewModel
 
@@ -103,7 +104,7 @@ else
                             </a>
                         </td>
                         <td>
-                            <a href="https://@dataService.Server/karte.php?d=@village.MapId"
+                            <a href="https://@serverCache.Server/karte.php?d=@village.MapId"
                                target="_blank"
                                type="button"
                                class="btn-link text-decoration-none">

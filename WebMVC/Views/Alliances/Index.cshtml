@@ -1,5 +1,6 @@
-﻿@using WebMVC.Models.ViewModel.Alliances
-@inject DataService dataService
+﻿@using Infrastructure.Services
+@using WebMVC.Models.ViewModel.Alliances
+@inject IServerCache serverCache
 @inject IMediator mediator
 
 @model IndexViewModel
@@ -58,7 +59,7 @@ else
                         }
                         else
                         {
-                            <a href="https://@dataService.Server/alliance/@Model.Alliance.AllianceId"
+                            <a href="https://@serverCache.Server/alliance/@Model.Alliance.AllianceId"
                                 target="_blank"
                                 type="button"
                                 class="btn-link text-decoration-none">

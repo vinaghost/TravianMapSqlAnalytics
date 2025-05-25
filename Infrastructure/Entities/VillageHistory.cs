@@ -1,9 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-
-namespace Infrastructure.Entities
+﻿namespace Infrastructure.Entities
 {
-    [Index(nameof(VillageId), nameof(Date))]
-    [Index(nameof(VillageId), nameof(ChangePopulation))]
     public class VillageHistory
     {
         public int Id { get; set; }
