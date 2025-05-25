@@ -12,8 +12,10 @@ on:
   workflow_dispatch:
     inputs:
       webmvc:
+        description: 'Enable Web MVC build'  # added description
         type: boolean
       webapi:
+        description: 'Enable Web API build'  # added description
         type: boolean
 jobs:
   webmvc:
