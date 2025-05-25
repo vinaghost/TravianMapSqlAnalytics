@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using Features.Alliances;
+using Features.Queries.Alliances;
 using Features.Shared.Dtos;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
@@ -20,9 +19,14 @@ namespace WebAPI.Endpoints
         }
     }
 
-    public class AlliancesEndpoint(IMediator mediator) : Endpoint<AlliancesRequest, Results<Ok<PagedListResponse<AllianceDto>>, NotFound>>
+    public class AlliancesEndpoint : Endpoint<AlliancesRequest, Results<Ok<PagedListResponse<AllianceDto>>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetAlliancesByNameQuery.Handler _getAlliancesByNameQuery;
+
+        public AlliancesEndpoint(GetAlliancesByNameQuery.Handler getAlliancesByNameQuery)
+        {
+            _getAlliancesByNameQuery = getAlliancesByNameQuery;
+        }
 
         public override void Configure()
         {
@@ -33,7 +37,7 @@ namespace WebAPI.Endpoints
 
         public override async Task<Results<Ok<PagedListResponse<AllianceDto>>, NotFound>> ExecuteAsync(AlliancesRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetAlliancesByNameQuery(rq), ct);
+            var result = await _getAlliancesByNameQuery.HandleAsync(new(rq), ct);
             return TypedResults.Ok(new PagedListResponse<AllianceDto>(result));
         }
     }

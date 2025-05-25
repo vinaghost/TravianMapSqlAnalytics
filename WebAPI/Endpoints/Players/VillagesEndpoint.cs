@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
-using Features.Villages.ByPlayerId;
-using MediatR;
+using Features.Queries.Villages.ByPlayerId;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;
@@ -18,9 +17,14 @@ namespace WebAPI.Endpoints.Players
         }
     }
 
-    public class VillagesEndpoint(IMediator mediator) : Endpoint<VillagesRequest, Results<Ok<IList<VillageDto>>, NotFound>>
+    public class VillagesEndpoint : Endpoint<VillagesRequest, Results<Ok<IList<VillageDto>>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetVillagesByPlayerIdQuery.Handler _getVillagesByPlayerIdQuery;
+
+        public VillagesEndpoint(GetVillagesByPlayerIdQuery.Handler getVillagesByPlayerIdQuery)
+        {
+            _getVillagesByPlayerIdQuery = getVillagesByPlayerIdQuery;
+        }
 
         public override void Configure()
         {
@@ -31,7 +35,7 @@ namespace WebAPI.Endpoints.Players
 
         public override async Task<Results<Ok<IList<VillageDto>>, NotFound>> ExecuteAsync(VillagesRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetVillagesByPlayerIdQuery(rq.Id), ct);
+            var result = await _getVillagesByPlayerIdQuery.HandleAsync(new(rq.Id), ct);
             return TypedResults.Ok(result);
         }
     }

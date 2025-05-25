@@ -34,16 +34,6 @@
           "Microsoft.EntityFrameworkCore": "8.0.11"
         }
       },
-      "MediatR": {
-        "type": "Direct",
-        "requested": "[12.5.0, )",
-        "resolved": "12.5.0",
-        "contentHash": "vqm2H8/nqL5NAJHPhsG1JOPwfkmbVrPyh4svdoRzu+uZh6Ex7PRoHBGsLYC0/RWCEJFqD1ohHNpteQvql9OktA==",
-        "dependencies": {
-          "MediatR.Contracts": "[2.0.1, 3.0.0)",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
-        }
-      },
       "Microsoft.Extensions.Caching.Memory": {
         "type": "Direct",
         "requested": "[9.0.5, )",
@@ -70,24 +60,16 @@
           "Microsoft.Extensions.Logging.Abstractions": "9.0.5"
         }
       },
-      "X.PagedList.Mvc.Core": {
+      "X.PagedList": {
         "type": "Direct",
         "requested": "[10.5.7, )",
         "resolved": "10.5.7",
-        "contentHash": "YuQEz9Y2AC8oaYk6yBISRxSpKuUEYLwoDpjimump8O+v4B2vZcigWQ6nEYE9blwmKLV0xGLy0S2zlbicvKCyPg==",
-        "dependencies": {
-          "X.PagedList": "10.5.7"
-        }
+        "contentHash": "Nevli+eaR3wMeb6pSNa+ApsddA9bw6Pl7wuX7B2nFj0v184RV/FtFRUckgNAaogGcmEiLXcsQX3ox0y164DnHg=="
       },
       "LinqKit.Core": {
         "type": "Transitive",
         "resolved": "1.2.8",
         "contentHash": "F/ZGutPdat2u+nevwACsp09fT1z+fazu0UlZGVeAPSaGCdf/PuOv4hAyJ+7zCmqpADQLtmw9jEfJVPmgQy/8Cg=="
-      },
-      "MediatR.Contracts": {
-        "type": "Transitive",
-        "resolved": "2.0.1",
-        "contentHash": "FYv95bNT4UwcNA+G/J1oX5OpRiSUxteXaUt2BJbRSdRNiIUNbggJF69wy6mnk2wYToaanpdXZdCwVylt96MpwQ=="
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
@@ -240,11 +222,6 @@
         "type": "Transitive",
         "resolved": "9.0.5",
         "contentHash": "WoI5or8kY2VxFdDmsaRZ5yaYvvb+4MCyy66eXo79Cy1uMa7qXeGIlYmZx7R9Zy5S4xZjmqvkk2V8L6/vDwAAEA=="
-      },
-      "X.PagedList": {
-        "type": "Transitive",
-        "resolved": "10.5.7",
-        "contentHash": "Nevli+eaR3wMeb6pSNa+ApsddA9bw6Pl7wuX7B2nFj0v184RV/FtFRUckgNAaogGcmEiLXcsQX3ox0y164DnHg=="
       },
       "infrastructure": {
         "type": "Project",

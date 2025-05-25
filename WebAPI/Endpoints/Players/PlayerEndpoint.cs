@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using Features.Players;
+using Features.Queries.Players;
 using Features.Shared.Dtos;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;
@@ -18,9 +17,14 @@ namespace WebAPI.Endpoints.Players
         }
     }
 
-    public class PlayerEndpoint(IMediator mediator) : Endpoint<PlayerRequest, Results<Ok<PlayerDto>, NotFound>>
+    public class PlayerEndpoint : Endpoint<PlayerRequest, Results<Ok<PlayerDto>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetPlayerByIdQuery.Handler _getPlayerByIdQuery;
+
+        public PlayerEndpoint(GetPlayerByIdQuery.Handler getPlayerByIdQuery)
+        {
+            _getPlayerByIdQuery = getPlayerByIdQuery;
+        }
 
         public override void Configure()
         {
@@ -31,7 +35,7 @@ namespace WebAPI.Endpoints.Players
 
         public override async Task<Results<Ok<PlayerDto>, NotFound>> ExecuteAsync(PlayerRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetPlayerByIdQuery(rq.Id), ct);
+            var result = await _getPlayerByIdQuery.HandleAsync(new(rq.Id), ct);
             if (result is null)
             {
                 return TypedResults.NotFound();

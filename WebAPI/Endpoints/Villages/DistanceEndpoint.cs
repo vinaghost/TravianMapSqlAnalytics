@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
+using Features.Queries.Villages.ByDistance;
 using Features.Queries.Villages.Shared;
-using Features.Villages.ByDistance;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
@@ -20,9 +19,14 @@ namespace WebAPI.Endpoints.Villages
         }
     }
 
-    public class PlayersEndpoint(IMediator mediator) : Endpoint<DistanceRequest, Results<Ok<PagedListResponse<VillageDto>>, NotFound>>
+    public class PlayersEndpoint : Endpoint<DistanceRequest, Results<Ok<PagedListResponse<VillageDto>>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetVillagesByParametersQuery.Handler _getVillagesByParameters;
+
+        public PlayersEndpoint(GetVillagesByParametersQuery.Handler getVillagesByParameters)
+        {
+            _getVillagesByParameters = getVillagesByParameters;
+        }
 
         public override void Configure()
         {
@@ -33,7 +37,7 @@ namespace WebAPI.Endpoints.Villages
 
         public override async Task<Results<Ok<PagedListResponse<VillageDto>>, NotFound>> ExecuteAsync(DistanceRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetVillagesByParameters(rq), ct);
+            var result = await _getVillagesByParameters.HandleAsync(new(rq), ct);
             return TypedResults.Ok(new PagedListResponse<VillageDto>(result));
         }
     }

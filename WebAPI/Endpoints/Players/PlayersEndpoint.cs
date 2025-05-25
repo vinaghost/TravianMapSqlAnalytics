@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
-using Features.Players;
+using Features.Queries.Players;
 using Features.Shared.Dtos;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
@@ -20,9 +19,14 @@ namespace WebAPI.Endpoints.Players
         }
     }
 
-    public class PlayersEndpoint(IMediator mediator) : Endpoint<PlayersRequest, Results<Ok<PagedListResponse<PlayerDto>>, NotFound>>
+    public class PlayersEndpoint : Endpoint<PlayersRequest, Results<Ok<PagedListResponse<PlayerDto>>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetPlayersByNameQuery.Handler _getPlayersByNameQuery;
+
+        public PlayersEndpoint(GetPlayersByNameQuery.Handler getPlayersByNameQuery)
+        {
+            _getPlayersByNameQuery = getPlayersByNameQuery;
+        }
 
         public override void Configure()
         {
@@ -33,7 +37,7 @@ namespace WebAPI.Endpoints.Players
 
         public override async Task<Results<Ok<PagedListResponse<PlayerDto>>, NotFound>> ExecuteAsync(PlayersRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetPlayersByNameQuery(rq), ct);
+            var result = await _getPlayersByNameQuery.HandleAsync(new(rq), ct);
             return TypedResults.Ok(new PagedListResponse<PlayerDto>(result));
         }
     }

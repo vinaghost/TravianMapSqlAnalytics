@@ -1,8 +1,7 @@
 ﻿using FastEndpoints;
-using Features.Populations;
+using Features.Queries.Populations;
 using Features.Queries.Populations.Shared;
 using Features.Shared.Dtos;
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;
@@ -20,9 +19,14 @@ namespace WebAPI.Endpoints.Populations
         }
     }
 
-    public class PlayersEndpoint(IMediator mediator) : Endpoint<PlayersRequest, Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>>
+    public class PlayersEndpoint : Endpoint<PlayersRequest, Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>>
     {
-        private readonly IMediator _mediator = mediator;
+        private readonly GetPlayersPopulationHistoryByParametersQuery.Handler _getPlayersPopulationHistoryByParametersQuery;
+
+        public PlayersEndpoint(GetPlayersPopulationHistoryByParametersQuery.Handler getPlayersPopulationHistoryByParametersQuery)
+        {
+            _getPlayersPopulationHistoryByParametersQuery = getPlayersPopulationHistoryByParametersQuery;
+        }
 
         public override void Configure()
         {
@@ -33,7 +37,7 @@ namespace WebAPI.Endpoints.Populations
 
         public override async Task<Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>> ExecuteAsync(PlayersRequest rq, CancellationToken ct)
         {
-            var result = await _mediator.Send(new GetPlayersPopulationHistoryByParametersQuery(rq), ct);
+            var result = await _getPlayersPopulationHistoryByParametersQuery.HandleAsync(new(rq), ct);
             return TypedResults.Ok(result);
         }
     }
