@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
+using Features.Queries.Villages.Shared;
 using Features.Villages.ByDistance;
-using Features.Villages.Shared;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;

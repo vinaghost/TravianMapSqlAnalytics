@@ -1,7 +1,12 @@
-﻿using Features.Services;
-using Features.Shared.Behaviors;
+﻿using Features.Behaviors;
+using Features.Services;
+using Immediate.Handlers.Shared;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
+[assembly: Behaviors(
+    typeof(QueryCachingBehavior<,>)
+)]
 
 namespace Features
 {
@@ -19,11 +24,8 @@ namespace Features
             var assembly = typeof(AppMixins).Assembly;
             builder.Services.AddValidatorsFromAssembly(assembly);
 
-            builder.Services.AddMediatR(cfg =>
-            {
-                cfg.RegisterServicesFromAssembly(assembly);
-                cfg.AddOpenBehavior(typeof(QueryCachingPipelineBehavior<,>));
-            });
+            builder.Services.AddFeaturesHandlers();
+            builder.Services.AddFeaturesBehaviors();
         }
     }
 }

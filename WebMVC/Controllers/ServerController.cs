@@ -12,7 +12,7 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Change(string server)
         {
-            var isValid = await _mediator.Send(new ValidateServerUrlQuery(server));
+            var isValid = await _mediator.Send(new IsValidServerUrlQuery(server));
             if (isValid)
             {
                 _serverCache.Server = server;

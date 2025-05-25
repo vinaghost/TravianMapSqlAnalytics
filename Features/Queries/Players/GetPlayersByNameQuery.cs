@@ -1,9 +1,10 @@
-﻿using Features.Shared.Dtos;
+﻿using Features.Constraints;
+using Features.Shared.Dtos;
 using Features.Shared.Parameters;
-using Features.Shared.Query;
+using Immediate.Handlers.Shared;
 using System.Text;
 
-namespace Features.Players
+namespace Features.Queries.Players
 {
     public record GetPlayersByNameParameters : IPaginationParameters, ISearchTermParameters
     {
@@ -37,33 +38,30 @@ namespace Features.Players
         }
     }
 
-    public record GetPlayersByNameQuery(GetPlayersByNameParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
+    [Handler]
+    public static partial class GetPlayersByNameQuery
     {
-        public string CacheKey => $"{nameof(GetPlayersByNameQuery)}_{Parameters.Key()}";
+        public sealed record Query(GetPlayersByNameParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetPlayersByNameQuery)}_{Parameters.Key()}");
 
-        public TimeSpan? Expiation => null;
-
-        public bool IsServerBased => true;
-    }
-
-    public class GetPlayersByNameQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetPlayersByNameQuery, IPagedList<PlayerDto>>
-    {
-        private readonly VillageDbContext _dbContext = dbContext;
-
-        public async Task<IPagedList<PlayerDto>> Handle(GetPlayersByNameQuery request, CancellationToken cancellationToken)
+        private static ValueTask<IPagedList<PlayerDto>> HandleAsync(
+            Query query,
+            VillageDbContext context,
+            CancellationToken cancellationToken
+        )
         {
-            var parameters = request.Parameters;
-            var query = _dbContext.Players
+            var parameters = query.Parameters;
+            var dbQuery = context.Players
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                query = query
+                dbQuery = dbQuery
                     .Where(x => x.Name.StartsWith(parameters.SearchTerm));
             }
 
-            var data = query
-               .Join(_dbContext.Alliances,
+            var data = dbQuery
+               .Join(context.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
                    (player, alliance) => new
@@ -86,7 +84,7 @@ namespace Features.Players
                 ))
                 .ToPagedList(parameters.PageNumber, parameters.PageSize);
 
-            return data;
+            return ValueTask.FromResult(data);
         }
     }
 }

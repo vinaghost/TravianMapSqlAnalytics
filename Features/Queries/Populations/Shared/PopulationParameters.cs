@@ -1,7 +1,7 @@
 ﻿using Features.Shared.Parameters;
 using System.Text;
 
-namespace Features.Populations.Shared
+namespace Features.Queries.Populations.Shared
 {
     public record PopulationParameters : IPopulationFilterParmeters
     {

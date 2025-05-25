@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Populations;
-using Features.Populations.Shared;
+using Features.Queries.Populations.Shared;
 using Features.Shared.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;

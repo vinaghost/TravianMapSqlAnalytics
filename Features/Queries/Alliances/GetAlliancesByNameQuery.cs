@@ -1,9 +1,10 @@
-﻿using Features.Shared.Dtos;
+﻿using Features.Constraints;
+using Features.Shared.Dtos;
 using Features.Shared.Parameters;
-using Features.Shared.Query;
+using Immediate.Handlers.Shared;
 using System.Text;
 
-namespace Features.Alliances
+namespace Features.Queries.Alliances
 {
     public record GetAlliancesByNameParameters : IPaginationParameters, ISearchTermParameters
     {
@@ -37,24 +38,21 @@ namespace Features.Alliances
         }
     }
 
-    public record GetAlliancesByNameQuery(GetAlliancesByNameParameters Parameters) : ICachedQuery<IPagedList<AllianceDto>>
+    [Handler]
+    public static partial class GetAlliancesByNameQuery
     {
-        public string CacheKey => $"{nameof(GetAlliancesByNameQuery)}_{Parameters.Key()}";
+        public sealed record Query(GetAlliancesByNameParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetAlliancesByNameQuery)}_{Parameters.Key()}");
 
-        public TimeSpan? Expiation => null;
-
-        public bool IsServerBased => true;
-    }
-
-    public class GetAlliancesByNameQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetAlliancesByNameQuery, IPagedList<AllianceDto>>
-    {
-        private readonly VillageDbContext _dbContext = dbContext;
-
-        public async Task<IPagedList<AllianceDto>> Handle(GetAlliancesByNameQuery request, CancellationToken cancellationToken)
+        private static ValueTask<IPagedList<AllianceDto>> HandleAsync(
+            Query query,
+            VillageDbContext context,
+            CancellationToken cancellationToken
+        )
         {
-            var parameters = request.Parameters;
+            var parameters = query.Parameters;
 
-            var predicate = PredicateBuilder.New<Alliance>(true);
+            var predicate = PredicateBuilder.New<Alliance>();
 
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
@@ -63,17 +61,17 @@ namespace Features.Alliances
 
             predicate = predicate.And(x => x.Players.Count > 0);
 
-            var data = _dbContext.Alliances
+            var data = context.Alliances
                 .Where(predicate)
                 .OrderBy(x => x.Name)
                 .Select(x => new AllianceDto(
-                        x.Id,
-                        string.IsNullOrWhiteSpace(x.Name) ? "No alliance" : x.Name,
-                        x.PlayerCount
+                    x.Id,
+                    string.IsNullOrWhiteSpace(x.Name) ? "No alliance" : x.Name,
+                    x.PlayerCount
                 ))
                 .ToPagedList(parameters.PageNumber, parameters.PageSize);
 
-            return data;
+            return ValueTask.FromResult(data);
         }
     }
 }

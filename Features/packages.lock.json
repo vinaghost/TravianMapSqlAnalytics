@@ -18,6 +18,12 @@
           "Microsoft.Extensions.Dependencyinjection.Abstractions": "2.1.0"
         }
       },
+      "Immediate.Handlers": {
+        "type": "Direct",
+        "requested": "[2.1.0, )",
+        "resolved": "2.1.0",
+        "contentHash": "2Aix3jopyQWWKQ/nFqtQMG/SvEdZlu9CU39HmWuemZHHSW1kfWwnUgUivqcV3NzrhudZ4SIh+7bZxSNOMI96DA=="
+      },
       "LinqKit.Microsoft.EntityFrameworkCore": {
         "type": "Direct",
         "requested": "[8.1.8, )",

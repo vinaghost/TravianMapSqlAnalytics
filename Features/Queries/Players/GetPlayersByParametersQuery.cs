@@ -1,10 +1,11 @@
-﻿using Features.Shared.Dtos;
+﻿using Features.Constraints;
+using Features.Shared.Dtos;
 using Features.Shared.Handler;
 using Features.Shared.Parameters;
-using Features.Shared.Query;
+using Immediate.Handlers.Shared;
 using System.Text;
 
-namespace Features.Players
+namespace Features.Queries.Players
 {
     public record PlayersParameters : IPaginationParameters, IPlayerFilterParameters
     {
@@ -45,27 +46,25 @@ namespace Features.Players
         }
     }
 
-    public record GetPlayersByParametersQuery(PlayersParameters Parameters) : ICachedQuery<IPagedList<PlayerDto>>
+    [Handler]
+    public static partial class GetPlayersByParametersQuery
     {
-        public string CacheKey => $"{nameof(GetPlayersByParametersQuery)}_{Parameters.Key()}";
+        public sealed record Query(PlayersParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetPlayersByParametersQuery)}_{Parameters.Key()}");
 
-        public TimeSpan? Expiation => null;
-        public bool IsServerBased => true;
-    }
-
-    public class GetPlayersByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetPlayersByParametersQuery, IPagedList<PlayerDto>>
-    {
-        private readonly VillageDbContext _dbContext = dbContext;
-
-        public async Task<IPagedList<PlayerDto>> Handle(GetPlayersByParametersQuery request, CancellationToken cancellationToken)
+        private static ValueTask<IPagedList<PlayerDto>> HandleAsync(
+            Query query,
+            VillageDbContext context,
+            CancellationToken cancellationToken
+        )
         {
-            var parameters = request.Parameters;
+            var parameters = query.Parameters;
             var predicate = VillageDataQuery.PlayerPredicate(parameters);
-            var players = _dbContext.Players
+            var players = context.Players
                 .AsExpandable()
                 .Where(predicate)
                 .OrderByDescending(x => x.VillageCount)
-                .Join(_dbContext.Alliances,
+                .Join(context.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
                    (player, alliance) => new PlayerDto
@@ -76,9 +75,9 @@ namespace Features.Players
                        player.Name,
                        player.VillageCount,
                        player.Population
-                       ))
+                   ))
                 .ToPagedList(parameters.PageNumber, parameters.PageSize);
-            return players;
+            return ValueTask.FromResult(players);
         }
     }
 }

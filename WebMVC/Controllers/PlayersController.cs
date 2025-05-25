@@ -1,6 +1,6 @@
 ﻿using Features.Players;
-using Features.Populations;
 using Features.Populations.Shared;
+using Features.Queries.Populations;
 using Features.Villages.ByDistance;
 using Features.Villages.Shared;
 using FluentValidation;

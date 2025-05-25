@@ -20,7 +20,7 @@ namespace WebAPI.EndpointFilters
                 {
                     var serverUrl = server.ToString() ?? "";
 
-                    var isValid = await _mediator.Send(new ValidateServerUrlQuery(serverUrl));
+                    var isValid = await _mediator.Send(new IsValidServerUrlQuery(serverUrl));
                     if (!isValid)
                     {
                         return Results.Problem($"Server {serverUrl} is not available in database", statusCode: 404);

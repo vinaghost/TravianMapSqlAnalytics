@@ -1,8 +1,8 @@
-﻿using Features.Populations;
-using Features.Populations.Shared;
+﻿using Features.Populations.Shared;
+using Features.Queries.Populations;
+using Features.Queries.Villages.Shared;
 using Features.Villages;
 using Features.Villages.ByDistance;
-using Features.Villages.Shared;
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;

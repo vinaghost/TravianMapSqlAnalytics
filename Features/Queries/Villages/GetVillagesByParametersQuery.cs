@@ -1,10 +1,11 @@
-﻿using Features.Shared.Enums;
+﻿using Features.Constraints;
+using Features.Queries.Villages.Shared;
+using Features.Shared.Enums;
 using Features.Shared.Handler;
 using Features.Shared.Models;
-using Features.Shared.Query;
-using Features.Villages.Shared;
+using Immediate.Handlers.Shared;
 
-namespace Features.Villages.ByDistance
+namespace Features.Queries.Villages.ByDistance
 {
     public record VillageDto(int AllianceId,
                              string AllianceName,
@@ -19,33 +20,31 @@ namespace Features.Villages.ByDistance
                              Tribe Tribe,
                              int Population,
                              double Distance);
-    public record GetVillagesByParameters(VillagesParameters Parameters) : ICachedQuery<IPagedList<VillageDto>>
+
+    [Handler]
+    public static partial class GetVillagesByParametersQuery
     {
-        public string CacheKey => $"{nameof(GetVillagesByParameters)}_{Parameters.Key()}";
+        public sealed record Query(VillagesParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetVillagesByParametersQuery)}_{Parameters.Key()}", true);
 
-        public TimeSpan? Expiation => null;
-
-        public bool IsServerBased => true;
-    }
-
-    public class GetVillagesByParametersQueryHandler(VillageDbContext dbContext) : IRequestHandler<GetVillagesByParameters, IPagedList<VillageDto>>
-    {
-        private readonly VillageDbContext _dbContext = dbContext;
-
-        public async Task<IPagedList<VillageDto>> Handle(GetVillagesByParameters request, CancellationToken cancellationToken)
+        private static ValueTask<IPagedList<VillageDto>> HandleAsync(
+            Query query,
+            VillageDbContext context,
+            CancellationToken cancellationToken
+        )
         {
-            var parameters = request.Parameters;
+            var parameters = query.Parameters;
 
-            var players = _dbContext.Players
+            var players = context.Players
                 .AsExpandable()
                 .Where(VillageDataQuery.PlayerPredicate(parameters));
 
-            var villages = _dbContext.Villages
+            var villages = context.Villages
                 .AsExpandable()
                 .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
 
             var data = players
-               .Join(_dbContext.Alliances,
+               .Join(context.Alliances,
                    x => x.AllianceId,
                    x => x.Id,
                    (player, alliance) => new
@@ -97,7 +96,7 @@ namespace Features.Villages.ByDistance
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);
 
-            return orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize);
+            return ValueTask.FromResult(orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize));
         }
     }
 }

@@ -2,7 +2,7 @@
 using Features.Shared.Parameters;
 using System.Text;
 
-namespace Features.Villages.Shared
+namespace Features.Queries.Villages.Shared
 {
     public record VillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
@@ -49,12 +49,12 @@ namespace Features.Villages.Shared
 
         public static string Key(this VillagesParameters parameters)
         {
-            return GenerateKey(parameters);
+            return parameters.GenerateKey();
         }
 
         public static string KeyParent(this VillagesParameters parameters)
         {
-            return GenerateKey(parameters);
+            return parameters.GenerateKey();
         }
     }
 

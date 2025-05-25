@@ -1,9 +1,10 @@
-﻿using Features.Shared.Dtos;
+﻿using Features.Constraints;
+using Features.Shared.Dtos;
 using Features.Shared.Parameters;
-using Features.Shared.Query;
+using Immediate.Handlers.Shared;
 using System.Text;
 
-namespace Features.Servers
+namespace Features.Queries.Servers
 {
     public record GetServersByNameParameters : ISearchTermParameters, IPaginationParameters
     {
@@ -32,22 +33,19 @@ namespace Features.Servers
 
     public class GetServersByNameParametersValidator : AbstractValidator<GetServersByNameParameters>;
 
-    public record GetServersByNameQuery(GetServersByNameParameters Parameters) : ICachedQuery<IPagedList<ServerDto>>
+    [Handler]
+    public static partial class GetServersByNameQuery
     {
-        public string CacheKey => $"{nameof(GetServersByNameQuery)}_{Parameters.Key()}";
+        public sealed record Query(GetServersByNameParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetServersByNameQuery)}_{Parameters.Key()}", false);
 
-        public TimeSpan? Expiation => null;
-
-        public bool IsServerBased => false;
-    }
-
-    public class GetServersByNameQueryHandler(ServerDbContext dbContext) : IRequestHandler<GetServersByNameQuery, IPagedList<ServerDto>>
-    {
-        private readonly ServerDbContext _dbContext = dbContext;
-
-        public async Task<IPagedList<ServerDto>> Handle(GetServersByNameQuery request, CancellationToken cancellationToken)
+        private static ValueTask<IPagedList<ServerDto>> HandleAsync(
+            Query query,
+            ServerDbContext context,
+            CancellationToken cancellationToken
+        )
         {
-            var parameters = request.Parameters;
+            var parameters = query.Parameters;
 
             var predicate = PredicateBuilder.New<Server>(true);
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
@@ -55,13 +53,14 @@ namespace Features.Servers
                 predicate = predicate.And(x => x.Url.StartsWith(parameters.SearchTerm));
             }
 
-            var data = _dbContext.Servers
+            var data = context.Servers
                 .AsQueryable()
                 .Where(predicate)
                 .OrderBy(x => x.Url)
                 .Select(x => new ServerDto(x.Id, x.Url))
                 .ToPagedList(parameters.PageNumber, parameters.PageSize);
-            return data;
+
+            return ValueTask.FromResult(data);
         }
     }
 }

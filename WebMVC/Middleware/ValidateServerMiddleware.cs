@@ -19,7 +19,7 @@ namespace WebMVC.Middleware
             }
             else
             {
-                var valid = await _mediator.Send(new ValidateServerUrlQuery(server));
+                var valid = await _mediator.Send(new IsValidServerUrlQuery(server));
                 if (!valid)
                 {
                     server = await _mediator.Send(new GetMostPlayerServerQuery());
