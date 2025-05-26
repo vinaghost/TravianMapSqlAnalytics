@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using FluentValidation;
+using System.Text;
 
 namespace Features.Parameters
 {

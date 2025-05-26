@@ -3,7 +3,8 @@
 @{
     var consentFeatureFlag = Context.Features.Get<ITrackingConsentFeature>();
     var showBannerFlag = !consentFeatureFlag?.CanTrack ?? false;
-    var cookieStr = consentFeatureFlag?.CreateConsentCookie();
+    var cookieStr = consentFeatureFlag?.CreateConsentCookie().Replace("none", "strict");
+    
 }
 
 @if (showBannerFlag)

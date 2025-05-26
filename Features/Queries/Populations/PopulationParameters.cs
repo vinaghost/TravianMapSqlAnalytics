@@ -1,4 +1,5 @@
 ﻿using Features.Parameters;
+using FluentValidation;
 using System.Text;
 
 namespace Features.Queries.Populations

@@ -1,6 +1,8 @@
 ﻿using Features.Enums;
 using Features.Models;
 using Features.Parameters;
+using Infrastructure.Entities;
+using LinqKit;
 
 namespace Features.Queries.Villages
 {

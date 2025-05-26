@@ -20,7 +20,7 @@ namespace WebMVC
             builder.Services.Configure<CookiePolicyOptions>(options =>
             {
                 options.CheckConsentNeeded = context => true;
-                options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.MinimumSameSitePolicy = SameSiteMode.Lax;
             });
 
             var app = builder.Build();
@@ -36,22 +36,16 @@ namespace WebMVC
 
             app.UseAuthorization();
 
-            UseMiddleware(app);
+            app.UseMiddleware<ValidateServerMiddleware>();
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.MapDefaultControllerRoute();
             app.UseCookiePolicy();
 
             app.Run();
-        }
-
-        private static void UseMiddleware(IApplicationBuilder builder)
-        {
-            builder.UseMiddleware<ValidateServerMiddleware>();
-
-            builder.UseForwardedHeaders(new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-            });
         }
     }
 }

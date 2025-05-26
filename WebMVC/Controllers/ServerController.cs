@@ -26,6 +26,7 @@ namespace WebMVC.Controllers
                 var options = new CookieOptions()
                 {
                     Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
+                    IsEssential = true,
                     SameSite = SameSiteMode.Lax
                 };
 
