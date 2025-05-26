@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Features.Shared.Enums
+namespace Features.Enums
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum Tribe

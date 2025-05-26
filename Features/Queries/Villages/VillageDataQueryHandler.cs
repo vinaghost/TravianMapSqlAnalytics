@@ -1,8 +1,8 @@
-﻿using Features.Shared.Enums;
-using Features.Shared.Models;
-using Features.Shared.Parameters;
+﻿using Features.Enums;
+using Features.Models;
+using Features.Parameters;
 
-namespace Features.Shared.Handler
+namespace Features.Queries.Villages
 {
     public static class VillageDataQuery
     {

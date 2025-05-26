@@ -1,19 +1,11 @@
 ﻿using Features.Constraints;
-using Features.Shared.Enums;
+using Features.Dtos;
+using Features.Enums;
 using Immediate.Handlers.Shared;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.Queries.Villages.ByPlayerId
+namespace Features.Queries.Villages
 {
-    public record VillageDto(int MapId,
-                             int VillageId,
-                             string VillageName,
-                             int X,
-                             int Y,
-                             Tribe Tribe,
-                             int Population,
-                             bool IsCapital);
-
     [Handler]
     public static partial class GetVillagesByPlayerIdQuery
     {

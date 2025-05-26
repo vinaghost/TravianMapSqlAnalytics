@@ -1,7 +1,7 @@
-﻿using Features.Shared.Enums;
+﻿using Features.Enums;
 using System.Text;
 
-namespace Features.Shared.Parameters
+namespace Features.Parameters
 {
     public interface IVillageFilterParameters
     {

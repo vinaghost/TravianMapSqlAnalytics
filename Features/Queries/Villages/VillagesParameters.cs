@@ -1,8 +1,8 @@
-﻿using Features.Shared.Enums;
-using Features.Shared.Parameters;
+﻿using Features.Enums;
+using Features.Parameters;
 using System.Text;
 
-namespace Features.Queries.Villages.Shared
+namespace Features.Queries.Villages
 {
     public record VillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {

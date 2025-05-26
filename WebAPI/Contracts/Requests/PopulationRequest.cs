@@ -1,5 +1,5 @@
 ﻿using FastEndpoints;
-using Features.Queries.Populations.Shared;
+using Features.Queries.Populations;
 
 namespace WebAPI.Contracts.Requests
 {

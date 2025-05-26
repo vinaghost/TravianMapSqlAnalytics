@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Features.Shared.Models
+namespace Features.Models
 {
     public record Coordinates(int X, int Y)
     {

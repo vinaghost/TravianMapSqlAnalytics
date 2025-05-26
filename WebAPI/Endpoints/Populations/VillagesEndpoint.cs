@@ -1,7 +1,6 @@
 ﻿using FastEndpoints;
+using Features.Dtos;
 using Features.Queries.Populations;
-using Features.Queries.Populations.Shared;
-using Features.Shared.Dtos;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;
@@ -21,9 +20,9 @@ namespace WebAPI.Endpoints.Populations
 
     public class VillagesEndpoint : Endpoint<VillagesRequest, Results<Ok<Dictionary<int, List<PopulationDto>>>, NotFound>>
     {
-        private readonly GetVillagesPopulationHistoryByParametersQuery.Handler _getVillagesPopulationHistoryByParametersQuery;
+        private readonly GetVillagesPopulationHistoryQuery.Handler _getVillagesPopulationHistoryByParametersQuery;
 
-        public VillagesEndpoint(GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery)
+        public VillagesEndpoint(GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery)
         {
             _getVillagesPopulationHistoryByParametersQuery = getVillagesPopulationHistoryByParametersQuery;
         }

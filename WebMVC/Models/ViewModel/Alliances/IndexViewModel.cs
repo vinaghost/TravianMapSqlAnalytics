@@ -1,4 +1,4 @@
-﻿using Features.Shared.Dtos;
+﻿using Features.Dtos;
 
 namespace WebMVC.Models.ViewModel.Alliances
 {

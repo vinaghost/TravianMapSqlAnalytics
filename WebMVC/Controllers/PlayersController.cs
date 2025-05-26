@@ -1,8 +1,8 @@
 ﻿using Features.Queries.Players;
 using Features.Queries.Populations;
-using Features.Queries.Populations.Shared;
-using Features.Queries.Villages.ByDistance;
-using Features.Queries.Villages.Shared;
+
+using Features.Queries.Villages;
+
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Players;
@@ -28,8 +28,8 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Index(
             [FromServices] GetPlayerByIdQuery.Handler getPlayerByIdQuery,
-            [FromServices] GetVillagesByParametersQuery.Handler getVillagesByParametersQuery,
-            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            [FromServices] GetVillagesQuery.Handler getVillagesByParametersQuery,
+            [FromServices] GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery,
             int playerId = -1
             )
         {

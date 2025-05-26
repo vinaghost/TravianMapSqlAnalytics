@@ -1,5 +1,5 @@
-﻿using Features.Queries.Alliances;
-using Features.Shared.Parameters;
+﻿using Features.Parameters;
+using Features.Queries.Alliances;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.ViewComponents

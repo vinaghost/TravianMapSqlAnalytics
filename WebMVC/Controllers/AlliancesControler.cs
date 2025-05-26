@@ -1,7 +1,7 @@
 ﻿using Features.Queries.Alliances;
 using Features.Queries.Players;
 using Features.Queries.Populations;
-using Features.Queries.Populations.Shared;
+
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Alliances;
@@ -26,8 +26,8 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Index(
             [FromServices] GetAllianceByIdQuery.Handler getAllianceByIdQuery,
-            [FromServices] GetPlayersByParametersQuery.Handler getPlayersByParametersQuery,
-            [FromServices] GetPlayersPopulationHistoryByParametersQuery.Handler getPlayersPopulationHistoryByParametersQuery,
+            [FromServices] GetPlayersQuery.Handler getPlayersByParametersQuery,
+            [FromServices] GetPlayersPopulationHistoryQuery.Handler getPlayersPopulationHistoryByParametersQuery,
             int allianceId = -1)
         {
             if (allianceId == -1)
@@ -39,7 +39,7 @@ namespace WebMVC.Controllers
             var alliance = await getAllianceByIdQuery.HandleAsync(new(allianceId));
             if (alliance is null) return View(new IndexViewModel { Alliance = alliance });
 
-            var playerParameters = new PlayersParameters()
+            var playerParameters = new GetPlayersParameters()
             {
                 Alliances = [allianceId],
                 PageSize = 60,

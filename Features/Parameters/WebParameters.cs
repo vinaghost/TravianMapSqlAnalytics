@@ -1,4 +1,4 @@
-﻿namespace Features.Shared.Parameters
+﻿namespace Features.Parameters
 {
     public abstract record WebParameters
     {

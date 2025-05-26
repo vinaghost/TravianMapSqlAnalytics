@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
-using Features.Queries.Villages.ByDistance;
-using Features.Queries.Villages.Shared;
+using Features.Dtos;
+using Features.Queries.Villages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
@@ -19,11 +19,11 @@ namespace WebAPI.Endpoints.Villages
         }
     }
 
-    public class PlayersEndpoint : Endpoint<DistanceRequest, Results<Ok<PagedListResponse<VillageDto>>, NotFound>>
+    public class PlayersEndpoint : Endpoint<DistanceRequest, Results<Ok<PagedListResponse<DetailVillageDto>>, NotFound>>
     {
-        private readonly GetVillagesByParametersQuery.Handler _getVillagesByParameters;
+        private readonly GetVillagesQuery.Handler _getVillagesByParameters;
 
-        public PlayersEndpoint(GetVillagesByParametersQuery.Handler getVillagesByParameters)
+        public PlayersEndpoint(GetVillagesQuery.Handler getVillagesByParameters)
         {
             _getVillagesByParameters = getVillagesByParameters;
         }
@@ -35,10 +35,10 @@ namespace WebAPI.Endpoints.Villages
             Group<Village>();
         }
 
-        public override async Task<Results<Ok<PagedListResponse<VillageDto>>, NotFound>> ExecuteAsync(DistanceRequest rq, CancellationToken ct)
+        public override async Task<Results<Ok<PagedListResponse<DetailVillageDto>>, NotFound>> ExecuteAsync(DistanceRequest rq, CancellationToken ct)
         {
             var result = await _getVillagesByParameters.HandleAsync(new(rq), ct);
-            return TypedResults.Ok(new PagedListResponse<VillageDto>(result));
+            return TypedResults.Ok(new PagedListResponse<DetailVillageDto>(result));
         }
     }
 }

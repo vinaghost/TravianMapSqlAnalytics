@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Features.Shared.Parameters
+namespace Features.Parameters
 {
     public interface IPlayerFilterParameters
     {

@@ -1,8 +1,7 @@
 ﻿using Features.Queries.Populations;
-using Features.Queries.Populations.Shared;
+
 using Features.Queries.Villages;
-using Features.Queries.Villages.ByDistance;
-using Features.Queries.Villages.Shared;
+
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Extensions;
@@ -23,7 +22,7 @@ namespace WebMVC.Controllers
         public async Task<IActionResult> Inactives(
             GetInactiveVillagesParameters parameters,
             [FromServices] GetInactiveVillagesQuery.Handler getInactiveVillagesQuery,
-            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            [FromServices] GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery,
             [FromServices] IValidator<GetInactiveVillagesParameters> validator)
         {
             ViewBag.IsInput = true;
@@ -62,8 +61,8 @@ namespace WebMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> Index(
             VillagesParameters parameters,
-            [FromServices] GetVillagesByParametersQuery.Handler getVillagesByParametersQuery,
-            [FromServices] GetVillagesPopulationHistoryByParametersQuery.Handler getVillagesPopulationHistoryByParametersQuery,
+            [FromServices] GetVillagesQuery.Handler getVillagesByParametersQuery,
+            [FromServices] GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery,
             [FromServices] IValidator<VillagesParameters> validator)
         {
             ViewBag.IsInput = true;

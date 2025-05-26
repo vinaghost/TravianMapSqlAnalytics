@@ -1,4 +1,4 @@
-﻿namespace Features.Shared.Enums
+﻿namespace Features.Enums
 {
     public enum Capital
     {

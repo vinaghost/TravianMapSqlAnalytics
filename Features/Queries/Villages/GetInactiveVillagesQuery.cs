@@ -1,9 +1,7 @@
 ﻿using Features.Constraints;
-using Features.Queries.Villages.Shared;
-using Features.Shared.Dtos;
-using Features.Shared.Enums;
-using Features.Shared.Handler;
-using Features.Shared.Models;
+using Features.Dtos;
+using Features.Enums;
+using Features.Models;
 using Immediate.Handlers.Shared;
 
 namespace Features.Queries.Villages
@@ -39,7 +37,7 @@ namespace Features.Queries.Villages
         public sealed record Query(GetInactiveVillagesParameters Parameters)
             : DefaultCachedQuery($"{nameof(GetInactiveVillagesQuery)}_{Parameters.Key()}", true);
 
-        private static ValueTask<IPagedList<VillageDto>> HandleAsync(
+        private static ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
             Query query,
             VillageDbContext context,
             CancellationToken cancellationToken
@@ -88,7 +86,7 @@ namespace Features.Queries.Villages
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDto(x.AllianceId,
+                .Select(x => new DetailVillageDto(x.AllianceId,
                                            x.AllianceName,
                                            x.PlayerId,
                                            x.PlayerName,

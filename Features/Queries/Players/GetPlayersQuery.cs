@@ -1,13 +1,13 @@
 ﻿using Features.Constraints;
-using Features.Shared.Dtos;
-using Features.Shared.Handler;
-using Features.Shared.Parameters;
+using Features.Dtos;
+using Features.Parameters;
+using Features.Queries.Villages;
 using Immediate.Handlers.Shared;
 using System.Text;
 
 namespace Features.Queries.Players
 {
-    public record PlayersParameters : IPaginationParameters, IPlayerFilterParameters
+    public record GetPlayersParameters : IPaginationParameters, IPlayerFilterParameters
     {
         public int PageNumber { get; init; }
         public int PageSize { get; init; }
@@ -22,9 +22,9 @@ namespace Features.Queries.Players
         public IList<int>? ExcludePlayers { get; init; }
     }
 
-    public static class PlayersParametersExtension
+    public static class GetPlayersParametersExtension
     {
-        public static string Key(this PlayersParameters parameters)
+        public static string Key(this GetPlayersParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -37,9 +37,9 @@ namespace Features.Queries.Players
         }
     }
 
-    public class PlayersParametersValidator : AbstractValidator<PlayersParameters>
+    public class GetPlayersParametersValidator : AbstractValidator<GetPlayersParameters>
     {
-        public PlayersParametersValidator()
+        public GetPlayersParametersValidator()
         {
             Include(new PaginationParametersValidator());
             Include(new PlayerFilterParametersValidator());
@@ -47,10 +47,10 @@ namespace Features.Queries.Players
     }
 
     [Handler]
-    public static partial class GetPlayersByParametersQuery
+    public static partial class GetPlayersQuery
     {
-        public sealed record Query(PlayersParameters Parameters)
-            : DefaultCachedQuery($"{nameof(GetPlayersByParametersQuery)}_{Parameters.Key()}");
+        public sealed record Query(GetPlayersParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetPlayersQuery)}_{Parameters.Key()}");
 
         private static ValueTask<IPagedList<PlayerDto>> HandleAsync(
             Query query,

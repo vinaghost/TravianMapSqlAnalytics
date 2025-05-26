@@ -1,4 +1,4 @@
-﻿namespace Features.Shared.Dtos
+﻿namespace Features.Dtos
 {
     public record PlayerDto(int AllianceId,
                             string AllianceName,

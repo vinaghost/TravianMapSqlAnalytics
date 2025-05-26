@@ -1,4 +1,4 @@
-﻿namespace Features.Shared.Dtos
+﻿namespace Features.Dtos
 {
     public record ServerDto(int Id,
                             string Url);

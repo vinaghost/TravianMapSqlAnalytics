@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
-using Features.Queries.Villages.ByPlayerId;
+using Features.Dtos;
+using Features.Queries.Villages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;

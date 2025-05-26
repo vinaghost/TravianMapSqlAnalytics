@@ -1,33 +1,18 @@
 ﻿using Features.Constraints;
-using Features.Queries.Villages.Shared;
-using Features.Shared.Enums;
-using Features.Shared.Handler;
-using Features.Shared.Models;
+using Features.Dtos;
+using Features.Enums;
+using Features.Models;
 using Immediate.Handlers.Shared;
 
-namespace Features.Queries.Villages.ByDistance
+namespace Features.Queries.Villages
 {
-    public record VillageDto(int AllianceId,
-                             string AllianceName,
-                             int PlayerId,
-                             string PlayerName,
-                             int VillageId,
-                             int MapId,
-                             string VillageName,
-                             int X,
-                             int Y,
-                             bool IsCapital,
-                             Tribe Tribe,
-                             int Population,
-                             double Distance);
-
     [Handler]
-    public static partial class GetVillagesByParametersQuery
+    public static partial class GetVillagesQuery
     {
         public sealed record Query(VillagesParameters Parameters)
-            : DefaultCachedQuery($"{nameof(GetVillagesByParametersQuery)}_{Parameters.Key()}", true);
+            : DefaultCachedQuery($"{nameof(GetVillagesQuery)}_{Parameters.Key()}", true);
 
-        private static ValueTask<IPagedList<VillageDto>> HandleAsync(
+        private static ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
             Query query,
             VillageDbContext context,
             CancellationToken cancellationToken
@@ -79,19 +64,19 @@ namespace Features.Queries.Villages.ByDistance
             var centerCoordinate = new Coordinates(parameters.X, parameters.Y);
 
             var dtos = data
-                .Select(x => new VillageDto(x.AllianceId,
-                                            x.AllianceName,
-                                            x.PlayerId,
-                                            x.PlayerName,
-                                            x.VillageId,
-                                            x.MapId,
-                                            x.Name,
-                                            x.X,
-                                            x.Y,
-                                            x.IsCapital,
-                                            (Tribe)x.Tribe,
-                                            x.Population,
-                                            centerCoordinate.Distance(x.X, x.Y)));
+                .Select(x => new DetailVillageDto(x.AllianceId,
+                                                x.AllianceName,
+                                                x.PlayerId,
+                                                x.PlayerName,
+                                                x.VillageId,
+                                                x.MapId,
+                                                x.Name,
+                                                x.X,
+                                                x.Y,
+                                                x.IsCapital,
+                                                (Tribe)x.Tribe,
+                                                x.Population,
+                                                centerCoordinate.Distance(x.X, x.Y)));
 
             var orderDtos = dtos
                 .OrderBy(x => x.Distance);

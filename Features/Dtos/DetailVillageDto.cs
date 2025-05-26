@@ -1,8 +1,8 @@
-﻿using Features.Shared.Enums;
+﻿using Features.Enums;
 
-namespace Features.Shared.Dtos
+namespace Features.Dtos
 {
-    public record VillageDto(int AllianceId,
+    public record DetailVillageDto(int AllianceId,
                              string AllianceName,
                              int PlayerId,
                              string PlayerName,

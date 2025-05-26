@@ -1,6 +1,6 @@
 ﻿using Features.Constraints;
-using Features.Shared.Dtos;
-using Features.Shared.Parameters;
+using Features.Dtos;
+using Features.Parameters;
 using Immediate.Handlers.Shared;
 using System.Text;
 
