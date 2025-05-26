@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Serilog;
 
 namespace Infrastructure
 {
@@ -12,8 +13,15 @@ namespace Infrastructure
     {
         public static void ConfigureInfrastructure(this IHostApplicationBuilder builder)
         {
+            builder.ConfigureLogging();
             builder.BindConfiguration();
             builder.ConfigureDbContext();
+        }
+
+        public static void ConfigureLogging(this IHostApplicationBuilder builder)
+        {
+            builder.Services.AddSerilog(c => c
+                    .ReadFrom.Configuration(builder.Configuration));
         }
 
         private static void BindConfiguration(this IHostApplicationBuilder builder)
