@@ -51,7 +51,7 @@ namespace Features.Queries.Villages
         {
             var parameters = query.Parameters;
 
-            var players = GetInactivePlayers(parameters, context);
+            var players = context.GetInactivePlayers(parameters);
             var villages = context.Villages
                 .AsExpandable()
                 .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
@@ -112,7 +112,7 @@ namespace Features.Queries.Villages
             return ValueTask.FromResult(orderDtos.ToPagedList(parameters.PageNumber, parameters.PageSize));
         }
 
-        private static IQueryable<int> GetInactivePlayerIds(GetInactiveVillagesParameters parameters, VillageDbContext context)
+        private static IQueryable<int> GetInactivePlayerIds(this VillageDbContext context, GetInactiveVillagesParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
             if (VillageDataQuery.IsPlayerFiltered(parameters))
@@ -145,9 +145,9 @@ namespace Features.Queries.Villages
             }
         }
 
-        private static IQueryable<Player> GetInactivePlayers(GetInactiveVillagesParameters parameters, VillageDbContext context)
+        private static IQueryable<Player> GetInactivePlayers(this VillageDbContext context, GetInactiveVillagesParameters parameters)
         {
-            var ids = GetInactivePlayerIds(parameters, context);
+            var ids = context.GetInactivePlayerIds(parameters);
             return context.Players
                 .Where(x => ids.Contains(x.Id));
         }
