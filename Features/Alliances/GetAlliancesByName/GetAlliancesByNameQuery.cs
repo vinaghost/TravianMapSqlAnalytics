@@ -1,48 +1,14 @@
-﻿using Features.Shared.Parameters;
-using Features.Shared.Constraints;
+﻿using Features.Shared.Constraints;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
 using Infrastructure.Entities;
 using LinqKit;
-using System.Text;
 using X.PagedList;
 using X.PagedList.Extensions;
 
-namespace Features.Alliances
+namespace Features.Alliances.GetAlliancesByName
 {
-    public record GetAlliancesByNameParameters : IPaginationParameters, ISearchTermParameters
-    {
-        public int PageNumber { get; init; }
-        public int PageSize { get; init; }
-
-        public string? SearchTerm { get; init; }
-    }
-
-    public static class GetAlliancesByNameParametersExtension
-    {
-        public static string Key(this GetAlliancesByNameParameters parameters)
-        {
-            var sb = new StringBuilder();
-            const char SEPARATOR = '_';
-
-            parameters.PaginationKey(sb);
-            sb.Append(SEPARATOR);
-            parameters.SearchTermKey(sb);
-
-            return sb.ToString();
-        }
-    }
-
-    public class GetAllianceByNameParametersValidator : AbstractValidator<GetAlliancesByNameParameters>
-    {
-        public GetAllianceByNameParametersValidator()
-        {
-            Include(new PaginationParametersValidator());
-            Include(new SearchTermParametersValidator());
-        }
-    }
-
     [Handler]
     public static partial class GetAlliancesByNameQuery
     {

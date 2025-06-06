@@ -1,4 +1,4 @@
-﻿using Features.Alliances;
+﻿using Features.Alliances.GetAlliancesById;
 using Features.Shared.Parameters;
 using Microsoft.AspNetCore.Mvc;
 
