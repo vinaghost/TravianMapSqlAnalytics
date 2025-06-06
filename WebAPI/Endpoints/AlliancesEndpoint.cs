@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
-using Features.Dtos;
-using Features.Queries.Alliances;
+using Features.Alliances;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;

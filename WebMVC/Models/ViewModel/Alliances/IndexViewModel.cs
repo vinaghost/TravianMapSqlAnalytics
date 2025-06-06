@@ -1,4 +1,6 @@
-﻿using Features.Dtos;
+﻿using Features.Alliances;
+using Features.Players;
+using Features.Populations;
 
 namespace WebMVC.Models.ViewModel.Alliances
 {

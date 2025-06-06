@@ -1,6 +1,6 @@
-﻿using Features.Queries.Alliances;
-using Features.Queries.Players;
-using Features.Queries.Populations;
+﻿using Features.Alliances;
+using Features.Players;
+using Features.Populations;
 
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

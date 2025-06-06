@@ -1,7 +1,6 @@
-﻿using Features.Queries.Populations;
+﻿using Features.Populations;
 
-using Features.Queries.Villages;
-
+using Features.Villages;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Extensions;

@@ -1,4 +1,6 @@
-﻿using Features.Dtos;
+﻿using Features.Players;
+using Features.Populations;
+using Features.Villages;
 
 namespace WebMVC.Models.ViewModel.Players
 {

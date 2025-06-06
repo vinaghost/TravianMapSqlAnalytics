@@ -1,4 +1,4 @@
-﻿using Features.Queries.Servers;
+﻿using Features.Servers;
 using Infrastructure.Services;
 using WebAPI.Contracts.Requests;
 

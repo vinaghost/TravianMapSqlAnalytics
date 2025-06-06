@@ -1,5 +1,5 @@
-﻿using Features.Dtos;
-using Features.Queries.Villages;
+﻿using Features.Populations;
+using Features.Villages;
 using X.PagedList;
 
 namespace WebMVC.Models.ViewModel.Villages

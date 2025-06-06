@@ -1,7 +1,7 @@
-﻿using Features.Queries.Players;
-using Features.Queries.Populations;
+﻿using Features.Players;
+using Features.Populations;
 
-using Features.Queries.Villages;
+using Features.Villages;
 
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
