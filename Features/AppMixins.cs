@@ -1,5 +1,5 @@
-﻿using Features.Behaviors;
-using Features.Services;
+﻿using Features.Shared.Behaviors;
+using Features.Shared.Services;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Microsoft.Extensions.DependencyInjection;

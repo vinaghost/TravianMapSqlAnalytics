@@ -1,4 +1,4 @@
-﻿namespace Features.Constraints
+﻿namespace Features.Shared.Constraints
 {
     public interface ICachedQuery : IQuery
     {

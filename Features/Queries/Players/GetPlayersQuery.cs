@@ -1,7 +1,7 @@
-﻿using Features.Constraints;
-using Features.Dtos;
+﻿using Features.Dtos;
 using Features.Parameters;
 using Features.Queries.Villages;
+using Features.Shared.Constraints;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace Features.Services
+namespace Features.Shared.Services
 {
     public class CacheService(IMemoryCache memoryCache)
     {

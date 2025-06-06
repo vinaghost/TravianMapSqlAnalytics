@@ -1,9 +1,9 @@
-﻿using Features.Constraints;
-using Features.Services;
+﻿using Features.Shared.Constraints;
+using Features.Shared.Services;
 using Immediate.Handlers.Shared;
 using Infrastructure.Services;
 
-namespace Features.Behaviors
+namespace Features.Shared.Behaviors
 {
     public sealed class QueryCachingBehavior<TRequest, TResponse>
         : Behavior<TRequest, TResponse>
