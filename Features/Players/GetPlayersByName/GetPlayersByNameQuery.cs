@@ -1,46 +1,12 @@
-﻿using Features.Shared.Parameters;
-using Features.Shared.Constraints;
+﻿using Features.Shared.Constraints;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
-using System.Text;
 using X.PagedList;
 using X.PagedList.Extensions;
 
-namespace Features.Players
+namespace Features.Players.GetPlayersByName
 {
-    public record GetPlayersByNameParameters : IPaginationParameters, ISearchTermParameters
-    {
-        public int PageNumber { get; init; }
-        public int PageSize { get; init; }
-
-        public string? SearchTerm { get; init; }
-    }
-
-    public static class GetPlayersByNameParametersExtension
-    {
-        public static string Key(this GetPlayersByNameParameters parameters)
-        {
-            var sb = new StringBuilder();
-            const char SEPARATOR = '_';
-
-            parameters.PaginationKey(sb);
-            sb.Append(SEPARATOR);
-            parameters.SearchTermKey(sb);
-
-            return sb.ToString();
-        }
-    }
-
-    public class GetPlayersByNameParametersValidator : AbstractValidator<GetPlayersByNameParameters>
-    {
-        public GetPlayersByNameParametersValidator()
-        {
-            Include(new PaginationParametersValidator());
-            Include(new SearchTermParametersValidator());
-        }
-    }
-
     [Handler]
     public static partial class GetPlayersByNameQuery
     {

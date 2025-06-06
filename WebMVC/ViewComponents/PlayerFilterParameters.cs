@@ -1,5 +1,5 @@
 ﻿using Features.Alliances.GetAlliancesById;
-using Features.Shared.Parameters;
+using Features.Players;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.ViewComponents

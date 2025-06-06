@@ -3,7 +3,7 @@ using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.Players
+namespace Features.Players.GetPlayerById
 {
     [Handler]
     public static partial class GetPlayerByIdQuery

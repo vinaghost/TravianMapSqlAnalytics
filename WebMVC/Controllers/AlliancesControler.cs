@@ -1,6 +1,6 @@
 ﻿using Features.Alliances.GetAllianceById;
 using Features.Alliances.GetAlliancesByName;
-using Features.Players;
+using Features.Players.GetPlayers;
 using Features.Populations;
 
 using FluentValidation;
