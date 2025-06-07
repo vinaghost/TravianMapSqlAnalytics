@@ -1,4 +1,7 @@
-﻿using FluentValidation;
+﻿using Features.Villages;
+using FluentValidation;
+using Infrastructure.Entities;
+using LinqKit;
 using System.Text;
 
 namespace Features.Shared.Parameters
@@ -22,6 +25,19 @@ namespace Features.Shared.Parameters
             sb.Append(parameters.Y);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Distance);
+        }
+
+        public static ExpressionStarter<Village> GetPredicate(this IDistanceFilterParameters distanceParameters)
+        {
+            var predicate = PredicateBuilder.New<Village>(true);
+
+            if (distanceParameters.Distance != 0)
+            {
+                predicate = predicate
+                    .And(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
+            }
+
+            return predicate;
         }
     }
 

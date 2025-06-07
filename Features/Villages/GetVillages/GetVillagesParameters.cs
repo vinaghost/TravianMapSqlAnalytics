@@ -1,11 +1,10 @@
 ﻿using Features.Players;
 using Features.Shared.Parameters;
-using FluentValidation;
 using System.Text;
 
-namespace Features.Villages
+namespace Features.Villages.GetVillages
 {
-    public record VillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
+    public record GetVillagesParameters : IPaginationParameters, IPlayerFilterParameters, IVillageFilterParameters, IDistanceFilterParameters
     {
         public int PageNumber { get; init; } = 1;
         public int PageSize { get; init; } = 20;
@@ -33,7 +32,7 @@ namespace Features.Villages
 
     public static class GetVillagesParametersExtension
     {
-        private static string GenerateKey(this VillagesParameters parameters)
+        private static string GenerateKey(this GetVillagesParameters parameters)
         {
             var sb = new StringBuilder();
             const char SEPARATOR = '_';
@@ -48,25 +47,14 @@ namespace Features.Villages
             return sb.ToString();
         }
 
-        public static string Key(this VillagesParameters parameters)
+        public static string Key(this GetVillagesParameters parameters)
         {
             return parameters.GenerateKey();
         }
 
-        public static string KeyParent(this VillagesParameters parameters)
+        public static string KeyParent(this GetVillagesParameters parameters)
         {
             return parameters.GenerateKey();
-        }
-    }
-
-    public class VillagesParametersValidator : AbstractValidator<VillagesParameters>
-    {
-        public VillagesParametersValidator()
-        {
-            Include(new PaginationParametersValidator());
-            Include(new DistanceFilterParametersValidator());
-            Include(new PlayerFilterParametersValidator());
-            Include(new VillageFilterParametersValidator());
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Villages;
+using Features.Villages.GetVillages;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
@@ -7,13 +8,13 @@ using WebAPI.Groups;
 
 namespace WebAPI.Endpoints.Villages
 {
-    public record DistanceRequest(string ServerUrl) : VillagesParameters, IServerUrlRequest;
+    public record DistanceRequest(string ServerUrl) : GetVillagesParameters, IServerUrlRequest;
 
     public class DistanceRequestValidator : Validator<DistanceRequest>
     {
         public DistanceRequestValidator()
         {
-            Include(new VillagesParametersValidator());
+            Include(new GetVillagesParametersValidator());
             Include(new ServerUrlRequestValidator());
         }
     }

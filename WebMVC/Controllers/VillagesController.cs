@@ -1,6 +1,6 @@
 ﻿using Features.Populations;
-
-using Features.Villages;
+using Features.Villages.GetInactiveVillages;
+using Features.Villages.GetVillages;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Extensions;
@@ -59,10 +59,10 @@ namespace WebMVC.Controllers
 
         [HttpPost]
         public async Task<IActionResult> Index(
-            VillagesParameters parameters,
+            GetVillagesParameters parameters,
             [FromServices] GetVillagesQuery.Handler getVillagesByParametersQuery,
             [FromServices] GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery,
-            [FromServices] IValidator<VillagesParameters> validator)
+            [FromServices] IValidator<GetVillagesParameters> validator)
         {
             ViewBag.IsInput = true;
 

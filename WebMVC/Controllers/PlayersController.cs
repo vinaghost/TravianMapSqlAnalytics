@@ -3,7 +3,7 @@ using Features.Players.GetPlayersByName;
 using Features.Populations;
 
 using Features.Villages;
-
+using Features.Villages.GetVillages;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using WebMVC.Models.ViewModel.Players;
@@ -44,7 +44,7 @@ namespace WebMVC.Controllers
             var player = await getPlayerByIdQuery.HandleAsync(new(playerId));
             if (player is null) return View();
 
-            var villageParameters = new VillagesParameters()
+            var villageParameters = new GetVillagesParameters()
             {
                 Players = [playerId],
                 PageSize = 60,

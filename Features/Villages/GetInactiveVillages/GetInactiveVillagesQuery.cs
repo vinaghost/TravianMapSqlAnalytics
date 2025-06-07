@@ -1,4 +1,6 @@
-﻿using Features.Shared.Constraints;
+﻿using Features.Players;
+using Features.Shared.Constraints;
+using Features.Shared.Parameters;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
@@ -7,38 +9,13 @@ using LinqKit;
 using X.PagedList;
 using X.PagedList.Extensions;
 
-namespace Features.Villages
+namespace Features.Villages.GetInactiveVillages
 {
-    public record GetInactiveVillagesParameters : VillagesParameters
-    {
-        public int InactiveDays { get; init; } = 3;
-    }
-
-    public static class GetInactiveVillagesParametersExtension
-    {
-        public static string Key(this GetInactiveVillagesParameters parameters)
-        {
-            return $"{parameters.KeyParent()}_{parameters.InactiveDays}";
-        }
-    }
-
-    public class GetInactiveVillagesParametersValidator : AbstractValidator<GetInactiveVillagesParameters>
-    {
-        public GetInactiveVillagesParametersValidator()
-        {
-            Include(new VillagesParametersValidator());
-
-            RuleFor(x => x.InactiveDays)
-                .NotEmpty()
-                .GreaterThanOrEqualTo(3);
-        }
-    }
-
     [Handler]
     public static partial class GetInactiveVillagesQuery
     {
         public sealed record Query(GetInactiveVillagesParameters Parameters)
-            : DefaultCachedQuery($"{nameof(GetInactiveVillagesQuery)}_{Parameters.Key()}", true);
+            : DefaultCachedQuery($"{nameof(GetInactiveVillagesQuery)}_{Parameters.Key()}");
 
         private static ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
             Query query,
@@ -49,9 +26,12 @@ namespace Features.Villages
             var parameters = query.Parameters;
 
             var players = context.GetInactivePlayers(parameters);
+
+            var villagePredicate = (parameters as IVillageFilterParameters).GetPredicate();
+            var distancePredicate = (parameters as IDistanceFilterParameters).GetPredicate();
             var villages = context.Villages
                 .AsExpandable()
-                .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
+                .Where(villagePredicate.And(distancePredicate));
 
             var data = players
                 .Join(context.Alliances,
@@ -112,11 +92,13 @@ namespace Features.Villages
         private static IQueryable<int> GetInactivePlayerIds(this VillageDbContext context, GetInactiveVillagesParameters parameters)
         {
             var date = DateTime.Today.AddDays(-parameters.InactiveDays);
-            if (VillageDataQuery.IsPlayerFiltered(parameters))
+            if (parameters.IsPlayerFiltered())
             {
+                var villagePredicate = (parameters as IVillageFilterParameters).GetPredicate();
+                var distancePredicate = (parameters as IDistanceFilterParameters).GetPredicate();
                 var query = context.Villages
                     .AsExpandable()
-                    .Where(VillageDataQuery.VillagePredicate(parameters, parameters))
+                    .Where(villagePredicate.And(distancePredicate))
                     .Join(context.PlayersHistory
                             .Where(x => x.Date >= date),
                         x => x.Id,

@@ -1,17 +1,19 @@
-﻿using Features.Shared.Constraints;
+﻿using Features.Players;
+using Features.Shared.Constraints;
+using Features.Shared.Parameters;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
 using LinqKit;
 using X.PagedList;
 using X.PagedList.Extensions;
 
-namespace Features.Villages
+namespace Features.Villages.GetVillages
 {
     [Handler]
     public static partial class GetVillagesQuery
     {
-        public sealed record Query(VillagesParameters Parameters)
-            : DefaultCachedQuery($"{nameof(GetVillagesQuery)}_{Parameters.Key()}", true);
+        public sealed record Query(GetVillagesParameters Parameters)
+            : DefaultCachedQuery($"{nameof(GetVillagesQuery)}_{Parameters.Key()}");
 
         private static ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
             Query query,
@@ -21,13 +23,18 @@ namespace Features.Villages
         {
             var parameters = query.Parameters;
 
+            var playerPredicate = (parameters as IPlayerFilterParameters).GetPredicate();
+
             var players = context.Players
                 .AsExpandable()
-                .Where(VillageDataQuery.PlayerPredicate(parameters));
+                .Where(playerPredicate);
+
+            var villagePredicate = (parameters as IVillageFilterParameters).GetPredicate();
+            var distancePredicate = (parameters as IDistanceFilterParameters).GetPredicate();
 
             var villages = context.Villages
                 .AsExpandable()
-                .Where(VillageDataQuery.VillagePredicate(parameters, parameters));
+                .Where(villagePredicate.And(distancePredicate));
 
             var data = players
                .Join(context.Alliances,

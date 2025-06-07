@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Constraints;
-using Features.Villages;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
@@ -22,10 +21,10 @@ namespace Features.Players.GetPlayers
         )
         {
             var parameters = query.Parameters;
-            var predicate = VillageDataQuery.PlayerPredicate(parameters);
+            var playerPredicate = (parameters as IPlayerFilterParameters).GetPredicate();
             var players = context.Players
                 .AsExpandable()
-                .Where(predicate)
+                .Where(playerPredicate)
                 .OrderByDescending(x => x.VillageCount)
                 .Join(context.Alliances,
                    x => x.AllianceId,
