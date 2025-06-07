@@ -8,6 +8,10 @@
 # REGISTRY_PASSWORD
 
 name: Build and deploy Web MVC
+permissions:
+  contents: read
+  packages: write
+  deployments: write
 on:
   workflow_dispatch:
     inputs:
