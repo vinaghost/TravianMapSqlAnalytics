@@ -1,4 +1,4 @@
-﻿using Features.Shared.Parameters;
+﻿using Features.Villages;
 
 namespace WebMVC.ViewComponents
 {
