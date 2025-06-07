@@ -1,10 +1,9 @@
-﻿using Features.Villages;
-using FluentValidation;
+﻿using FluentValidation;
 using Infrastructure.Entities;
 using LinqKit;
 using System.Text;
 
-namespace Features.Shared.Parameters
+namespace Features.Villages
 {
     public interface IDistanceFilterParameters
     {

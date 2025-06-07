@@ -5,13 +5,13 @@ using Infrastructure.Entities;
 using LinqKit;
 using Microsoft.EntityFrameworkCore;
 
-namespace Features.Populations
+namespace Features.Populations.GetPlayersPopulationHistory
 {
     [Handler]
-    public static partial class GetPlayersPopulationHistoryQuery
+    public static partial class GetVillagesPopulationHistoryQuery
     {
         public sealed record Query(PopulationParameters Parameters)
-            : DefaultCachedQuery($"{nameof(GetPlayersPopulationHistoryQuery)}_{Parameters.Key()}");
+            : DefaultCachedQuery($"{nameof(GetVillagesPopulationHistoryQuery)}_{Parameters.Key()}");
 
         private static async ValueTask<Dictionary<int, List<PopulationDto>>> HandleAsync(
             Query query,
@@ -25,27 +25,27 @@ namespace Features.Populations
                 return [];
             }
 
-            var predicate = PredicateBuilder.New<PlayerHistory>(true);
+            var predicate = PredicateBuilder.New<VillageHistory>(true);
 
             if (ids.Count == 1)
             {
-                predicate = predicate.And(x => x.PlayerId == ids[0]);
+                predicate = predicate.And(x => x.VillageId == ids[0]);
             }
             else
             {
-                predicate = predicate.And(x => ids.Contains(x.PlayerId));
+                predicate = predicate.And(x => ids.Contains(x.VillageId));
             }
 
             var date = DateTime.Today.AddDays(-query.Parameters.Days);
             predicate = predicate.And(x => x.Date >= date);
 
-            var population = await context.PlayersHistory
+            var population = await context.VillagesHistory
                 .AsQueryable()
                 .Where(predicate)
                 .OrderByDescending(x => x.Date)
                 .Select(x => new
                 {
-                    x.PlayerId,
+                    x.VillageId,
                     x.Date,
                     x.Population,
                     x.ChangePopulation,
@@ -53,13 +53,13 @@ namespace Features.Populations
                 .ToListAsync(cancellationToken);
 
             return population
-                .GroupBy(x => x.PlayerId)
+                .GroupBy(x => x.VillageId)
                 .Select(x => new
                 {
-                    PlayerId = x.Key,
+                    VillageId = x.Key,
                     Population = x.Select(x => new PopulationDto(x.Date, x.Population, x.ChangePopulation)).ToList(),
                 })
-                .ToDictionary(x => x.PlayerId, x => x.Population);
+                .ToDictionary(x => x.VillageId, x => x.Population);
         }
     }
 }

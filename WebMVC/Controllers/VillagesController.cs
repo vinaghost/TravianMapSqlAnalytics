@@ -1,4 +1,5 @@
 ﻿using Features.Populations;
+using Features.Populations.GetPlayersPopulationHistory;
 using Features.Villages.GetInactiveVillages;
 using Features.Villages.GetVillages;
 using FluentValidation;

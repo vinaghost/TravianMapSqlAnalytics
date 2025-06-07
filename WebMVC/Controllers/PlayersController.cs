@@ -1,8 +1,7 @@
 ﻿using Features.Players.GetPlayerById;
 using Features.Players.GetPlayersByName;
 using Features.Populations;
-
-using Features.Villages;
+using Features.Populations.GetPlayersPopulationHistory;
 using Features.Villages.GetVillages;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

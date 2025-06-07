@@ -1,5 +1,4 @@
 ﻿using Features.Shared.Parameters;
-using Features.Shared.Constraints;
 using FluentValidation;
 using Immediate.Handlers.Shared;
 using Infrastructure.DbContexts;
@@ -8,6 +7,7 @@ using LinqKit;
 using System.Text;
 using X.PagedList;
 using X.PagedList.Extensions;
+using Features.Shared.Constraints;
 
 namespace Features.Servers
 {

@@ -1,6 +1,4 @@
-﻿using Features.Shared.Parameters;
-using FluentValidation;
-using System.Text;
+﻿using System.Text;
 
 namespace Features.Populations
 {
@@ -19,14 +17,6 @@ namespace Features.Populations
             parameters.PopulationFilterKey(sb);
 
             return sb.ToString();
-        }
-    }
-
-    public class PopulationParametersValidator : AbstractValidator<PopulationParameters>
-    {
-        public PopulationParametersValidator()
-        {
-            Include(new PopulationFilterParametersValidator());
         }
     }
 }

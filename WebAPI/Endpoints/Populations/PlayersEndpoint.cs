@@ -1,5 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Populations;
+using Features.Populations.GetPlayersPopulationHistory;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;

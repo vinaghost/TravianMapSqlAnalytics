@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using System.Text;
 
-namespace Features.Shared.Parameters
+namespace Features.Populations
 {
     public interface IPopulationFilterParmeters
     {
