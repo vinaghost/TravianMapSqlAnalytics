@@ -1073,6 +1073,11 @@ $.extend( $.validator, {
 				throw new Error("Invalid element provided to validationTargetFor.");
 			}
 
+			// Sanitize the element if it is a string
+			if (typeof element === "string") {
+				element = this.escapeCssMeta(element);
+			}
+
 			// Always apply ignore filter
 			return $( element ).not( this.settings.ignore )[ 0 ];
 		},
