@@ -25,9 +25,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[8.0.16, )",
-        "resolved": "8.0.16",
-        "contentHash": "0H1QaKpVibe++Zx6EYJQGhrpfz2bBPGiQ7Rpsmx8I3+oKv+ZRRIfVfmcj50KuZlhhRE6V02y5bUjP+V2oPM2ng=="
+        "requested": "[8.0.15, )",
+        "resolved": "8.0.15",
+        "contentHash": "s4eXlcRGyHeCgFUGQnhq0e/SCHBPp0jOHgMqZg3fQ2OCHJSm1aOUhI6RFWuVIcEb9ig2WgI2kWukk8wu72EbUQ=="
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
@@ -58,8 +58,8 @@
       },
       "Immediate.Handlers": {
         "type": "Transitive",
-        "resolved": "2.1.0",
-        "contentHash": "2Aix3jopyQWWKQ/nFqtQMG/SvEdZlu9CU39HmWuemZHHSW1kfWwnUgUivqcV3NzrhudZ4SIh+7bZxSNOMI96DA=="
+        "resolved": "2.2.0",
+        "contentHash": "lwmd0BjpMX5iHLvtVTmllhaC9U3/gebp4O1CPFYYBgEODG3flBt3WntrpZ026eiPorFmZqifQMrhm1F/W7BMCA=="
       },
       "LinqKit.Core": {
         "type": "Transitive",
@@ -68,33 +68,33 @@
       },
       "LinqKit.Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "8.1.8",
-        "contentHash": "ne5BYcnMdAZKzR73NXQwV3GQWUHZ4AQ64c3gU4qIpQ6zoHISuzURX+zzOLcrN+QQhIIyaDpdCZs4FJAcp20R3g==",
+        "resolved": "9.0.8",
+        "contentHash": "9qVemq8r7eEih29EMTLCj68PeNq/+ZaLTXT9zPBhSdyOMNsdALzdExymKK3UqSMgJmUyOuzYww+kw2h7HlAvJQ==",
         "dependencies": {
           "LinqKit.Core": "1.2.8",
-          "Microsoft.EntityFrameworkCore": "8.0.11"
+          "Microsoft.EntityFrameworkCore": "9.0.0"
         }
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "8.0.13",
-        "contentHash": "4wyLeg64sZgJcER83fkitlKuySY3OzwcOZSZcGV1TNskmThupfhcVlsQht7bNCfNpXTCZVNIOwAZChk6/OFdXQ==",
+        "resolved": "9.0.0",
+        "contentHash": "wpG+nfnfDAw87R3ovAsUmjr3MZ4tYXf6bFqEPVAIKE6IfPml3DS//iX0DBnf8kWn5ZHSO5oi1m4d/Jf+1LifJQ==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Abstractions": "8.0.13",
-          "Microsoft.EntityFrameworkCore.Analyzers": "8.0.13",
-          "Microsoft.Extensions.Caching.Memory": "8.0.1",
-          "Microsoft.Extensions.Logging": "8.0.1"
+          "Microsoft.EntityFrameworkCore.Abstractions": "9.0.0",
+          "Microsoft.EntityFrameworkCore.Analyzers": "9.0.0",
+          "Microsoft.Extensions.Caching.Memory": "9.0.0",
+          "Microsoft.Extensions.Logging": "9.0.0"
         }
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.13",
-        "contentHash": "a6O+v8CMStumpVoQyN0aUpx5P3/qYZP+5791sGrzJhIM+QsniQdSaJVdUSneL40M+FpBgtiC8ggqzNo2x/gVlw=="
+        "resolved": "9.0.0",
+        "contentHash": "fnmifFL8KaA4ZNLCVgfjCWhZUFxkrDInx5hR4qG7Q8IEaSiy/6VOSRFyx55oH7MV4y7wM3J3EE90nSpcVBI44Q=="
       },
       "Microsoft.EntityFrameworkCore.Analyzers": {
         "type": "Transitive",
-        "resolved": "8.0.13",
-        "contentHash": "ENny33QADFiRxge5ikJBs2p7JB4MQx/ZSPKPNwt2eJPO0lVUGSjTiJeunGGggkVHiaUy0yY4f625LQtNlErIsw=="
+        "resolved": "9.0.0",
+        "contentHash": "Qje+DzXJOKiXF72SL0XxNlDtTkvWWvmwknuZtFahY5hIQpRKO59qnGuERIQ3qlzuq5x4bAJ8WMbgU5DLhBgeOQ=="
       },
       "Microsoft.EntityFrameworkCore.Relational": {
         "type": "Transitive",
@@ -509,9 +509,9 @@
         "dependencies": {
           "FluentValidation": "[12.0.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.0.0, )",
-          "Immediate.Handlers": "[2.1.0, )",
+          "Immediate.Handlers": "[2.2.0, )",
           "Infrastructure": "[1.0.0, )",
-          "LinqKit.Microsoft.EntityFrameworkCore": "[8.1.8, )",
+          "LinqKit.Microsoft.EntityFrameworkCore": "[9.0.8, )",
           "Microsoft.Extensions.Caching.Memory": "[9.0.5, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.5, )",
           "X.PagedList": "[10.5.7, )"
