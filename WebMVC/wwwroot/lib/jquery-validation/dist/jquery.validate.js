@@ -1068,6 +1068,16 @@ $.extend( $.validator, {
 				element = this.findByName( element.name );
 			}
 
+			// Validate that element is a valid DOM element or selector
+			if (!element || !(element instanceof HTMLElement || typeof element === "string")) {
+				throw new Error("Invalid element provided to validationTargetFor.");
+			}
+
+			// Sanitize the element if it is a string
+			if (typeof element === "string") {
+				element = this.escapeCssMeta(element);
+			}
+
 			// Always apply ignore filter
 			return $( element ).not( this.settings.ignore )[ 0 ];
 		},
@@ -1077,6 +1087,10 @@ $.extend( $.validator, {
 		},
 
 		findByName: function( name ) {
+			// Ensure the name is a valid string
+			if (typeof name !== "string" || !/^[a-zA-Z0-9_\-]+$/.test(name)) {
+				throw new Error("Invalid name attribute provided to findByName.");
+			}
 			return $( this.currentForm ).find( "[name='" + this.escapeCssMeta( name ) + "']" );
 		},
 
