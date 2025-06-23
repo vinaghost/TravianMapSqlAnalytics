@@ -4,22 +4,22 @@
     "net8.0": {
       "FastEndpoints": {
         "type": "Direct",
-        "requested": "[6.1.0, )",
-        "resolved": "6.1.0",
-        "contentHash": "20nY7VqvSKI6/8m1q1zskd5eWbv8BDwdt8klseCA1UdkmXOZrC/oUhrXQknjEW5enp6uGVH9iy9yvfEJdh1/Aw==",
+        "requested": "[6.2.0, )",
+        "resolved": "6.2.0",
+        "contentHash": "KhWPR4sGhuj6/qBksmAIR60zQtVDYMR/HWSKqtZhDUN/gnhJpq9/9nCpKw7Cssq8rbw68AmVBFzLKWsfAe4dZQ==",
         "dependencies": {
-          "FastEndpoints.Attributes": "6.1.0",
-          "FastEndpoints.Messaging.Core": "6.1.0",
+          "FastEndpoints.Attributes": "6.2.0",
+          "FastEndpoints.Messaging.Core": "6.2.0",
           "FluentValidation": "12.0.0"
         }
       },
       "FastEndpoints.Swagger": {
         "type": "Direct",
-        "requested": "[6.1.0, )",
-        "resolved": "6.1.0",
-        "contentHash": "wqvW46aRpWNA8EXjWEeBVhiQ4Vhii9ab0lq0cHrLpqn24fttFIqQaUJbI/j6gSIDIUacteQfuHVJWBkBPFfRtw==",
+        "requested": "[6.2.0, )",
+        "resolved": "6.2.0",
+        "contentHash": "Swb+vBx1y6y3pX3iQ2eBGnNeRNb7FtOW5stoGbwjMLVOSas05yp7lDQKPk6QIWTGt99JeNFwjJs3S+aoEst0qw==",
         "dependencies": {
-          "FastEndpoints": "6.1.0",
+          "FastEndpoints": "6.2.0",
           "NSwag.AspNetCore": "14.4.0"
         }
       },
@@ -31,16 +31,16 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "6.1.0",
-        "contentHash": "ZsLRP+AtnoZKzcVG0/YE0FkjEA31tMxeWCqdQbM6fhLmIiH/SYLO6QUPEJsrEUyVsYeIG0sj4WiGgL8LqzTfiA==",
+        "resolved": "6.2.0",
+        "contentHash": "Z2tWmd7tA8cVuHl6WsHZVIhdI2Dy++SddEgswoefpoZjOFMtkORKIOYpGec/MyaMqQpCRm/zgWfXjFvZrm/Oag==",
         "dependencies": {
           "Microsoft.Extensions.Primitives": "8.0.0"
         }
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "6.1.0",
-        "contentHash": "BpgNiV5kuPJpGT+YV1n+Qub1WRd0Q+wRbf+DkTcx6F2aH7lMO350d18odKIsJeC63xlu8JT2JF4GMXKwxn8D2g=="
+        "resolved": "6.2.0",
+        "contentHash": "ycdbVd1IedyVFUpthcVa6NEJ4J1/JjEFHdfVEsBtO4Qts5IBQuqcirbyx7GoogCwqrgQapru5sZ/9Dns/cLPkA=="
       },
       "FluentValidation": {
         "type": "Transitive",
