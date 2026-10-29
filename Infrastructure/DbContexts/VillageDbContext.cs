@@ -1,4 +1,5 @@
 ﻿using Infrastructure.Entities;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DbContexts

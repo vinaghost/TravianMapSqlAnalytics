@@ -1,7 +1,7 @@
 ﻿@using Features.Servers
-@using Infrastructure.Services
+@using Infrastructure
 
-@inject IServerCache serverCache
+@inject ServerCache serverCache
 @inject GetServerCountQuery.Handler getServerCountQuery
 @{
     ViewData["Title"] = "Home";

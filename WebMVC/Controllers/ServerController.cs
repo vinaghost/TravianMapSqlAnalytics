@@ -1,14 +1,16 @@
 ﻿using Features.Servers;
-using Infrastructure.Services;
+
+using Infrastructure;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebMVC.Controllers
 {
     public class ServersController : Controller
     {
-        private readonly IServerCache _serverCache;
+        private readonly ServerCache _serverCache;
 
-        public ServersController(IServerCache serverCache)
+        public ServersController(ServerCache serverCache)
         {
             _serverCache = serverCache;
         }

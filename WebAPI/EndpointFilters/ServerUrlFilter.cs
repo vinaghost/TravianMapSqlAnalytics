@@ -1,15 +1,17 @@
 ﻿using Features.Servers;
-using Infrastructure.Services;
+
+using Infrastructure;
+
 using WebAPI.Contracts.Requests;
 
 namespace WebAPI.EndpointFilters
 {
     public class ServerUrlFilter : IEndpointFilter
     {
-        private readonly IServerCache _serverCache;
+        private readonly ServerCache _serverCache;
         private readonly IsValidServerUrlQuery.Handler _isValidServerUrlQuery;
 
-        public ServerUrlFilter(IServerCache serverCache, IsValidServerUrlQuery.Handler isValidServerUrlQuery)
+        public ServerUrlFilter(ServerCache serverCache, IsValidServerUrlQuery.Handler isValidServerUrlQuery)
         {
             _serverCache = serverCache;
             _isValidServerUrlQuery = isValidServerUrlQuery;

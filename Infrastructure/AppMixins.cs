@@ -1,10 +1,9 @@
-﻿using Application.Models.Options;
-using Infrastructure.DbContexts;
-using Infrastructure.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Logging;
+
+using MySqlConnector;
+
 using Serilog;
 
 namespace Infrastructure
@@ -14,8 +13,7 @@ namespace Infrastructure
         public static void ConfigureInfrastructure(this IHostApplicationBuilder builder)
         {
             builder.ConfigureLogging();
-            builder.BindConfiguration();
-            builder.ConfigureDbContext();
+            builder.ConfigureDbConnection();
         }
 
         public static void ConfigureLogging(this IHostApplicationBuilder builder)
@@ -24,46 +22,45 @@ namespace Infrastructure
                     .ReadFrom.Configuration(builder.Configuration));
         }
 
-        private static void BindConfiguration(this IHostApplicationBuilder builder)
+        private static void ConfigureDbConnection(this IHostApplicationBuilder builder)
         {
-            builder.Services.Configure<ConnectionStrings>(builder.Configuration.GetSection(nameof(ConnectionStrings)));
-        }
+            builder.Services.AddScoped<ServerCache>();
 
-        private static void ConfigureDbContext(this IHostApplicationBuilder builder)
-        {
-            var isDevelopment = builder.Environment.IsDevelopment();
-
-            builder.Services.AddDbContext<ServerDbContext>((serviceProvider, options) =>
+            builder.Services.AddSingleton(serviceProvider =>
             {
-                var connectionStrings = serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value;
-                options
-                    .EnableSensitiveDataLogging(isDevelopment)
-                    .EnableDetailedErrors(isDevelopment)
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseMySql(connectionStrings.Server, ServerVersion.AutoDetect(connectionStrings.Server));
+                var dataSourceBuilder = new MySqlDataSourceBuilder(builder.Configuration["DatabaseConnectionString"]!)
+                            .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>());
+                return dataSourceBuilder.Build();
             });
 
-            builder.Services.AddScoped<IServerCache, ServerCache>();
-
-            builder.Services.AddDbContext<VillageDbContext>((serviceProvider, options) =>
+            builder.Services.AddKeyedScoped("Villages", (serviceProvider, serviceKey) =>
             {
-                var serverCache = serviceProvider.GetRequiredService<IServerCache>();
+                if (serviceKey is not string stringKey)
+                {
+                    throw new ArgumentException("Invalid service key type provided.");
+                }
+
+                var serverCache = serviceProvider.GetRequiredService<ServerCache>();
                 if (serverCache.Server is null)
                 {
                     throw new InvalidOperationException("Server cache is not initialized.");
                 }
-                var connectionStrings = serviceProvider.GetRequiredService<IOptions<ConnectionStrings>>().Value;
+                var dataSource = serviceProvider.GetRequiredService<MySqlDataSource>();
+                var connection = dataSource.CreateConnection();
+                connection.ChangeDatabase(serverCache.Server);
+                return connection;
+            });
 
-                var connectionString = $"{connectionStrings.Village};Database={serverCache.Server}";
-                options
-                    .EnableSensitiveDataLogging(isDevelopment)
-                    .EnableDetailedErrors(isDevelopment)
-                    .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking)
-                    .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), x =>
-                    {
-                        x.EnableIndexOptimizedBooleanColumns();
-                        x.EnablePrimitiveCollectionsSupport();
-                    });
+            builder.Services.AddKeyedScoped("Servers", (serviceProvider, serviceKey) =>
+            {
+                if (serviceKey is not string stringKey)
+                {
+                    throw new ArgumentException("Invalid service key type provided.");
+                }
+                var dataSource = serviceProvider.GetRequiredService<MySqlDataSource>();
+                var connection = dataSource.CreateConnection();
+                connection.ChangeDatabase("Servers");
+                return connection;
             });
         }
     }

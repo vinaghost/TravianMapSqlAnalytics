@@ -1,7 +1,9 @@
 ﻿using Features.Shared.Constraints;
 using Features.Shared.Services;
+
 using Immediate.Handlers.Shared;
-using Infrastructure.Services;
+
+using Infrastructure;
 
 namespace Features.Shared.Behaviors
 {
@@ -10,9 +12,9 @@ namespace Features.Shared.Behaviors
         where TRequest : ICachedQuery
     {
         private readonly CacheService _cacheService;
-        private readonly IServerCache _serverCache;
+        private readonly ServerCache _serverCache;
 
-        public QueryCachingBehavior(CacheService cacheService, IServerCache serverCache)
+        public QueryCachingBehavior(CacheService cacheService, ServerCache serverCache)
         {
             _cacheService = cacheService;
             _serverCache = serverCache;

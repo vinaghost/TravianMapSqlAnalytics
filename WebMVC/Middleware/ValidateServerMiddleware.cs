@@ -1,15 +1,16 @@
 ﻿using Features.Servers;
-using Infrastructure.Services;
+
+using Infrastructure;
 
 namespace WebMVC.Middleware
 {
     public class ValidateServerMiddleware : IMiddleware
     {
-        private readonly IServerCache _serverCache;
+        private readonly ServerCache _serverCache;
         private readonly GetMostPlayerServerQuery.Handler _getMostPlayerServerQuery;
         private readonly IsValidServerUrlQuery.Handler _isValidServerUrlQuery;
 
-        public ValidateServerMiddleware(IServerCache serverCache, GetMostPlayerServerQuery.Handler getMostPlayerServerQuery, IsValidServerUrlQuery.Handler isValidServerUrlQuery)
+        public ValidateServerMiddleware(ServerCache serverCache, GetMostPlayerServerQuery.Handler getMostPlayerServerQuery, IsValidServerUrlQuery.Handler isValidServerUrlQuery)
         {
             _serverCache = serverCache;
             _getMostPlayerServerQuery = getMostPlayerServerQuery;

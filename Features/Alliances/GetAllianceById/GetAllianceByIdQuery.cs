@@ -1,18 +1,20 @@
 ﻿using Features.Shared.Constraints;
+
 using Immediate.Handlers.Shared;
+
 using Infrastructure.DbContexts;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Alliances.GetAllianceById
 {
     [Handler]
-    public static partial class GetAllianceByIdQuery
+    public sealed partial class GetAllianceByIdQuery(VillageDbContext context)
     {
         public sealed record Query(int AllianceId) : DefaultCachedQuery($"{nameof(GetAllianceByIdQuery)}_{AllianceId}");
 
-        private static async ValueTask<AllianceDto?> HandleAsync(
+        private async ValueTask<AllianceDto?> HandleAsync(
             Query query,
-            VillageDbContext context,
             CancellationToken cancellationToken
         )
         {
