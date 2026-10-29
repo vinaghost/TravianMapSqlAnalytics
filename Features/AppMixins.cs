@@ -1,7 +1,10 @@
 ﻿using Features.Shared.Behaviors;
 using Features.Shared.Services;
+
 using FluentValidation;
+
 using Immediate.Handlers.Shared;
+
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -26,7 +29,6 @@ namespace Features
             builder.Services.AddValidatorsFromAssembly(assembly);
 
             builder.Services.AddFeaturesHandlers();
-            builder.Services.AddFeaturesBehaviors();
         }
     }
 }
