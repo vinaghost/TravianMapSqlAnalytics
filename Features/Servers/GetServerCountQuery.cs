@@ -1,27 +1,30 @@
-﻿using Features.Shared.Constraints;
+﻿using System.Data;
+
+using Dapper;
+
+using Features.Shared.Constraints;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
+using Infrastructure;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Features.Servers
 {
     [Handler]
-    public static partial class GetServerCountQuery
+    public sealed partial class GetServerCountQuery([FromKeyedServices(DatabaseConnectionType.Servers)] IDbConnection connection)
     {
         public sealed record Query() : DefaultCachedQuery(nameof(GetServerCountQuery), false);
 
-        private static async ValueTask<int> HandleAsync(
-            Query query,
-            ServerDbContext context,
-            CancellationToken cancellationToken
-        )
+        private async ValueTask<int> HandleAsync(Query query, CancellationToken cancellationToken)
         {
-            var count = await context
-                .Servers
-                .CountAsync(cancellationToken);
+            const string sql = "SELECT COUNT(*) FROM Servers;";
+
+            var count = await connection.ExecuteScalarAsync<int>(
+                new CommandDefinition(sql, cancellationToken: cancellationToken)
+            );
+
             return count;
         }
     }

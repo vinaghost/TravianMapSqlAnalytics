@@ -1,27 +1,39 @@
-﻿using Features.Shared.Constraints;
+﻿using System.Data;
+
+using Dapper;
+
+using Features.Shared.Constraints;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
+using Infrastructure;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Features.Servers
 {
     [Handler]
-    public static partial class IsValidServerUrlQuery
+    public sealed partial class IsValidServerUrlQuery([FromKeyedServices(DatabaseConnectionType.Servers)] IDbConnection connection)
     {
         public sealed record Query(string ServerUrl) : DefaultCachedQuery($"{nameof(IsValidServerUrlQuery)}_{ServerUrl}", false);
 
-        private static async ValueTask<bool> HandleAsync(
-            Query query,
-            ServerDbContext context,
-            CancellationToken cancellationToken
-        )
+        private async ValueTask<bool> HandleAsync(Query query, CancellationToken cancellationToken)
         {
-            return await context.Servers
-                .Where(x => x.Url == query.ServerUrl)
-                .AnyAsync(cancellationToken);
+            var serverUrl = query.ServerUrl;
+
+            const string sql = @"
+                SELECT 1
+                FROM Servers
+                WHERE Url = @ServerUrl
+                LIMIT 1;";
+
+            var exists = await connection.ExecuteScalarAsync<int?>(new(
+                sql,
+                new { ServerUrl = serverUrl },
+                cancellationToken: cancellationToken)
+            );
+
+            return exists.HasValue;
         }
     }
 }

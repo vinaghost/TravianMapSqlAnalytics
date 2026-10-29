@@ -1,28 +1,40 @@
-﻿using Features.Shared.Constraints;
+﻿using System.Data;
+
+using Dapper;
+
+using Features.Shared.Constraints;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
+using Infrastructure;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Features.Servers
 {
     [Handler]
-    public static partial class GetServerByIdQuery
+    public sealed partial class GetServerByIdQuery([FromKeyedServices(DatabaseConnectionType.Servers)] IDbConnection connection)
     {
-        public sealed record Query(int ServerId) : DefaultCachedQuery($"{nameof(GetServerByIdQuery)}_{ServerId}", false);
+        public sealed record Query(int ServerId) :
+            DefaultCachedQuery($"{nameof(GetServerByIdQuery)}_{ServerId}", false);
 
-        private static async ValueTask<ServerDto?> HandleAsync(
-            Query query,
-            ServerDbContext context,
-            CancellationToken cancellationToken
-        )
+        private async ValueTask<ServerDto?> HandleAsync(Query query, CancellationToken cancellationToken)
         {
-            return await context.Servers
-                .Where(x => x.Id == query.ServerId)
-                .Select(x => new ServerDto(x.Id, x.Url))
-                .FirstOrDefaultAsync(cancellationToken);
+            var serverId = query.ServerId;
+
+            const string sql = @"
+                SELECT Id, Url
+                FROM Servers
+                WHERE Id = @ServerId
+                LIMIT 1;";
+
+            var server = await connection.QueryFirstOrDefaultAsync<ServerDto>(new(
+                sql,
+                new { ServerId = serverId },
+                cancellationToken: cancellationToken)
+            );
+
+            return server;
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Text;
+
+using Dapper;
 
 using Features.Shared.Constraints;
 using Features.Shared.Parameters;
@@ -7,13 +10,11 @@ using FluentValidation;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
-using Infrastructure.Entities;
+using Infrastructure;
 
-using LinqKit;
+using Microsoft.Extensions.DependencyInjection;
 
 using X.PagedList;
-using X.PagedList.Extensions;
 
 namespace Features.Servers
 {
@@ -45,33 +46,48 @@ namespace Features.Servers
     public class GetServersByNameParametersValidator : AbstractValidator<GetServersByNameParameters>;
 
     [Handler]
-    public static partial class GetServersByNameQuery
+    public sealed partial class GetServersByNameQuery([FromKeyedServices(DatabaseConnectionType.Servers)] IDbConnection connection)
     {
         public sealed record Query(GetServersByNameParameters Parameters)
             : DefaultCachedQuery($"{nameof(GetServersByNameQuery)}_{Parameters.Key()}", false);
 
-        private static ValueTask<IPagedList<ServerDto>> HandleAsync(
-            Query query,
-            ServerDbContext context,
-            CancellationToken cancellationToken
-        )
+        private async ValueTask<IPagedList<ServerDto>> HandleAsync(Query query, CancellationToken cancellationToken)
         {
             var parameters = query.Parameters;
 
-            var predicate = PredicateBuilder.New<Server>(true);
+            var conditions = new List<string>();
+            var dynamicParams = new DynamicParameters();
+
             if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
             {
-                predicate = predicate.And(x => x.Url.StartsWith(parameters.SearchTerm));
+                conditions.Add("Url LIKE @SearchTerm");
+                dynamicParams.Add("SearchTerm", $"{parameters.SearchTerm}%");
             }
 
-            var data = context.Servers
-                .AsQueryable()
-                .Where(predicate)
-                .OrderBy(x => x.Url)
-                .Select(x => new ServerDto(x.Id, x.Url))
-                .ToPagedList(parameters.PageNumber, parameters.PageSize);
+            string whereClause = conditions.Count > 0 ? string.Join(" AND ", conditions) : "1=1";
 
-            return ValueTask.FromResult(data);
+            int offset = (parameters.PageNumber - 1) * parameters.PageSize;
+            dynamicParams.Add("Offset", offset);
+            dynamicParams.Add("PageSize", parameters.PageSize);
+
+            string sql = $@"
+                SELECT COUNT(*) FROM Servers WHERE {whereClause};
+
+                SELECT Id, Url
+                FROM Servers
+                WHERE {whereClause}
+                ORDER BY Url
+                LIMIT @PageSize OFFSET @Offset;";
+
+            using var multi = await connection.QueryMultipleAsync(
+                new CommandDefinition(sql, dynamicParams, cancellationToken: cancellationToken)
+            );
+
+            int totalCount = await multi.ReadFirstAsync<int>();
+            var servers = await multi.ReadAsync<ServerDto>();
+
+            var data = new StaticPagedList<ServerDto>(servers, parameters.PageNumber, parameters.PageSize, totalCount);
+            return data;
         }
     }
 }

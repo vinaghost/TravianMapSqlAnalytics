@@ -3,6 +3,7 @@ using System.Text;
 
 using Dapper;
 
+using Features.Players;
 using Features.Shared.Constraints;
 using Features.Shared.Parameters;
 

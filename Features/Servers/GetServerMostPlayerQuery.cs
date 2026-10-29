@@ -1,29 +1,35 @@
-﻿using Features.Shared.Constraints;
+﻿using System.Data;
+
+using Dapper;
+
+using Features.Shared.Constraints;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
+using Infrastructure;
 
-using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Features.Servers
 {
     [Handler]
-    public static partial class GetMostPlayerServerQuery
+    public sealed partial class GetMostPlayerServerQuery([FromKeyedServices(DatabaseConnectionType.Servers)] IDbConnection connection)
     {
         public sealed record Query() : DefaultCachedQuery(nameof(GetMostPlayerServerQuery), false);
 
-        private static async ValueTask<string> HandleAsync(
-            Query query,
-            ServerDbContext context,
-            CancellationToken cancellationToken
-        )
+        private async ValueTask<string> HandleAsync(Query query, CancellationToken cancellationToken)
         {
-            var server = await context.Servers
-                .OrderByDescending(x => x.PlayerCount)
-                .Select(x => x.Url)
-                .FirstOrDefaultAsync(cancellationToken);
-            return server ?? "";
+            const string sql = @"
+                SELECT Url
+                FROM Servers
+                ORDER BY PlayerCount DESC
+                LIMIT 1;";
+
+            var serverUrl = await connection.QueryFirstOrDefaultAsync<string>(
+                new CommandDefinition(sql, cancellationToken: cancellationToken)
+            );
+
+            return serverUrl ?? "";
         }
     }
 }

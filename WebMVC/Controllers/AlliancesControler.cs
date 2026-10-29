@@ -2,7 +2,7 @@
 using Features.Alliances;
 using Features.Players;
 using Features.Populations;
-using Features.Populations.GetPlayersPopulationHistory;
+using Features.Populations;
 
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;

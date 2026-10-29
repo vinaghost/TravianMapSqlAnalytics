@@ -1,12 +1,16 @@
-﻿using Features.Players;
+﻿using System.Data;
+
+using Features.Players;
 using Features.Shared.Constraints;
 using Features.Villages;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure.DbContexts;
+using Infrastructure;
 
 using LinqKit;
+
+using Microsoft.Extensions.DependencyInjection;
 
 using X.PagedList;
 using X.PagedList.Extensions;
@@ -14,14 +18,13 @@ using X.PagedList.Extensions;
 namespace Features.Villages.GetVillages
 {
     [Handler]
-    public static partial class GetVillagesQuery
+    public sealed partial class GetVillagesQuery([FromKeyedServices(DatabaseConnectionType.Villages)] IDbConnection connection)
     {
         public sealed record Query(GetVillagesParameters Parameters)
             : DefaultCachedQuery($"{nameof(GetVillagesQuery)}_{Parameters.Key()}");
 
-        private static ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
+        private ValueTask<IPagedList<DetailVillageDto>> HandleAsync(
             Query query,
-            VillageDbContext context,
             CancellationToken cancellationToken
         )
         {
