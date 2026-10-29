@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+
 using WebAPI.EndpointFilters;
 
 namespace WebAPI.Groups

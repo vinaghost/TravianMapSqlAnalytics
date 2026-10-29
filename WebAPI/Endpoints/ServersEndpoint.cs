@@ -1,6 +1,9 @@
 ﻿using FastEndpoints;
+
 using Features.Servers;
+
 using Microsoft.AspNetCore.Http.HttpResults;
+
 using WebAPI.Contracts.Responses;
 
 namespace WebAPI.Endpoints

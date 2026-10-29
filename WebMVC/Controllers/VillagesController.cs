@@ -1,9 +1,10 @@
 ﻿using Features.Populations;
-using Features.Populations;
-using Features.Villages.GetInactiveVillages;
-using Features.Villages.GetVillages;
+using Features.Villages;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
+
 using WebMVC.Extensions;
 using WebMVC.Models.ViewModel.Villages;
 

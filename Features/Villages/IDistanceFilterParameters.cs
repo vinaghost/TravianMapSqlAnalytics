@@ -2,10 +2,6 @@
 
 using FluentValidation;
 
-using Infrastructure.Entities;
-
-using LinqKit;
-
 namespace Features.Villages
 {
     public interface IDistanceFilterParameters
@@ -27,19 +23,6 @@ namespace Features.Villages
             sb.Append(parameters.Y);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Distance);
-        }
-
-        public static ExpressionStarter<Village> GetPredicate(this IDistanceFilterParameters distanceParameters)
-        {
-            var predicate = PredicateBuilder.New<Village>(true);
-
-            if (distanceParameters.Distance != 0)
-            {
-                predicate = predicate
-                    .And(x => CoordinatesExtenstion.Distance(distanceParameters.X, distanceParameters.Y, x.X, x.Y) <= distanceParameters.Distance * distanceParameters.Distance);
-            }
-
-            return predicate;
         }
     }
 

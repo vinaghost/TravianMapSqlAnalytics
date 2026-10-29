@@ -1,7 +1,9 @@
 ﻿using FastEndpoints;
+
 using Features.Populations;
-using Features.Populations;
+
 using Microsoft.AspNetCore.Http.HttpResults;
+
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;
 
@@ -14,7 +16,7 @@ namespace WebAPI.Endpoints.Populations
         public PlayersRequestValidator()
         {
             Include(new ServerUrlRequestValidator());
-            Include(new PopulationParametersValidator());
+            Include(new PopulationFilterParametersValidator());
         }
     }
 

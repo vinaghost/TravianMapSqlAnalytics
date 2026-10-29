@@ -1,7 +1,9 @@
 ﻿using FastEndpoints;
+
 using Features.Villages;
-using Features.Villages.GetVillages;
+
 using Microsoft.AspNetCore.Http.HttpResults;
+
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;
 using WebAPI.Groups;

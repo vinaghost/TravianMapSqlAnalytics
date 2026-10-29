@@ -1,6 +1,6 @@
 ﻿using Features.Populations;
 using Features.Villages;
-using Features.Villages.GetInactiveVillages;
+
 using X.PagedList;
 
 namespace WebMVC.Models.ViewModel.Villages

@@ -1,4 +1,5 @@
 ﻿using FastEndpoints;
+
 using Features.Populations;
 
 namespace WebAPI.Contracts.Requests
@@ -9,7 +10,7 @@ namespace WebAPI.Contracts.Requests
     {
         public PopulationRequestValidator()
         {
-            Include(new PopulationParametersValidator());
+            Include(new PopulationFilterParametersValidator());
             Include(new ServerUrlRequestValidator());
         }
     }

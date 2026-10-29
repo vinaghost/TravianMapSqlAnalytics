@@ -2,10 +2,6 @@
 
 using FluentValidation;
 
-using Infrastructure.Entities;
-
-using LinqKit;
-
 namespace Features.Villages
 {
     public interface IVillageFilterParameters
@@ -31,49 +27,6 @@ namespace Features.Villages
             sb.Append(parameters.Capital);
             sb.Append(SEPARATOR);
             sb.Append(parameters.Tribe);
-        }
-
-        public static ExpressionStarter<Village> GetPredicate(this IVillageFilterParameters parameters)
-        {
-            var predicate = PredicateBuilder.New<Village>(true);
-
-            if (parameters.MinVillagePopulation != 0)
-            {
-                predicate = predicate
-                    .And(x => x.Population >= parameters.MinVillagePopulation);
-            }
-
-            if (parameters.MaxVillagePopulation != 0)
-            {
-                predicate = predicate
-                    .And(x => x.Population <= parameters.MaxVillagePopulation);
-            }
-
-            if (parameters.Tribe != Tribe.All)
-            {
-                predicate = predicate
-                    .And(x => x.Tribe == (int)parameters.Tribe);
-            }
-
-            switch (parameters.Capital)
-            {
-                case Capital.Both:
-                    break;
-
-                case Capital.OnlyCapital:
-                    predicate = predicate
-                        .And(x => x.IsCapital);
-                    break;
-
-                case Capital.OnlyVillage:
-                    predicate = predicate
-                        .And(x => !x.IsCapital);
-                    break;
-
-                default:
-                    break;
-            }
-            return predicate;
         }
     }
 

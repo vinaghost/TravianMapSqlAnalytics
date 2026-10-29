@@ -1,10 +1,13 @@
 ﻿using Features.Players;
+using Features.Populations;
+using Features.Villages;
+
 using FeaturesFeatures.Players;
-using Features.Populations;
-using Features.Populations;
-using Features.Villages.GetVillages;
+
 using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
+
 using WebMVC.Models.ViewModel.Players;
 
 namespace WebMVC.Controllers

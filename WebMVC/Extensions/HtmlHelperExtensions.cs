@@ -1,8 +1,9 @@
-﻿using Microsoft.AspNetCore.Html;
+﻿using System.Text.Encodings.Web;
+using System.Text.RegularExpressions;
+
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Text.Encodings.Web;
-using System.Text.RegularExpressions;
 
 namespace WebMVC.Extensions
 {

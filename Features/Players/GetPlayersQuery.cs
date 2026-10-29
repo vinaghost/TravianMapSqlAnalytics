@@ -63,7 +63,6 @@ namespace Features.Players
             string sql = $@"
                 SELECT COUNT(*)
                 FROM Players p
-                INNER JOIN Alliances a ON p.AllianceId = a.Id
                 WHERE {whereClause};
 
                 SELECT

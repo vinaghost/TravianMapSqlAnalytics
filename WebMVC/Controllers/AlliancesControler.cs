@@ -1,11 +1,11 @@
 ﻿using Features.Alliances;
-using Features.Alliances;
 using Features.Players;
-using Features.Populations;
 using Features.Populations;
 
 using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
+
 using WebMVC.Models.ViewModel.Alliances;
 
 namespace WebMVC.Controllers
