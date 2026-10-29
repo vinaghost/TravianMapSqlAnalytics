@@ -1,5 +1,4 @@
-﻿using Features.Shared.Parameters;
-using FluentValidation;
+﻿using FluentValidation;
 
 namespace Features.Populations
 {

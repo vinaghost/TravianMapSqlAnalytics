@@ -1,7 +1,10 @@
-﻿using FluentValidation;
+﻿using System.Text;
+
+using FluentValidation;
+
 using Infrastructure.Entities;
+
 using LinqKit;
-using System.Text;
 
 namespace Features.Players
 {

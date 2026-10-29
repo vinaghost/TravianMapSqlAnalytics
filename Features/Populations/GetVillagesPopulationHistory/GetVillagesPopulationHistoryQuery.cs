@@ -1,8 +1,12 @@
 ﻿using Features.Shared.Constraints;
+
 using Immediate.Handlers.Shared;
+
 using Infrastructure.DbContexts;
 using Infrastructure.Entities;
+
 using LinqKit;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Features.Populations.GetPlayersPopulationHistory

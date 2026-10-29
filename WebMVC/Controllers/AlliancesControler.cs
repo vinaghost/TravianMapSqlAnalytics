@@ -1,5 +1,5 @@
-﻿using Features.Alliances.GetAllianceById;
-using Features.Alliances.GetAlliancesByName;
+﻿using Features.Alliances;
+using Features.Alliances;
 using Features.Players.GetPlayers;
 using Features.Populations;
 using Features.Populations.GetPlayersPopulationHistory;

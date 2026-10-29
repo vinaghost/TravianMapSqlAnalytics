@@ -1,6 +1,7 @@
-﻿using Features.Players;
+﻿using System.Text;
+
+using Features.Players;
 using Features.Shared.Parameters;
-using System.Text;
 
 namespace Features.Villages.GetVillages
 {

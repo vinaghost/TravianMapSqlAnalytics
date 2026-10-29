@@ -1,4 +1,4 @@
-﻿using Features.Alliances.GetAlliancesById;
+﻿using Features.Alliances;
 using Features.Players;
 using Microsoft.AspNetCore.Mvc;
 

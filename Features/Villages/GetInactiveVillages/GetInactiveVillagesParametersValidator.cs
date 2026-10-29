@@ -1,4 +1,5 @@
 ﻿using Features.Villages.GetVillages;
+
 using FluentValidation;
 
 namespace Features.Villages.GetInactiveVillages

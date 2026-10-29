@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Alliances;
-using Features.Alliances.GetAlliancesByName;
+using Features.Alliances;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Contracts.Responses;

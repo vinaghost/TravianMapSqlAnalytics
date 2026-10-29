@@ -1,5 +1,6 @@
-﻿using Features.Shared.Parameters;
-using System.Text;
+﻿using System.Text;
+
+using Features.Shared.Parameters;
 
 namespace Features.Players.GetPlayers
 {

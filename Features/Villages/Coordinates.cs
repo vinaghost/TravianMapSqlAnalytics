@@ -1,5 +1,6 @@
-﻿using LinqKit;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
+
+using LinqKit;
 
 namespace Features.Villages
 {

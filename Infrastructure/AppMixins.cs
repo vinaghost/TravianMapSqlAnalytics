@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Data;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
@@ -8,6 +10,12 @@ using Serilog;
 
 namespace Infrastructure
 {
+    public enum DatabaseConnectionType
+    {
+        Villages,
+        Servers
+    }
+
     public static class AppMixins
     {
         public static void ConfigureInfrastructure(this IHostApplicationBuilder builder)
@@ -33,7 +41,7 @@ namespace Infrastructure
                 return dataSourceBuilder.Build();
             });
 
-            builder.Services.AddKeyedScoped("Villages", (serviceProvider, serviceKey) =>
+            builder.Services.AddKeyedScoped<IDbConnection>(DatabaseConnectionType.Villages, (serviceProvider, serviceKey) =>
             {
                 if (serviceKey is not string stringKey)
                 {
@@ -51,7 +59,7 @@ namespace Infrastructure
                 return connection;
             });
 
-            builder.Services.AddKeyedScoped("Servers", (serviceProvider, serviceKey) =>
+            builder.Services.AddKeyedScoped<IDbConnection>(DatabaseConnectionType.Servers, (serviceProvider, serviceKey) =>
             {
                 if (serviceKey is not string stringKey)
                 {
