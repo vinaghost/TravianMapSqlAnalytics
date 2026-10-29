@@ -1,7 +1,5 @@
 using Features;
 
-using Infrastructure;
-
 using Microsoft.AspNetCore.HttpOverrides;
 
 using WebMVC.Middleware;
@@ -14,7 +12,7 @@ namespace WebMVC
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.ConfigureInfrastructure();
+            builder.ConfigureFeatures();
             builder.ConfigureFeatures();
 
             builder.Services.AddControllersWithViews();

@@ -12,7 +12,7 @@ COPY --from=prepare-restore-files /source/restore_subset .
 RUN dotnet restore WebAPI/WebAPI.csproj --locked-mode -a $TARGETARCH
 
 # copy source code, add more if required other project
-COPY Infrastructure/ Infrastructure/
+COPY Features/ Features/
 COPY Features/ Features/
 COPY WebAPI/ WebAPI/
 RUN dotnet publish WebAPI/WebAPI.csproj -c Release -o /app/publish --no-restore -a $TARGETARCH 

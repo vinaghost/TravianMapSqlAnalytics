@@ -1,4 +1,4 @@
-﻿namespace Infrastructure
+﻿namespace Features
 {
     public sealed class ServerCache
     {

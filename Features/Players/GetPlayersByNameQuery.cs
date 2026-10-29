@@ -3,6 +3,7 @@ using System.Text;
 
 using Dapper;
 
+using Features;
 using Features.Players;
 using Features.Shared.Constraints;
 using Features.Shared.Parameters;
@@ -10,8 +11,6 @@ using Features.Shared.Parameters;
 using FluentValidation;
 
 using Immediate.Handlers.Shared;
-
-using Infrastructure;
 
 using Microsoft.Extensions.DependencyInjection;
 

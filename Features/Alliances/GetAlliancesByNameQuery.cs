@@ -10,8 +10,6 @@ using FluentValidation;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure;
-
 using Microsoft.Extensions.DependencyInjection;
 
 using X.PagedList;

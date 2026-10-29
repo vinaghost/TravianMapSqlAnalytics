@@ -6,8 +6,6 @@ using Features.Shared.Constraints;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Features.Players

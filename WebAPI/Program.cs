@@ -3,11 +3,9 @@ using FastEndpoints.Swagger;
 
 using Features;
 
-using Infrastructure;
-
 var builder = WebApplication.CreateBuilder(args);
 
-builder.ConfigureInfrastructure();
+builder.ConfigureFeatures();
 builder.ConfigureFeatures();
 
 builder.Services

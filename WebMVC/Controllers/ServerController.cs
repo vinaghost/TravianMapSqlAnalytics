@@ -1,6 +1,5 @@
-﻿using Features.Servers;
-
-using Infrastructure;
+﻿using Features;
+using Features.Servers;
 
 using Microsoft.AspNetCore.Mvc;
 

@@ -3,8 +3,6 @@ using Features.Shared.Services;
 
 using Immediate.Handlers.Shared;
 
-using Infrastructure;
-
 namespace Features.Shared.Behaviors
 {
     public sealed class QueryCachingBehavior<TRequest, TResponse>

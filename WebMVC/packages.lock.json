@@ -49,47 +49,6 @@
         "resolved": "4.2.0",
         "contentHash": "GVegA32Emj2bedtKgqyZcKUBvhpkSMgaxXCW1x6MAX/jnq7irfWO6+YD8njU8qnxO/gYKyWx63b/X49WB2qC5A=="
       },
-      "LinqKit.Core": {
-        "type": "Transitive",
-        "resolved": "1.3.1",
-        "contentHash": "5LQ2lyhoXnv7f5W3aN4kALECtAQtcRCxcq4octSpEC/zYcuijhubjtZrBsmiCpEJ1GAcsvxi89UBCsIXYX2iAg=="
-      },
-      "LinqKit.Microsoft.EntityFrameworkCore": {
-        "type": "Transitive",
-        "resolved": "10.1.1",
-        "contentHash": "jEoD7Yb1VrawIlhenE0qASHQenRu11PzIyP10inUdm5EAPsB1OIhSB9jA+uUUw6mjIiiM5xhS6ClK/U/0rKDJg==",
-        "dependencies": {
-          "LinqKit.Core": "1.3.1",
-          "Microsoft.EntityFrameworkCore": "10.0.0"
-        }
-      },
-      "Microsoft.EntityFrameworkCore": {
-        "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "hHa2amRjMyBLUH/KTML6FgIAhZ0VFYkhCKwWEax0rO6iNeM1P5MflyeQLE5dniSIOZHc3Oqyv5UIyTFO4e1Auw==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Abstractions": "10.0.0",
-          "Microsoft.EntityFrameworkCore.Analyzers": "10.0.0"
-        }
-      },
-      "Microsoft.EntityFrameworkCore.Abstractions": {
-        "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "C+TT9k7f1GQ8agOfV512K9iwrzi76RXVSDiLx+iWC9pz3QhEpSF1Dyk+FpVvd8ULQ+rqymfM8KQ7g48ttQVyMg=="
-      },
-      "Microsoft.EntityFrameworkCore.Analyzers": {
-        "type": "Transitive",
-        "resolved": "10.0.0",
-        "contentHash": "TxHQq0kn0tpYs2ljeRl8jtmWk720B0nteqI6mAZM77HWJpYT9Zj8SkkBBlj8K3Yeq18a6NBjz6YutE+shEk4Ag=="
-      },
-      "Microsoft.EntityFrameworkCore.Relational": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "j+msw6fWgAE9M3Q/5B9Uhv7pdAdAQUvFPJAiBJmoy+OXvehVbfbCE8ftMAa51Uo2ZeiqVnHShhnv4Y4UJJmUzA==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore": "9.0.0"
-        }
-      },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
         "resolved": "10.0.0",
@@ -99,15 +58,6 @@
         "type": "Transitive",
         "resolved": "2.6.2",
         "contentHash": "dlTc/tsBa42szdvpj4nrHvQVUb0gsMwR9HT6J0Zz2OSqfP0CdYlGw+qQPqCpbnO97idfvclSjKYtM6y5QaBQaQ=="
-      },
-      "Pomelo.EntityFrameworkCore.MySql": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "cl7S4s6CbJno0LjNxrBHNc2xxmCliR5i40ATPZk/eTywVaAbHCbdc9vbGc3QThvwGjHqrDHT8vY9m1VF/47o0g==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "[9.0.0, 9.0.999]",
-          "MySqlConnector": "2.4.0"
-        }
       },
       "Serilog": {
         "type": "Transitive",
@@ -224,23 +174,15 @@
       "features": {
         "type": "Project",
         "dependencies": {
+          "Dapper": "[2.1.89, )",
           "FluentValidation": "[12.2.0, )",
           "FluentValidation.DependencyInjectionExtensions": "[12.2.0, )",
           "Immediate.Handlers": "[4.2.0, )",
-          "Infrastructure": "[1.0.0, )",
-          "LinqKit.Microsoft.EntityFrameworkCore": "[10.1.1, )",
-          "X.PagedList": "[10.6.0, )"
-        }
-      },
-      "infrastructure": {
-        "type": "Project",
-        "dependencies": {
-          "Dapper": "[2.1.89, )",
           "MySqlConnector": "[2.6.2, )",
-          "Pomelo.EntityFrameworkCore.MySql": "[9.0.0, )",
           "Serilog.AspNetCore": "[10.0.0, )",
           "Serilog.Exceptions": "[8.4.0, )",
-          "Serilog.Sinks.Async": "[2.1.0, )"
+          "Serilog.Sinks.Async": "[2.1.0, )",
+          "X.PagedList": "[10.6.0, )"
         }
       }
     },
