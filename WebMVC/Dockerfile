@@ -1,25 +1,21 @@
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS prepare-restore-files
-ENV PATH="${PATH}:/root/.dotnet/tools"
-RUN dotnet tool install --global --no-cache dotnet-subset --version 0.3.2
-WORKDIR /source
-COPY . .
-RUN dotnet subset restore WebMVC/WebMVC.csproj --root-directory /source --output restore_subset/
-
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0 AS publish
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG TARGETARCH
-WORKDIR /src
-COPY --from=prepare-restore-files /source/restore_subset .
-RUN dotnet restore WebMVC/WebMVC.csproj --locked-mode -a $TARGETARCH
+WORKDIR /source
 
-# copy source code, add more if required other project
-COPY Features/ Features/
+COPY Features/Features.csproj Features/
+COPY Features/packages.lock.json Features/
+
+COPY WebMVC/WebMVC.csproj WebMVC/
+COPY WebMVC/packages.lock.json WebMVC/
+
+RUN dotnet restore WebMVC/WebMVC.csproj /p:RestorePackagesWithLockFile=true /p:PublishReadyToRun=true -a $TARGETARCH 
+
 COPY Features/ Features/
 COPY WebMVC/ WebMVC/
-RUN dotnet publish WebMVC/WebMVC.csproj -c Release -o /app/publish --no-restore -a $TARGETARCH 
+RUN dotnet publish WebMVC/WebMVC.csproj /p:PublishReadyToRun=true -a $TARGETARCH --self-contained --no-restore -c Release -o /app
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0-noble-chiseled AS final
 EXPOSE 8080
 WORKDIR /app
-COPY --from=publish /app/publish .
-RUN ["chmod", "+x", "WebMVC"]
+COPY --from=build --chown=app:app /app .
 ENTRYPOINT ["./WebMVC"]

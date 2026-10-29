@@ -5,10 +5,9 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
 
-
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-
     <PublishSingleFile>true</PublishSingleFile>
+    
     <RuntimeIdentifiers>win-x64;linux-x64;linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
