@@ -1,10 +1,8 @@
 ﻿using System.Text;
 
+using Dapper;
+
 using FluentValidation;
-
-using Infrastructure.Entities;
-
-using LinqKit;
 
 namespace Features.Players
 {
@@ -65,78 +63,47 @@ namespace Features.Players
             return false;
         }
 
-        public static ExpressionStarter<Player> GetPredicate(this IPlayerFilterParameters parameters)
+        public static (string WhereClause, DynamicParameters Parameters) GetDapperFilter(this IPlayerFilterParameters parameters)
         {
-            var predicate = PredicateBuilder.New<Player>(true);
+            var conditions = new List<string>();
+            var dynamicParams = new DynamicParameters();
 
-            if (parameters.Players is not null && parameters.Players.Count > 0)
+            if (parameters.Players?.Count > 0)
             {
-                if (parameters.Players.Count == 1)
-                {
-                    predicate = predicate
-                        .And(x => x.Id == parameters.Players[0]);
-                }
-                else
-                {
-                    predicate = predicate
-                        .And(x => parameters.Players.Contains(x.Id));
-                }
+                conditions.Add("p.Id IN @Players");
+                dynamicParams.Add("Players", parameters.Players);
             }
             else
             {
-                if (parameters.ExcludePlayers is not null && parameters.ExcludePlayers.Count > 0)
+                if (parameters.ExcludePlayers?.Count > 0)
                 {
-                    if (parameters.ExcludePlayers.Count == 1)
-                    {
-                        predicate = predicate
-                            .And(x => x.Id != parameters.ExcludePlayers[0]);
-                    }
-                    else
-                    {
-                        predicate = predicate
-                            .And(x => !parameters.ExcludePlayers.Contains(x.Id));
-                    }
+                    conditions.Add("p.Id NOT IN @ExcludePlayers");
+                    dynamicParams.Add("ExcludePlayers", parameters.ExcludePlayers);
                 }
 
-                if (parameters.Alliances is not null && parameters.Alliances.Count > 0)
+                if (parameters.Alliances?.Count > 0)
                 {
-                    if (parameters.Alliances.Count == 1)
-                    {
-                        predicate = predicate
-                            .And(x => x.AllianceId == parameters.Alliances[0]);
-                    }
-                    else
-                    {
-                        predicate = predicate
-                            .And(x => parameters.Alliances.Contains(x.AllianceId));
-                    }
+                    conditions.Add("p.AllianceId IN @Alliances");
+                    dynamicParams.Add("Alliances", parameters.Alliances);
                 }
-                else
+                else if (parameters.ExcludeAlliances?.Count > 0)
                 {
-                    if (parameters.ExcludeAlliances is not null && parameters.ExcludeAlliances.Count > 0)
-                    {
-                        if (parameters.ExcludeAlliances.Count == 1)
-                        {
-                            predicate = predicate
-                                .And(x => x.AllianceId != parameters.ExcludeAlliances[0]);
-                        }
-                        else
-                        {
-                            predicate = predicate
-                                .And(x => !parameters.ExcludeAlliances.Contains(x.AllianceId));
-                        }
-                    }
+                    conditions.Add("p.AllianceId NOT IN @ExcludeAlliances");
+                    dynamicParams.Add("ExcludeAlliances", parameters.ExcludeAlliances);
                 }
             }
 
             if (parameters.MaxPlayerPopulation != 0)
             {
-                predicate = predicate
-                    .And(x => x.Population >= parameters.MinPlayerPopulation)
-                    .And(x => x.Population <= parameters.MaxPlayerPopulation);
+                conditions.Add("p.Population >= @MinPopulation");
+                conditions.Add("p.Population <= @MaxPopulation");
+                dynamicParams.Add("MinPopulation", parameters.MinPlayerPopulation);
+                dynamicParams.Add("MaxPopulation", parameters.MaxPlayerPopulation);
             }
 
-            return predicate;
+            string whereClause = conditions.Count > 0 ? string.Join(" AND ", conditions) : "1=1";
+
+            return (whereClause, dynamicParams);
         }
     }
 

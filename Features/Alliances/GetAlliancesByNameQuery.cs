@@ -63,7 +63,6 @@ namespace Features.Alliances
             dynamicParams.Add("Offset", offset);
             dynamicParams.Add("PageSize", parameters.PageSize);
 
-            // Send both queries in 1 trip
             string sql = $@"
                 SELECT COUNT(*) FROM Alliances WHERE {whereClause};
 
@@ -81,6 +80,7 @@ namespace Features.Alliances
 
             int totalCount = await multi.ReadFirstAsync<int>();
             var alliances = await multi.ReadAsync<AllianceDto>();
+
             return new StaticPagedList<AllianceDto>(alliances, parameters.PageNumber, parameters.PageSize, totalCount);
         }
     }

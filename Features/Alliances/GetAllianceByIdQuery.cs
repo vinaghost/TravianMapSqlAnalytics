@@ -20,13 +20,17 @@ namespace Features.Alliances
 
         private async ValueTask<AllianceDto?> HandleAsync(Query query, CancellationToken cancellationToken)
         {
-            const string sql = "SELECT Id, Name, PlayerCount FROM Alliances WHERE Id = @allianceId";
-            var alliances = await connection.QueryAsync<AllianceDto>(new(
+            const string sql = @"
+                SELECT Id, Name, PlayerCount
+                FROM Alliances
+                WHERE Id = @allianceId
+                LIMIT 1;";
+            var alliance = await connection.QueryFirstOrDefaultAsync<AllianceDto>(new(
                 commandText: sql,
                 parameters: new { allianceId = query.AllianceId },
                 cancellationToken: cancellationToken
             ));
-            return alliances.FirstOrDefault();
+            return alliance;
         }
     }
 }

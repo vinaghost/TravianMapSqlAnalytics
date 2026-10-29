@@ -1,6 +1,6 @@
 ﻿using FastEndpoints;
 using Features.Players;
-using Features.Players.GetPlayerById;
+using Features.Players;
 using Microsoft.AspNetCore.Http.HttpResults;
 using WebAPI.Contracts.Requests;
 using WebAPI.Groups;

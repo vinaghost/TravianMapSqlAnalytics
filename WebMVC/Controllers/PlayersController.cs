@@ -1,5 +1,5 @@
-﻿using Features.Players.GetPlayerById;
-using Features.Players.GetPlayersByName;
+﻿using Features.Players;
+using FeaturesFeatures.Players;
 using Features.Populations;
 using Features.Populations.GetPlayersPopulationHistory;
 using Features.Villages.GetVillages;

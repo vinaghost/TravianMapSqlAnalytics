@@ -1,6 +1,6 @@
 ﻿using Features.Alliances;
 using Features.Alliances;
-using Features.Players.GetPlayers;
+using Features.Players;
 using Features.Populations;
 using Features.Populations.GetPlayersPopulationHistory;
 
