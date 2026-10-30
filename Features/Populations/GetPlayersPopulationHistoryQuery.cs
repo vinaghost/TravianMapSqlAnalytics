@@ -29,13 +29,13 @@ namespace Features.Populations
             const string sql = @"
                 SELECT
                     PlayerId,
-                    Date,
+                    SnapshotDate AS Date,
                     Population,
                     ChangePopulation
                 FROM PlayersHistory
                 WHERE PlayerId IN @Ids
-                  AND Date >= @FilterDate
-                ORDER BY Date DESC;";
+                  AND SnapshotDate >= @FilterDate
+                ORDER BY SnapshotDate DESC;";
 
             var rawHistory = await connection.QueryAsync<dynamic>(new(
                 sql,

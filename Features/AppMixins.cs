@@ -58,18 +58,13 @@ namespace Features
 
             builder.Services.AddSingleton(serviceProvider =>
             {
-                var dataSourceBuilder = new MySqlDataSourceBuilder(builder.Configuration["DatabaseConnectionString"]!)
+                var dataSourceBuilder = new MySqlDataSourceBuilder($"{builder.Configuration["DatabaseConnectionString"]!}Allow User Variables=true")
                             .UseLoggerFactory(serviceProvider.GetService<ILoggerFactory>());
                 return dataSourceBuilder.Build();
             });
 
             builder.Services.AddKeyedScoped<IDbConnection>(DatabaseConnectionType.Villages, (serviceProvider, serviceKey) =>
             {
-                if (serviceKey is not string stringKey)
-                {
-                    throw new ArgumentException("Invalid service key type provided.");
-                }
-
                 var serverCache = serviceProvider.GetRequiredService<ServerCache>();
                 if (serverCache.Server is null)
                 {
@@ -77,18 +72,16 @@ namespace Features
                 }
                 var dataSource = serviceProvider.GetRequiredService<MySqlDataSource>();
                 var connection = dataSource.CreateConnection();
+                connection.Open();
                 connection.ChangeDatabase(serverCache.Server);
                 return connection;
             });
 
             builder.Services.AddKeyedScoped<IDbConnection>(DatabaseConnectionType.Servers, (serviceProvider, serviceKey) =>
             {
-                if (serviceKey is not string stringKey)
-                {
-                    throw new ArgumentException("Invalid service key type provided.");
-                }
                 var dataSource = serviceProvider.GetRequiredService<MySqlDataSource>();
                 var connection = dataSource.CreateConnection();
+                connection.Open();
                 connection.ChangeDatabase("Servers");
                 return connection;
             });

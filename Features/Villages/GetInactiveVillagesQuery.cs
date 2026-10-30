@@ -33,11 +33,17 @@ namespace Features.Villages
             dynamicParams.Add("Offset", offset);
             dynamicParams.Add("PageSize", parameters.PageSize);
 
+            string distanceWhereClause = "1 = 1";
+            if (parameters.Distance > 0)
+            {
+                distanceWhereClause = "Distance <= @DistanceSquared";
+            }
+
             string sql = $@"
                 WITH InactivePlayers AS (
                     SELECT PlayerId
                     FROM PlayersHistory
-                    WHERE Date >= @Date
+                    WHERE SnapshotDate >= @Date
                     GROUP BY PlayerId
                     HAVING COUNT(*) >= @InactiveDays
                         AND MAX(ChangePopulation) = 0
@@ -45,8 +51,8 @@ namespace Features.Villages
                 ),
                 TargetVillages AS (
                     SELECT
-                        ((vil.X - @X + 601) % 401 - 200) * ((vil.X - @X + 601) % 401 - 200) +
-                        ((vil.Y - @Y + 601) % 401 - 200) * ((vil.Y - @Y + 601) % 401 - 200)
+                        ((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) +
+                        ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200)
                             AS Distance
                     FROM Villages v
                     INNER JOIN Players p ON v.PlayerId = p.Id
@@ -55,12 +61,12 @@ namespace Features.Villages
                 )
                 SELECT COUNT(*)
                 FROM TargetVillages
-                WHERE (@DistanceSquared = 0 OR Distance <= @DistanceSquared);
+                WHERE {distanceWhereClause};
 
                 WITH InactivePlayers AS (
                     SELECT PlayerId
                     FROM PlayersHistory
-                    WHERE Date >= @Date
+                    WHERE SnapshotDate >= @Date
                     GROUP BY PlayerId
                     HAVING COUNT(*) >= @InactiveDays
                        AND MAX(ChangePopulation) = 0
@@ -68,7 +74,7 @@ namespace Features.Villages
                 ),
                 TargetVillages AS (
                     SELECT
-                        v.AllianceId AS AllianceId,
+                        p.AllianceId AS AllianceId,
                         a.Name AS AllianceName,
                         v.PlayerId AS PlayerId,
                         p.Name AS PlayerName,
@@ -79,7 +85,7 @@ namespace Features.Villages
                         v.Y AS Y,
                         v.IsCapital AS IsCapital,
                         v.Tribe AS Tribe,
-                        v.Population AS Population
+                        v.Population AS Population,
                         ((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) + ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200) AS Distance
                     FROM Villages v
                     INNER JOIN Players p ON v.PlayerId = p.Id
@@ -100,9 +106,9 @@ namespace Features.Villages
                     IsCapital,
                     Tribe,
                     Population,
-                    Distance
+                    ROUND(SQRT(Distance), 2) AS Distance
                 FROM TargetVillages
-                WHERE (@DistanceSquared = 0 OR Distance <= @DistanceSquared)
+                WHERE {distanceWhereClause}
                 ORDER BY Distance
                 LIMIT @PageSize OFFSET @Offset;";
 

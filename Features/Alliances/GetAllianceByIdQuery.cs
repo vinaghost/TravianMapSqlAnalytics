@@ -19,7 +19,10 @@ namespace Features.Alliances
         private async ValueTask<AllianceDto?> HandleAsync(Query query, CancellationToken cancellationToken)
         {
             const string sql = @"
-                SELECT Id, Name, PlayerCount
+                SELECT
+                    Id AS AllianceId,
+                    Name AS AllianceName,
+                    PlayerCount
                 FROM Alliances
                 WHERE Id = @allianceId
                 LIMIT 1;";

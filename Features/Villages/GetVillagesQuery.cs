@@ -13,6 +13,8 @@ using Immediate.Handlers.Shared;
 
 using Microsoft.Extensions.DependencyInjection;
 
+using Serilog;
+
 using X.PagedList;
 
 namespace Features.Villages
@@ -32,11 +34,17 @@ namespace Features.Villages
             dynamicParams.Add("Offset", offset);
             dynamicParams.Add("PageSize", parameters.PageSize);
 
+            string distanceWhereClause = "1 = 1";
+            if (parameters.Distance > 0)
+            {
+                distanceWhereClause = "Distance <= @DistanceSquared";
+            }
+
             string sql = $@"
                 WITH TargetVillages AS (
                     SELECT
-                        ((vil.X - @X + 601) % 401 - 200) * ((vil.X - @X + 601) % 401 - 200) +
-                        ((vil.Y - @Y + 601) % 401 - 200) * ((vil.Y - @Y + 601) % 401 - 200)
+                        ((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) +
+                        ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200)
                             AS Distance
                     FROM Villages v
                     INNER JOIN Players p ON v.PlayerId = p.Id
@@ -44,11 +52,11 @@ namespace Features.Villages
                 )
                 SELECT COUNT(*)
                 FROM TargetVillages
-                WHERE (@DistanceSquared = 0 OR Distance <= @DistanceSquared);
+                WHERE {distanceWhereClause};
 
                 WITH TargetVillages AS (
                     SELECT
-                        v.AllianceId AS AllianceId,
+                        p.AllianceId AS AllianceId,
                         a.Name AS AllianceName,
                         v.PlayerId AS PlayerId,
                         p.Name AS PlayerName,
@@ -59,7 +67,7 @@ namespace Features.Villages
                         v.Y AS Y,
                         v.IsCapital AS IsCapital,
                         v.Tribe AS Tribe,
-                        v.Population AS Population
+                        v.Population AS Population,
                         ((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) + ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200) AS Distance
                     FROM Villages v
                     INNER JOIN Players p ON v.PlayerId = p.Id
@@ -79,9 +87,9 @@ namespace Features.Villages
                     IsCapital,
                     Tribe,
                     Population,
-                    Distance
+                    ROUND(SQRT(Distance), 2) AS Distance
                 FROM TargetVillages
-                WHERE (@DistanceSquared = 0 OR Distance <= @DistanceSquared)
+                WHERE {distanceWhereClause}
                 ORDER BY Distance
                 LIMIT @PageSize OFFSET @Offset;";
 
@@ -208,13 +216,10 @@ namespace Features.Villages
                 dynamicParams.Add("MaxVillagePopulation", MaxVillagePopulation);
             }
 
-            if (Distance > 0)
-            {
-                //conditions.Add("((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) + ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200) <= @DistanceSquared");
-                dynamicParams.Add("X", X);
-                dynamicParams.Add("Y", Y);
-                dynamicParams.Add("DistanceSquared", Distance * Distance);
-            }
+            //conditions.Add("((v.X - @X + 601) % 401 - 200) * ((v.X - @X + 601) % 401 - 200) + ((v.Y - @Y + 601) % 401 - 200) * ((v.Y - @Y + 601) % 401 - 200) <= @DistanceSquared");
+            dynamicParams.Add("X", X);
+            dynamicParams.Add("Y", Y);
+            dynamicParams.Add("DistanceSquared", Distance * Distance);
 
             string whereClause = conditions.Count > 0 ? string.Join(" AND ", conditions) : "1=1";
 

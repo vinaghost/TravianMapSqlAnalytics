@@ -77,7 +77,7 @@ namespace FeaturesFeatures.Players
                     p.VillageCount,
                     p.Population
                 FROM Players p
-                INNER JOIN Alliances a ON p.AllianceId = a.Id
+                INNER JOIN Alliances a ON p.AllianceId = a.Id AND p.IsDeleted = 0
                 WHERE {whereClause}
                 ORDER BY p.Name
                 LIMIT @PageSize OFFSET @Offset;";

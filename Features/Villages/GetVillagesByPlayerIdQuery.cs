@@ -22,15 +22,15 @@ namespace Features.Villages
             const string sql = @"
                 SELECT
                     MapId,
-                    Id,
-                    Name,
+                    Id AS VillageId,
+                    Name AS VillageName,
                     X,
                     Y,
                     Tribe,
                     Population,
                     IsCapital
                 FROM Villages
-                WHERE PlayerId = @PlayerId;";
+                WHERE PlayerId = @PlayerId AND IsDestroyed = 0;";
 
             var villages = await connection.QueryAsync<VillageDto>(new(
                 sql,
@@ -39,21 +39,6 @@ namespace Features.Villages
             );
 
             return [.. villages];
-
-            //            var rawRows = await connection.QueryAsync<dynamic>(
-            //    new CommandDefinition(sql, new { PlayerId = playerId }, cancellationToken: cancellationToken)
-            //);
-
-            //            return rawRows.Select(x => new VillageDto(
-            //                (int)x.MapId,
-            //                (int)x.Id,
-            //                (string)x.Name,
-            //                (int)x.X,
-            //                (int)x.Y,
-            //                (Tribe)x.Tribe, // Explicitly cast the database integer to your Tribe enum
-            //                (int)x.Population,
-            //                (bool)x.IsCapital
-            //            )).ToList();
         }
     }
 }

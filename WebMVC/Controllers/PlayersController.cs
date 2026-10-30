@@ -31,7 +31,7 @@ namespace WebMVC.Controllers
 
         public async Task<IActionResult> Index(
             [FromServices] GetPlayerByIdQuery.Handler getPlayerByIdQuery,
-            [FromServices] GetVillagesQuery.Handler getVillagesByParametersQuery,
+            [FromServices] GetVillagesByPlayerIdQuery.Handler getVillagesByPlayerIdQuery,
             [FromServices] GetVillagesPopulationHistoryQuery.Handler getVillagesPopulationHistoryByParametersQuery,
             int playerId = -1
             )
@@ -46,13 +46,7 @@ namespace WebMVC.Controllers
             var player = await getPlayerByIdQuery.HandleAsync(new(playerId));
             if (player is null) return View();
 
-            var villageParameters = new GetVillagesParameters()
-            {
-                Players = [playerId],
-                PageSize = 60,
-                PageNumber = 1
-            };
-            var villages = await getVillagesByParametersQuery.HandleAsync(new(villageParameters));
+            var villages = await getVillagesByPlayerIdQuery.HandleAsync(new(playerId));
 
             if (villages.Count <= 0)
             {

@@ -28,14 +28,14 @@ namespace Features.Populations
 
             const string sql = @"
                 SELECT
-                    VillageId,
-                    Date,
+                    VillagesId,
+                    SnapshotDate,
                     Population,
                     ChangePopulation
                 FROM VillagesHistory
-                WHERE VillageId IN @Ids
-                  AND Date >= @FilterDate
-                ORDER BY Date DESC;";
+                WHERE VillagesId IN @Ids
+                  AND SnapshotDate >= @FilterDate
+                ORDER BY SnapshotDate DESC;";
 
             var rawHistory = await connection.QueryAsync<dynamic>(new(
                 sql,
@@ -44,11 +44,11 @@ namespace Features.Populations
             );
 
             return rawHistory
-                .GroupBy(x => (int)x.VillageId)
+                .GroupBy(x => (int)x.VillagesId)
                 .ToDictionary(
                     group => group.Key,
                     group => group.Select(row => new PopulationDto(
-                        (DateTime)row.Date,
+                        (DateTime)row.SnapshotDate,
                         (int)row.Population,
                         (int)row.ChangePopulation
                     )).ToList()

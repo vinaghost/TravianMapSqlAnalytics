@@ -64,7 +64,10 @@ namespace Features.Alliances
             string sql = $@"
                 SELECT COUNT(*) FROM Alliances WHERE {whereClause};
 
-                SELECT Id, Name, PlayerCount
+                SELECT
+                    Id AS AllianceId,
+                    Name AS AllianceName,
+                    PlayerCount
                 FROM Alliances
                 WHERE {whereClause}
                 ORDER BY Name
