@@ -18,6 +18,9 @@ jobs:
   webmvc:
     runs-on: ubuntu-latest
     if: github.event.inputs.webmvc == 'false'
+    permissions:
+      contents: read
+      packages: write
     steps:     
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4
@@ -53,6 +56,9 @@ jobs:
   webapi:
     runs-on: ubuntu-latest
     if: github.event.inputs.webapi == 'false'
+    permissions:
+      contents: read
+      packages: write
     steps:     
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v4
