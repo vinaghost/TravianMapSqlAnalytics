@@ -6,7 +6,7 @@
 @Html.DisplayFor(m => m.Population)
 
 @{
-    var change = Model.Change;
+    var change = Model.ChangePopulation;
     if (change > 0)
     {
         <span class="badge bg-success">+@change</span>

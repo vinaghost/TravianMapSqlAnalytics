@@ -1,6 +1,6 @@
 ﻿namespace Features.Populations
 {
-    public record PopulationDto(DateTime Date,
+    public record PopulationDto(DateTime SnapshotDate,
                                 int Population,
-                                int Change);
+                                int ChangePopulation);
 }

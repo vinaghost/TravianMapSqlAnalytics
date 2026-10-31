@@ -87,7 +87,7 @@ else
         }
         else
         {
-            var dates = Model.Population.Values.MaxBy(x => x.Count)?.Select(x => x.Date).ToArray() ?? [];
+            var dates = Model.Population.Values.MaxBy(x => x.Count)?.Select(x => x.SnapshotDate).ToArray() ?? [];
 
             <table class="table table-hover">
                 <thead>
