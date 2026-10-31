@@ -21,7 +21,7 @@
             <select class="form-select @Constants.Select2Combox" name="PlayerId" data-ajax--url="/players/names">
                 @if (Model?.Player is not null)
                 {
-                    <option value="@Model.Player.PlayerId" selected="true">@Model.Player.PlayerName</option>
+                    <option value="@Model.Player.PlayerId" selected>@Model.Player.PlayerName</option>
                 }
             </select>
 
