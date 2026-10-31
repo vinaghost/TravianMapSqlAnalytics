@@ -39,11 +39,12 @@ namespace WebMVC.Middleware
             await next(context);
         }
 
-        private void SetCookie(HttpContext context, string server)
+        private static void SetCookie(HttpContext context, string server)
         {
             var options = new CookieOptions()
             {
                 Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
+                Secure = true,
             };
             context.Response.Cookies.Append("TMSA_server", server, options);
         }

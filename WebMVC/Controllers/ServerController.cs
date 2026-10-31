@@ -28,7 +28,8 @@ namespace WebMVC.Controllers
                 {
                     Expires = new DateTimeOffset(DateTime.Now.AddYears(1)),
                     IsEssential = true,
-                    SameSite = SameSiteMode.Lax
+                    SameSite = SameSiteMode.Lax,
+                    Secure = true,
                 };
 
                 Response.Cookies.Append("TMSA_server", server, options);
