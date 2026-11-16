@@ -4,14 +4,14 @@
     "net10.0": {
       "FastEndpoints": {
         "type": "Direct",
-        "requested": "[8.3.0, )",
-        "resolved": "8.3.0",
-        "contentHash": "cwZdjaLcaU2qnQYDARQb15NvKiyMk0ySaw46wdYnuwvDSrY9cjFpclTfdG3+ewzwho8mceFenqnndhTayh46tA==",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "6jrpXWC0SNARYuxwiyFlRHNERgLaTbBKAnnhq5EBMwkgnQ/fYZA4E0A9YVlgLix0JjTRcBJonRBUzsbgOS0H8g==",
         "dependencies": {
-          "FastEndpoints.Attributes": "8.3.0",
-          "FastEndpoints.JobQueues": "8.3.0",
-          "FastEndpoints.Messaging": "8.3.0",
-          "FluentValidation": "12.1.1"
+          "FastEndpoints.Attributes": "9.0.0",
+          "FastEndpoints.JobQueues": "9.0.0",
+          "FastEndpoints.Messaging": "9.0.0",
+          "FluentValidation": "12.2.0"
         }
       },
       "FastEndpoints.Swagger": {
@@ -26,9 +26,9 @@
       },
       "Microsoft.NET.ILLink.Tasks": {
         "type": "Direct",
-        "requested": "[10.0.14, )",
-        "resolved": "10.0.14",
-        "contentHash": "YlTamXppEQls6DYWt7RdUuwWDb0lyw/vXCaGeQpLCpsLmfwGuCkOz/vIGgMTV7ECsJcavkCOkxZXv9s8rdAHkQ=="
+        "requested": "[10.0.11, )",
+        "resolved": "10.0.11",
+        "contentHash": "IBf7lbovvjGWVWXZX5cJ/cO0WXbId0Zq4BuSeT94mGZuOAP66oMeH9PTBZ9Jpp3Jb6jtK0qm/NyUbPRo1gC/wQ=="
       },
       "Dapper": {
         "type": "Transitive",
@@ -37,35 +37,35 @@
       },
       "FastEndpoints.Attributes": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "6nk8OZt2IZ8H2Sl2a8HwA9VOsfJ/372tW8qHtObusubiCLJQ5UH9uSvjP+X7bVl34ymGqmA1lkbUsUIVTSK+Xg=="
+        "resolved": "9.0.0",
+        "contentHash": "Yojnc7gVqFxRF5Mxkxoe82wSYeZMQTXs8+R/oZO4tFzSJfs7wErSIJUo7bDYQ/UjExcW6C6CNCH4d2qVF+/GLQ=="
       },
       "FastEndpoints.Core": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "zbx/M5GNrbhfMLOwjPXnaHVlCo9N+w+gRQFO7qllKJQlVUqahSwpyj7lODUqxBdAWv0GAYM5St/2658lbnOGIQ=="
+        "resolved": "9.0.0",
+        "contentHash": "z6tEHwOLxstOmzFM9R3RRdXvXTPzXAukJy1qBF7Ez7F9Z7sYva69LpBkstj2r7bXDfVwJ8JNw3893P6/hA14fQ=="
       },
       "FastEndpoints.JobQueues": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "4kw1Ccnhm4bxpgIL7xe+HxG8qw/CbOc8/ZlT1cwqUl+DsxK9XF9uZFBRMWYipYe5cVqLHRwJ/PmQFDXa0/fmVA==",
+        "resolved": "9.0.0",
+        "contentHash": "JTIb//+B+6JQWO6B4+HIIXYwfh3Ek8T3GJBvJTHI7sT4sQR0IIMieyW6+4ODxnxgtmQd5XiiOzKUnc56y/V3AQ==",
         "dependencies": {
-          "FastEndpoints.Messaging": "8.3.0"
+          "FastEndpoints.Messaging": "9.0.0"
         }
       },
       "FastEndpoints.Messaging": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "Quonvmdnhetpu79NGZMTBHdXVIpq5CWlWHhtP/8gAtyPtQVitHShn8RuT7FvYn7VdalqWDnlkWDFTf0O3CQwVQ==",
+        "resolved": "9.0.0",
+        "contentHash": "+28E3ar0lZJni+99r8cI0RmWJUwZPYd2JNzvHVFh9nc+0DmDpiw9UJFZ+v77eAflOFwDIP27LHLMl33H2bxSqQ==",
         "dependencies": {
-          "FastEndpoints.Core": "8.3.0",
-          "FastEndpoints.Messaging.Core": "8.3.0"
+          "FastEndpoints.Core": "9.0.0",
+          "FastEndpoints.Messaging.Core": "9.0.0"
         }
       },
       "FastEndpoints.Messaging.Core": {
         "type": "Transitive",
-        "resolved": "8.3.0",
-        "contentHash": "VcJRpsRaz8xdbmE8m51Y7cmsESJVgnCaHlpMfx0TfKdfLGDXYaBsPjWY1lrSW95kJeA67pepLSfC8yGNz1eneA=="
+        "resolved": "9.0.0",
+        "contentHash": "wpCiIZqHe7i7RUYrquqL5KuTNMMt7FueypItNp1Q1vC9v3RNMCnOLbNqIXGUhV8B8AW+N7WhvO2fl7z1LOn3gQ=="
       },
       "FluentValidation": {
         "type": "Transitive",
