@@ -17,7 +17,7 @@
     <PackageReference Include="MySqlConnector" Version="2.6.2" />
     <PackageReference Include="FluentValidation" Version="12.2.0" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
-    <PackageReference Include="Immediate.Handlers" Version="4.2.0" />
+    <PackageReference Include="Immediate.Handlers" Version="4.3.0" />
     <PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="10.0.14" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.14" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.14" />
